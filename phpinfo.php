@@ -1,0 +1,4 @@
+<?php
+// Zhongjie test
+phpinfo();
+?>
