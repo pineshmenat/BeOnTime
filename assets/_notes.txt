@@ -1,0 +1,2 @@
+Please don't add or remove anything in app-assets folder.
+Please put your own css files, javascripts, images and others in assets folder.
