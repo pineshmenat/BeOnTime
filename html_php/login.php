@@ -16,7 +16,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $loginUsername = mysqli_real_escape_string($db_connection, $_POST['login_username']);
     $loginPassword = mysqli_real_escape_string($db_connection, $_POST['login_password']);
 
-    $sql = "SELECT * FROM users WHERE username = '$loginUsername' and password = '$loginPassword'";
+    $sql = "SELECT * FROM usermaster WHERE UserName = '$loginUsername' and Password = '$loginPassword'";
     $queryResult = mysqli_query($db_connection, $sql);
     $row = mysqli_fetch_array($queryResult, MYSQLI_ASSOC);
 
@@ -25,10 +25,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 //    error_log(print_r("my_errors: " . $loginUsername . " " . $loginPassword . " " . $rowCount, true));
     if ($rowCount == 1) {
 
-        $_SESSION['login_id'] = $row['id'];
-        $_SESSION['login_username'] = $row['username'];
-        $_SESSION['login_password'] = $row['password'];
-        $_SESSION['login_type'] = $row['type'];
+        $_SESSION['login_id'] = $row['UserId'];
+        $_SESSION['login_username'] = $row['UserName'];
+        $_SESSION['login_password'] = $row['Password'];
+        $_SESSION['login_type'] = $row['RoleId'];
 
         header("location: dashboard.php");
     } else {
