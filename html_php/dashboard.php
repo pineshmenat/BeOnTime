@@ -2,6 +2,7 @@
 session_start();
 ?>
 
+<!DOCTYPE html>
 <html lang="en" data-textdirection="ltr" class="loading">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
