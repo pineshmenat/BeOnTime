@@ -37,7 +37,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 ?>
 
-
+<!--<!DOCTYPE html> is important. Removing this indication will cause padding display abnormal in some places.-->
 <!DOCTYPE html>
 <html lang="en" data-textdirection="ltr" class="loading">
 <head>
@@ -54,8 +54,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link rel="apple-touch-icon" sizes="76x76" href="../app-assets/images/ico/apple-icon-76.png">
     <link rel="apple-touch-icon" sizes="120x120" href="../app-assets/images/ico/apple-icon-120.png">
     <link rel="apple-touch-icon" sizes="152x152" href="../app-assets/images/ico/apple-icon-152.png">
-    <link rel="shortcut icon" type="image/x-icon" href="../app-assets/images/ico/favicon.ico">
-    <link rel="shortcut icon" type="image/png" href="../app-assets/images/ico/favicon-32.png">
+    <link rel="shortcut icon" type="image/x-icon" href="../assets/images/favicon.ico">
+    <link rel="shortcut icon" type="image/png" href="../assets/images/favicon-32.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-touch-fullscreen" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -85,12 +85,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <!-- ////////////////////////////////////////////////////////////////////////////-->
 <div class="app-content content container-fluid">
     <div class="content-wrapper">
-        <div class="content-header row">
-        </div>
+
+        <div class="content-header row"></div>
+
         <div class="content-body">
             <section class="flexbox-container">
                 <div class="col-md-4 offset-md-4 col-xs-10 offset-xs-1  box-shadow-2 p-0">
                     <div class="card border-grey border-lighten-3 m-0">
+
+<!--                        header-->
                         <div class="card-header no-border">
                             <div class="card-title text-xs-center">
                                 <div class="p-1"><img src="../assets/images/logo.png" alt="BeOnTime logo" height="50" width="193">
@@ -99,9 +102,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             <h6 class="card-subtitle line-on-side text-muted text-xs-center font-small-3">
                                 <span>Login with BeOnTime</span></h6>
                         </div>
+
+<!--                        body-->
                         <div class="card-body collapse in">
                             <div class="card-block">
+
+<!--                                login form consists of username, password, remember me option and a login button-->
                                 <form class="form-horizontal form-simple" action="" method="post">
+
+<!--                                    username-->
                                     <fieldset class="form-group position-relative has-icon-left mb-0">
                                         <input type="text" class="form-control form-control-lg input-lg" id="login_username" name="login_username"
                                                placeholder="Your Username" required>
@@ -109,6 +118,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                             <i class="icon-head"></i>
                                         </div>
                                     </fieldset>
+
+<!--                                    password-->
                                     <fieldset class="form-group position-relative has-icon-left">
                                         <input type="password" class="form-control form-control-lg input-lg" id="login_password" name="login_password"
                                                placeholder="Enter Password" required>
@@ -116,6 +127,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                             <i class="icon-key3"></i>
                                         </div>
                                     </fieldset>
+
+<!--                                    remember me option-->
                                     <fieldset class="form-group row">
                                         <div class="col-md-6 col-xs-12 text-xs-center text-md-left">
                                             <fieldset>
@@ -128,8 +141,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                         </div>
                                     </fieldset>
 
-<!--                                    <input type="button" class="btn btn-primary btn-lg btn-block" value="Login">-->
-                                    <input type="submit" class="btn btn-primary btn-lg btn-block" value="Login">
+<!--                                    login button-->
+                                    <button type="submit" class="btn btn-success btn-lg btn-block" formmethod="post" ><i class="icon-unlock2"></i> Login</button>
 
                                 </form>
 
@@ -139,10 +152,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                 <a href="#"><img src="../app-assets/images/icons/facebook-logo.jpg" alt="Facebook icon" width="48" height="48"></a>
                                 <a href="#"><img src="../app-assets/images/icons/twitter-logo.jpg" alt="Facebook icon" width="48" height="48"></a>
                             </div>
-
-
-
                         </div>
+
+<!--                        some links to other login related functions-->
                         <div class="card-footer">
                             <div class="">
                                 <p class="float-sm-left text-xs-center m-0"><a href="index.html" class="card-link">Main page&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a></p>
@@ -150,6 +162,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                 <p class="float-sm-right text-xs-center m-0">New to BeOnTime ? <a href="register-simple.php" class="card-link">Sign Up</a></p>
                             </div>
                         </div>
+
                     </div>
                 </div>
             </section>

@@ -1,3 +1,4 @@
+<!--<!DOCTYPE html> is important. Removing this indication will cause padding display abnormal in some places.-->
 <!DOCTYPE html>
 <html lang="en" data-textdirection="ltr" class="loading">
 <head>
@@ -14,8 +15,8 @@
     <link rel="apple-touch-icon" sizes="76x76" href="../app-assets/images/ico/apple-icon-76.png">
     <link rel="apple-touch-icon" sizes="120x120" href="../app-assets/images/ico/apple-icon-120.png">
     <link rel="apple-touch-icon" sizes="152x152" href="../app-assets/images/ico/apple-icon-152.png">
-    <link rel="shortcut icon" type="image/x-icon" href="../app-assets/images/ico/favicon.ico">
-    <link rel="shortcut icon" type="image/png" href="../app-assets/images/ico/favicon-32.png">
+    <link rel="shortcut icon" type="image/x-icon" href="../assets/images/favicon.ico">
+    <link rel="shortcut icon" type="image/png" href="../assets/images/favicon-32.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-touch-fullscreen" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -45,12 +46,14 @@
 <!-- ////////////////////////////////////////////////////////////////////////////-->
 <div class="app-content content container-fluid">
     <div class="content-wrapper">
-        <div class="content-header row">
-        </div>
+<!--        head-->
+        <div class="content-header row"></div>
+<!--        body-->
         <div class="content-body">
             <section class="flexbox-container">
                 <div class="col-md-4 offset-md-4 col-xs-10 offset-xs-1 box-shadow-2 p-0">
                     <div class="card border-grey border-lighten-3 px-2 py-2 m-0">
+<!--                        information display-->
                         <div class="card-header no-border">
                             <div class="card-title text-xs-center">
                                 <img src="../assets/images/logo.png" alt="branding logo" height="50" width="193">
@@ -58,6 +61,8 @@
                             <h6 class="card-subtitle line-on-side text-muted text-xs-center font-small-3 pt-2">
                                 <span>Create Account</span></h6>
                         </div>
+
+<!--                        register form including some fields and a button-->
                         <div class="card-body collapse in">
                             <div class="card-block">
                                 <form class="form-horizontal form-simple" action="index.html" novalidate>
@@ -87,9 +92,12 @@
                                     </button>
                                 </form>
                             </div>
-                            <p class="float-sm-left text-xs-center"><a href="index.html" class="card-link">Main page&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a></p>
+                            <p class="float-sm-left text-xs-center"><a href="index.html" class="card-link">Main page&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
+                            </p>
                             <p class="text-xs-center">Already have an account ? <a href="login.php" class="card-link">Login</a></p>
                         </div>
+
+
                     </div>
                 </div>
             </section>

@@ -1,0 +1,111 @@
+create database b16_20802573_beontime;
+
+# change CHARACTER SET and COLLATE
+ALTER DATABASE b16_20802573_beontime CHARACTER SET utf8 COLLATE utf8_general_ci;
+SELECT * FROM information_schema.SCHEMATA;
+
+# check table engine
+show table status where name = 'rolemaster';
+
+
+/////////////////////////////////////////////////////////
+TRICKS
+
+# Drop a table ignoring any foreign key constraints
+
+SET FOREIGN_KEY_CHECKS=0;
+DROP TABLE b16_20802573_beontime.rolemaster;
+SET FOREIGN_KEY_CHECKS=1;
+
+/////////////////////////////////////////////////////////
+
+use b16_20802573_beontime;
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+CREATE TABLE `rolemaster` (
+`RoleId` tinyint(4) NOT NULL AUTO_INCREMENT,
+`RoleName` varchar(45) NOT NULL,
+`EntryDateTime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+`ModDateTime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+`ModifiedBy` int(11) NOT NULL,
+PRIMARY KEY (`RoleId`)
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+INSERT INTO `b16_20802573_beontime`.`rolemaster` (`RoleId`, `RoleName`, `EntryDateTime`, `ModDateTime`, `ModifiedBy`) VALUES ('10', 'Manager', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 10001);
+
+INSERT INTO `b16_20802573_beontime`.`rolemaster` (`RoleId`, `RoleName`, `EntryDateTime`, `ModDateTime`, `ModifiedBy`) VALUES ('11', 'Client', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 10001);
+
+INSERT INTO `b16_20802573_beontime`.`rolemaster` (`RoleId`, `RoleName`, `EntryDateTime`, `ModDateTime`, `ModifiedBy`) VALUES ('12', 'Employee', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 10001);
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+CREATE TABLE `usermaster` (
+`UserId` int(11) NOT NULL AUTO_INCREMENT,
+`RoleId` tinyint(4) NOT NULL,
+`UserName` varchar(45) NOT NULL,
+`Password` varbinary(150) NOT NULL,
+`PasswordExpiry` datetime NOT NULL,
+`PasswordCounter` tinyint(4) NOT NULL,
+`FirstLogin` bit(1) NOT NULL,
+`UserStatus` tinyint(4) NOT NULL,
+`EMail` varchar(65) NOT NULL,
+`Address` varchar(150) NOT NULL,
+`City` varchar(45) NOT NULL,
+`Provience` varchar(45) NOT NULL,
+`PostalCode` varchar(6) NOT NULL,
+`RegistrationDate` datetime NOT NULL,
+`EntryDateTime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+`ModDateTime` varchar(45) NOT NULL DEFAULT 'CURRENT_TIMESTAMP',
+PRIMARY KEY (`UserId`),
+KEY `FK_RoleId_idx` (`RoleId`),
+CONSTRAINT `FK_RoleId` FOREIGN KEY (`RoleId`) REFERENCES `rolemaster` (`RoleId`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+
+INSERT INTO `b16_20802573_beontime`.`usermaster` (`UserId`, `RoleId`, `UserName`, `Password`, `PasswordExpiry`, `PasswordCounter`, `FirstLogin`, `UserStatus`, `EMail`, `Address`, `City`, `Provience`, `PostalCode`, `RegistrationDate`, `EntryDateTime`, `ModDateTime`) VALUES ('10001', '10', 'fzhongjie', '123', '2018-01-01 00:00:00', '0', b'0', '0', 'fzhongjie@msn.com', '205 Humber College Blvd', 'Toronto', 'Ontario', 'M9W5L7', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'CURRENT_TIMESTAMP');
+
+
+INSERT INTO `b16_20802573_beontime`.`usermaster` (`UserId`, `RoleId`, `UserName`, `Password`, `PasswordExpiry`, `PasswordCounter`, `FirstLogin`, `UserStatus`, `EMail`, `Address`, `City`, `Provience`, `PostalCode`, `RegistrationDate`, `EntryDateTime`, `ModDateTime`) VALUES ('10002', '10', 'pineshmenat', '123', '2018-01-01 00:00:00', '0', b'0', '0', 'pineshmenat@gmail.com', '205 Humber College Blvd', 'Toronto', 'Ontario', 'M9W5L7', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'CURRENT_TIMESTAMP');
+
+
+INSERT INTO `b16_20802573_beontime`.`usermaster` (`UserId`, `RoleId`, `UserName`, `Password`, `PasswordExpiry`, `PasswordCounter`, `FirstLogin`, `UserStatus`, `EMail`, `Address`, `City`, `Provience`, `PostalCode`, `RegistrationDate`, `EntryDateTime`, `ModDateTime`) VALUES ('10003', '10', 'manager1', '123', '2018-01-01 00:00:00', '0', b'0', '0', 'fzhongjie@msn.com', '205 Humber College Blvd', 'Toronto', 'Ontario', 'M9W5L7', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'CURRENT_TIMESTAMP');
+
+
+INSERT INTO `b16_20802573_beontime`.`usermaster` (`UserId`, `RoleId`, `UserName`, `Password`, `PasswordExpiry`, `PasswordCounter`, `FirstLogin`, `UserStatus`, `EMail`, `Address`, `City`, `Provience`, `PostalCode`, `RegistrationDate`, `EntryDateTime`, `ModDateTime`) VALUES ('10004', '11', 'client1', '123', '2018-01-01 00:00:00', '0', b'0', '0', 'fzhongjie@msn.com', '205 Humber College Blvd', 'Toronto', 'Ontario', 'M9W5L7', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'CURRENT_TIMESTAMP');
+
+
+INSERT INTO `b16_20802573_beontime`.`usermaster` (`UserId`, `RoleId`, `UserName`, `Password`, `PasswordExpiry`, `PasswordCounter`, `FirstLogin`, `UserStatus`, `EMail`, `Address`, `City`, `Provience`, `PostalCode`, `RegistrationDate`, `EntryDateTime`, `ModDateTime`) VALUES ('10005', '12', 'employee1', '123', '2018-01-01 00:00:00', '0', b'0', '0', 'fzhongjie@msn.com', '205 Humber College Blvd', 'Toronto', 'Ontario', 'M9W5L7', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'CURRENT_TIMESTAMP');
+
+
+INSERT INTO `b16_20802573_beontime`.`usermaster` (`UserId`, `RoleId`, `UserName`, `Password`, `PasswordExpiry`, `PasswordCounter`, `FirstLogin`, `UserStatus`, `EMail`, `Address`, `City`, `Provience`, `PostalCode`, `RegistrationDate`, `EntryDateTime`, `ModDateTime`) VALUES ('10006', '11', 'client2', '123', '2018-01-01 00:00:00', '0', b'0', '0', 'fzhongjie@msn.com', '205 Humber College Blvd', 'Toronto', 'Ontario', 'M9W5L7', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'CURRENT_TIMESTAMP');
+
+INSERT INTO `b16_20802573_beontime`.`usermaster` (`UserId`, `RoleId`, `UserName`, `Password`, `PasswordExpiry`, `PasswordCounter`, `FirstLogin`, `UserStatus`, `EMail`, `Address`, `City`, `Provience`, `PostalCode`, `RegistrationDate`, `EntryDateTime`, `ModDateTime`) VALUES ('10007', '12', 'employee2', '123', '2018-01-01 00:00:00', '0', b'0', '0', 'fzhongjie@msn.com', '205 Humber College Blvd', 'Toronto', 'Ontario', 'M9W5L7', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'CURRENT_TIMESTAMP');
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+CREATE TABLE shiftmaster (
+  ShiftId INT NOT NULL AUTO_INCREMENT,
+  AssignedBy INT NOT NULL,
+  AssignedTo INT NOT NULL,
+  AssignedFor INT NOT NULL,
+  JobLocation VARCHAR(150) NULL,
+  StartTime DATETIME NOT NULL,
+  EndTime DATETIME NOT NULL,
+  EntryDateTime DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  ModDateTime DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  ShiftStatus TINYINT NOT NULL,
+  SpecialNote VARCHAR(150) NULL,
+  PRIMARY KEY (ShiftId),
+  KEY `FK_AssignedBy_idx` (`AssignedBy`),
+  CONSTRAINT `FK_AssignedBy` FOREIGN KEY (`AssignedBy`) REFERENCES `usermaster` (`UserId`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  KEY `FK_AssignedTo_idx` (`AssignedTo`),
+  CONSTRAINT `FK_AssignedTo` FOREIGN KEY (`AssignedTo`) REFERENCES `usermaster` (`UserId`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  KEY `FK_AssignedFor_idx` (`AssignedFor`),
+  CONSTRAINT `FK_AssignedFor` FOREIGN KEY (`AssignedFor`) REFERENCES `usermaster` (`UserId`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+
+INSERT INTO `b16_20802573_beontime`.`shiftmaster` (`ShiftId`, `AssignedBy`, `AssignedTo`, `AssignedFor`, `JobLocation`, `StartTime`, `EndTime`, `EntryDateTime`, `ModDateTime`, `ShiftStatus`, `SpecialNote`) VALUES ('500001', '10001', '10005', '10004', '1620 Albion Rd, Etobicoke', '2017-10-19 09:00:00', '2017-10-19 14:00:00', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '0', NULL);
+
+INSERT INTO `b16_20802573_beontime`.`shiftmaster` (`ShiftId`, `AssignedBy`, `AssignedTo`, `AssignedFor`, `JobLocation`, `StartTime`, `EndTime`, `EntryDateTime`, `ModDateTime`, `ShiftStatus`, `SpecialNote`) VALUES ('500002', '10001', '10007', '10006', '1620 Albion Rd, Etobicoke', '2017-10-20 09:00:00', '2017-10-20 14:00:00', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '0', NULL);

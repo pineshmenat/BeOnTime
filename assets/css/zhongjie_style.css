@@ -1,11 +1,26 @@
-/*================================================================================
-	Item Name: Robust - Responsive Admin Theme
-	Version: 1.0
-	Author: PIXINVENT
-	Author URL: http://www.themeforest.net/user/pixinvent
-================================================================================
+table .first_column {
+    padding: 0rem;
+    text-align: center;
+    vertical-align: middle;
+}
 
-NOTE:
-------
-PLACE HERE YOUR OWN SCSS CODES AND IF NEEDED, OVERRIDE THE STYLES FROM THE OTHER STYLESHEETS.
-WE WILL RELEASE FUTURE UPDATES SO IN ORDER TO NOT OVERWRITE YOUR STYLES IT'S BETTER LIKE THIS.  */
+.table-scroll {
+    overflow: scroll;
+    height: 18rem;
+}
+
+.table-head-fixed thead {
+    width: 100%;
+}
+.table-head-fixed tbody {
+    height: 190px;
+    overflow-y: auto;
+    width: 100%;
+}
+.table-head-fixed thead, .table-head-fixed tbody, .table-head-fixed tr, .table-head-fixed td, .table-head-fixed th {
+    display: block;
+}
+.table-head-fixed tbody td, .table-head-fixed thead > tr> th {
+    float: left;
+    border-bottom-width: 0;
+}
