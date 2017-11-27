@@ -1,99 +1,12 @@
+<!--------------->
+<!--By Zhongjie-->
+<!--------------->
 <?php
-session_start();
-$shift_display = "";
-$shift_display .= "<table class=\"table table-striped table-condensed\">";
-$shift_display .= "<thead><tr>";
-$shift_display .= "<td class=\"first_column\"><input type=\"checkbox\" id=\"all_select\" value=\"all\"></td>";
-$shift_display .= "<th>Shift ID</th>";
-$shift_display .= "<th>Company Name</th>";
-$shift_display .= "<th>Location</th>";
-$shift_display .= "<th>Date</th>";
-$shift_display .= "<th>Start Time</th>";
-$shift_display .= "<th>End Time</th>";
-$shift_display .= "<th>Employee</th>";
-$shift_display .= "<th>Status</th>";
-$shift_display .= "</tr></thead>";
-$shift_display .= "<tbody>";
-$shift_display .= "<tr>";
-$shift_display .= "<td class=\"first_column\"><input type=\"checkbox\" name=\"list01\" value=\"john\"></td>";
-$shift_display .= "<td>data_1</td>";
-$shift_display .= "<td>data_2</td>";
-$shift_display .= "<td>data_3</td>";
-$shift_display .= "<td>data_4</td>";
-$shift_display .= "<td>data_5</td>";
-$shift_display .= "<td>data_6</td>";
-$shift_display .= "<td>data_7</td>";
-$shift_display .= "<td>data_8</td>";
-$shift_display .= "</tr>";
-$shift_display .= "<tr>";
-$shift_display .= "<td class=\"first_column\"><input type=\"checkbox\" name=\"list01\" value=\"john\"></td>";
-$shift_display .= "<td>data_1</td>";
-$shift_display .= "<td>data_2</td>";
-$shift_display .= "<td>data_3</td>";
-$shift_display .= "<td>data_4</td>";
-$shift_display .= "<td>data_5</td>";
-$shift_display .= "<td>data_6</td>";
-$shift_display .= "<td>data_7</td>";
-$shift_display .= "<td>data_8</td>";
-$shift_display .= "</tr>";
-$shift_display .= "<tr>";
-$shift_display .= "<td class=\"first_column\"><input type=\"checkbox\" name=\"list01\" value=\"john\"></td>";
-$shift_display .= "<td>data_1</td>";
-$shift_display .= "<td>data_2</td>";
-$shift_display .= "<td>data_3</td>";
-$shift_display .= "<td>data_4</td>";
-$shift_display .= "<td>data_5</td>";
-$shift_display .= "<td>data_6</td>";
-$shift_display .= "<td>data_7</td>";
-$shift_display .= "<td>data_8</td>";
-$shift_display .= "</tr>";
-$shift_display .= "<tr>";
-$shift_display .= "<td class=\"first_column\"><input type=\"checkbox\" name=\"list01\" value=\"john\"></td>";
-$shift_display .= "<td>data_1</td>";
-$shift_display .= "<td>data_2</td>";
-$shift_display .= "<td>data_3</td>";
-$shift_display .= "<td>data_4</td>";
-$shift_display .= "<td>data_5</td>";
-$shift_display .= "<td>data_6</td>";
-$shift_display .= "<td>data_7</td>";
-$shift_display .= "<td>data_8</td>";
-$shift_display .= "</tr>";
-$shift_display .= "<tr>";
-$shift_display .= "<td class=\"first_column\"><input type=\"checkbox\" name=\"list01\" value=\"john\"></td>";
-$shift_display .= "<td>data_1</td>";
-$shift_display .= "<td>data_2</td>";
-$shift_display .= "<td>data_3</td>";
-$shift_display .= "<td>data_4</td>";
-$shift_display .= "<td>data_5</td>";
-$shift_display .= "<td>data_6</td>";
-$shift_display .= "<td>data_7</td>";
-$shift_display .= "<td>data_8</td>";
-$shift_display .= "</tr>";
-$shift_display .= "<tr>";
-$shift_display .= "<td class=\"first_column\"><input type=\"checkbox\" name=\"list01\" value=\"john\"></td>";
-$shift_display .= "<td>data_1</td>";
-$shift_display .= "<td>data_2</td>";
-$shift_display .= "<td>data_3</td>";
-$shift_display .= "<td>data_4</td>";
-$shift_display .= "<td>data_5</td>";
-$shift_display .= "<td>data_6</td>";
-$shift_display .= "<td>data_7</td>";
-$shift_display .= "<td>data_8</td>";
-$shift_display .= "</tr>";
-$shift_display .= "<tr>";
-$shift_display .= "<td class=\"first_column\"><input type=\"checkbox\" name=\"list01\" value=\"john\"></td>";
-$shift_display .= "<td>data_1</td>";
-$shift_display .= "<td>data_2</td>";
-$shift_display .= "<td>data_3</td>";
-$shift_display .= "<td>data_4</td>";
-$shift_display .= "<td>data_5</td>";
-$shift_display .= "<td>data_6</td>";
-$shift_display .= "<td>data_7</td>";
-$shift_display .= "<td>data_8</td>";
-$shift_display .= "</tr>";
-$shift_display .= "</tbody>";
-$shift_display .= "</table>";
 
+include "./cookie_operations.php";
+// If cookie expires, go to index.html
+CookieOperations::checkCookieTimeout();
+//CookieOperations::extendCookieTimeout();
 
 ?>
 
@@ -137,7 +50,7 @@ $shift_display .= "</table>";
     <link rel="stylesheet" type="text/css" href="../app-assets/css/core/colors/palette-gradient.css">
     <!-- END Page Level CSS-->
     <!-- BEGIN Custom CSS-->
-    <link rel="stylesheet" type="text/css" href="../assets/css/zhongjie_style.css">
+    <link rel="stylesheet" type="text/css" href="../assets/css/zhongjie_style/zhongjie_style.css">
     <!-- END Custom CSS-->
     <!--Start & End Calendar-->
     <link rel="stylesheet" type="text/css" href="../assets/css/datetimepicker/bootstrap-datetimepicker.css">
@@ -173,17 +86,19 @@ $shift_display .= "</table>";
                 <ul class="nav navbar-nav float-xs-right">
 
 
-                    <li class="dropdown dropdown-user nav-item"><a href="#" data-toggle="dropdown"
-                                                                   class="dropdown-toggle nav-link dropdown-user-link"><span
-                                    class="avatar avatar-online"><img src="../app-assets/images/portrait/small/avatar-s-1.png"
-                                                                      alt="avatar"><i></i></span><span
-                                    class="user-name"><?= $_SESSION['login_username']; ?></span></a>
-                        <div class="dropdown-menu dropdown-menu-right"><a href="#" class="dropdown-item"><i class="icon-head"></i> Edit
-                                Profile</a><a href="#" class="dropdown-item"><i class="icon-mail6"></i> My Inbox</a><a href="#"
-                                                                                                                       class="dropdown-item"><i
-                                        class="icon-clipboard2"></i> Task</a><a href="#" class="dropdown-item"><i
-                                        class="icon-calendar5"></i>
-                                Calender</a>
+                    <li class="dropdown dropdown-user nav-item">
+                        <a href="#" data-toggle="dropdown" class="dropdown-toggle nav-link dropdown-user-link">
+                            <span
+                                    class="avatar avatar-online"><img
+                                        src="../assets/images/portrait_img/<?= $_COOKIE['portraintImg']; ?>" alt="portraitImg"><i></i></span><span
+                                    class="user-name"><?= $_COOKIE['userName']; ?>
+                            </span>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <a href="#" class="dropdown-item"><i class="icon-head"></i> Edit Profile</a>
+                            <a href="#" class="dropdown-item"><i class="icon-mail6"></i> My Inbox</a>
+                            <a href="#" class="dropdown-item"><i class="icon-clipboard2"></i> Task</a>
+                            <a href="#" class="dropdown-item"><i class="icon-calendar5"></i> Calender</a>
                             <div class="dropdown-divider"></div>
                             <a href="logout.php" class="dropdown-item"><i class="icon-power3"></i> Logout</a>
                         </div>
@@ -208,16 +123,26 @@ $shift_display .= "</table>";
     <div class="main-menu-content">
         <ul id="main-menu-navigation" data-menu="menu-navigation" class="navigation navigation-main">
 
-            <li class=" nav-item"><a href="#"><i class="icon-stack-2"></i><span data-i18n="nav.page_layouts.main" class="menu-title">Manager</span></a>
+            <li class=" nav-item">
+                <a href="#"><i class="icon-building"></i>
+                    <span data-i18n="nav.page_layouts.main" class="menu-title">Company</span>
+                </a>
                 <ul class="menu-content">
-                    <li><a href="manager_assign_shift.php" data-i18n="nav.page_layouts.1_column" class="menu-item">Assign Shift</a>
-                    </li>
-                    <li class="active"><a href="manager_view_shift.php" data-i18n="nav.page_layouts.2_columns" class="menu-item">View
-                            Shift</a>
+                    <li">
+                    <a href="./companyRegistration.html" data-i18n="nav.page_layouts.1_column" class="menu-item">Registration</a>
                     </li>
                 </ul>
             </li>
 
+            <li class=" nav-item"><a href="#"><i class="icon-home3"></i><span data-i18n="nav.page_layouts.main" class="menu-title">Manager</span></a>
+                <ul class="menu-content">
+                    <li><a href="manager_assign_shift_frontend.php" data-i18n="nav.page_layouts.1_column" class="menu-item">Assign Shift</a>
+                    </li>
+                    <li class="active"><a href="manager_view_shift_frontend.php" data-i18n="nav.page_layouts.2_columns" class="menu-item">View
+                            Shift</a>
+                    </li>
+                </ul>
+            </li>
 
         </ul>
     </div>
@@ -344,24 +269,24 @@ $shift_display .= "</table>";
                 ?>
             </div>
 
-<!--            3 buttons-->
+            <!--            3 buttons-->
             <div class="row mt-1 col-md-12">
 
-<!--                Unassign Employee button-->
+                <!--                Unassign Employee button-->
                 <div class="col-xl-3 col-lg-3 col-xs-3" align="center">
                     <button type="button" formmethod="post" class="btn btn-block btn-danger font-weight-bold" data-toggle="modal"
                             data-target="#unassign_employee">Unassign Employee
                     </button>
                 </div>
 
-<!--                Cancel Shift button-->
+                <!--                Cancel Shift button-->
                 <div class="col-xl-2 col-lg-2 col-xs-2">
                     <button type="button" formmethod="post" class="btn btn-block btn-danger font-weight-bold" data-toggle="modal"
                             data-target="#cancel_shift">Cancel Shift
                     </button>
                 </div>
 
-<!--                Activate Shift button-->
+                <!--                Activate Shift button-->
                 <div class="col-xl-2 col-lg-2 col-xs-2">
                     <button type="button" formmethod="post" class="btn btn-block btn-success font-weight-bold" data-toggle="modal"
                             data-target="#activate_shift">Activate Shift
@@ -505,7 +430,7 @@ $shift_display .= "</table>";
 <script src="../assets/js/datetimepicker/collapse.js" type="text/javascript"></script>
 <!--/START & END CALENDAR JS-->
 
-<script src="../assets/js/zhongjie_scripts.js" type="text/javascript"></script>
+<script src="../assets/js/zhongjie_js/date_time_picker.js" type="text/javascript"></script>
 
 </body>
 </html>

@@ -1,180 +1,11 @@
+<!--------------->
+<!--By Zhongjie-->
+<!--------------->
 <?php
-session_start();
-$shift_display = "";
-$shift_display .= "<table class=\"table table-striped table-condensed\">";
-$shift_display .= "<thead><tr>";
-$shift_display .= "<td class=\"first_column\"><input type=\"checkbox\" id=\"all_select\" value=\"all\"></td>";
-$shift_display .= "<th>Shift ID</th>";
-$shift_display .= "<th>Company Name</th>";
-$shift_display .= "<th>Location</th>";
-$shift_display .= "<th>Date</th>";
-$shift_display .= "<th>Start Time</th>";
-$shift_display .= "<th>End Time</th>";
-$shift_display .= "<th>Status</th>";
-$shift_display .= "</tr></thead>";
-$shift_display .= "<tbody>";
-$shift_display .= "<tr>";
-$shift_display .= "<td class=\"first_column\"><input type=\"checkbox\" name=\"list01\" value=\"john\"></td>";
-$shift_display .= "<td>data_1</td>";
-$shift_display .= "<td>data_2</td>";
-$shift_display .= "<td>data_3</td>";
-$shift_display .= "<td>data_4</td>";
-$shift_display .= "<td>data_5</td>";
-$shift_display .= "<td>data_6</td>";
-$shift_display .= "<td>data_7</td>";
-$shift_display .= "</tr>";
-$shift_display .= "<tr>";
-$shift_display .= "<td class=\"first_column\"><input type=\"checkbox\" name=\"list01\" value=\"john\"></td>";
-$shift_display .= "<td>data_1</td>";
-$shift_display .= "<td>data_2</td>";
-$shift_display .= "<td>data_3</td>";
-$shift_display .= "<td>data_4</td>";
-$shift_display .= "<td>data_5</td>";
-$shift_display .= "<td>data_6</td>";
-$shift_display .= "<td>data_7</td>";
-$shift_display .= "</tr>";
-$shift_display .= "<tr>";
-$shift_display .= "<td class=\"first_column\"><input type=\"checkbox\" name=\"list01\" value=\"john\"></td>";
-$shift_display .= "<td>data_1</td>";
-$shift_display .= "<td>data_2</td>";
-$shift_display .= "<td>data_3</td>";
-$shift_display .= "<td>data_4</td>";
-$shift_display .= "<td>data_5</td>";
-$shift_display .= "<td>data_6</td>";
-$shift_display .= "<td>data_7</td>";
-$shift_display .= "</tr>";
-$shift_display .= "<tr>";
-$shift_display .= "<td class=\"first_column\"><input type=\"checkbox\" name=\"list01\" value=\"john\"></td>";
-$shift_display .= "<td>data_1</td>";
-$shift_display .= "<td>data_2</td>";
-$shift_display .= "<td>data_3</td>";
-$shift_display .= "<td>data_4</td>";
-$shift_display .= "<td>data_5</td>";
-$shift_display .= "<td>data_6</td>";
-$shift_display .= "<td>data_7</td>";
-$shift_display .= "</tr>";
-$shift_display .= "<tr>";
-$shift_display .= "<td class=\"first_column\"><input type=\"checkbox\" name=\"list01\" value=\"john\"></td>";
-$shift_display .= "<td>data_1</td>";
-$shift_display .= "<td>data_2</td>";
-$shift_display .= "<td>data_3</td>";
-$shift_display .= "<td>data_4</td>";
-$shift_display .= "<td>data_5</td>";
-$shift_display .= "<td>data_6</td>";
-$shift_display .= "<td>data_7</td>";
-$shift_display .= "</tr>";
-$shift_display .= "<tr>";
-$shift_display .= "<td class=\"first_column\"><input type=\"checkbox\" name=\"list01\" value=\"john\"></td>";
-$shift_display .= "<td>data_1</td>";
-$shift_display .= "<td>data_2</td>";
-$shift_display .= "<td>data_3</td>";
-$shift_display .= "<td>data_4</td>";
-$shift_display .= "<td>data_5</td>";
-$shift_display .= "<td>data_6</td>";
-$shift_display .= "<td>data_7</td>";
-$shift_display .= "</tr>";
-$shift_display .= "<tr>";
-$shift_display .= "<td class=\"first_column\"><input type=\"checkbox\" name=\"list01\" value=\"john\"></td>";
-$shift_display .= "<td>data_1</td>";
-$shift_display .= "<td>data_2</td>";
-$shift_display .= "<td>data_3</td>";
-$shift_display .= "<td>data_4</td>";
-$shift_display .= "<td>data_5</td>";
-$shift_display .= "<td>data_6</td>";
-$shift_display .= "<td>data_7</td>";
-$shift_display .= "</tr>";
-$shift_display .= "<tr>";
-$shift_display .= "<td class=\"first_column\"><input type=\"checkbox\" name=\"list01\" value=\"john\"></td>";
-$shift_display .= "<td>data_1</td>";
-$shift_display .= "<td>data_2</td>";
-$shift_display .= "<td>data_3</td>";
-$shift_display .= "<td>data_4</td>";
-$shift_display .= "<td>data_5</td>";
-$shift_display .= "<td>data_6</td>";
-$shift_display .= "<td>data_7</td>";
-$shift_display .= "</tr>";
-$shift_display .= "<tr>";
-$shift_display .= "<td class=\"first_column\"><input type=\"checkbox\" name=\"list01\" value=\"john\"></td>";
-$shift_display .= "<td>data_1</td>";
-$shift_display .= "<td>data_2</td>";
-$shift_display .= "<td>data_3</td>";
-$shift_display .= "<td>data_4</td>";
-$shift_display .= "<td>data_5</td>";
-$shift_display .= "<td>data_6</td>";
-$shift_display .= "<td>data_7</td>";
-$shift_display .= "</tr>";
-$shift_display .= "</tbody>";
-$shift_display .= "</table>";
-
-
-$employee_display = "";
-$employee_display .= "<table class=\"table table-head-fixed\">";
-$employee_display .= "<thead><tr>";
-$employee_display .= "<th class=\"col-xs-1\">&nbsp;</th>";
-$employee_display .= "<th class=\"col-xs-1\">Emp_ID</th>";
-$employee_display .= "<th class=\"col-xs-3\">First Name</th>";
-$employee_display .= "<th class=\"col-xs-3\">Last Name</th>";
-$employee_display .= "<th class=\"col-xs-4\">E-mail</th>";
-$employee_display .= "</tr></thead>";
-$employee_display .= "<tbody>";
-$employee_display .= "<tr>";
-$employee_display .= "<td class=\"col-xs-1\"><input type=\"radio\" name=\"list01\" value=\"john1\"></td>";
-$employee_display .= "<td class=\"col-xs-1\">90001</td>";
-$employee_display .= "<td class=\"col-xs-3\">John</td>";
-$employee_display .= "<td class=\"col-xs-3\">Doe</td>";
-$employee_display .= "<td class=\"col-xs-4\">johndoe@email.com</td>";
-$employee_display .= "</tr>";
-$employee_display .= "<tr>";
-$employee_display .= "<td class=\"col-xs-1\"><input type=\"radio\" name=\"list01\" value=\"john2\"></td>";
-$employee_display .= "<td class=\"col-xs-1\">90002</td>";
-$employee_display .= "<td class=\"col-xs-3\">John</td>";
-$employee_display .= "<td class=\"col-xs-3\">Doe</td>";
-$employee_display .= "<td class=\"col-xs-4\">johndoe@email.com</td>";
-$employee_display .= "</tr>";
-$employee_display .= "<tr>";
-$employee_display .= "<td class=\"col-xs-1\"><input type=\"radio\" name=\"list01\" value=\"john3\"></td>";
-$employee_display .= "<td class=\"col-xs-1\">90003</td>";
-$employee_display .= "<td class=\"col-xs-3\">John</td>";
-$employee_display .= "<td class=\"col-xs-3\">Doe</td>";
-$employee_display .= "<td class=\"col-xs-4\">johndoe@email.com</td>";
-$employee_display .= "</tr>";
-$employee_display .= "<tr>";
-$employee_display .= "<td class=\"col-xs-1\"><input type=\"radio\" name=\"list01\" value=\"john5\"></td>";
-$employee_display .= "<td class=\"col-xs-1\">90005</td>";
-$employee_display .= "<td class=\"col-xs-3\">John</td>";
-$employee_display .= "<td class=\"col-xs-3\">Doe</td>";
-$employee_display .= "<td class=\"col-xs-4\">johndoe@email.com</td>";
-$employee_display .= "</tr>";
-$employee_display .= "<tr>";
-$employee_display .= "<td class=\"col-xs-1\"><input type=\"radio\" name=\"list01\" value=\"john5\"></td>";
-$employee_display .= "<td class=\"col-xs-1\">90006</td>";
-$employee_display .= "<td class=\"col-xs-3\">John</td>";
-$employee_display .= "<td class=\"col-xs-3\">Doe</td>";
-$employee_display .= "<td class=\"col-xs-4\">johndoe@email.com</td>";
-$employee_display .= "</tr>";
-$employee_display .= "<tr>";
-$employee_display .= "<td class=\"col-xs-1\"><input type=\"radio\" name=\"list01\" value=\"john5\"></td>";
-$employee_display .= "<td class=\"col-xs-1\">90007</td>";
-$employee_display .= "<td class=\"col-xs-3\">John</td>";
-$employee_display .= "<td class=\"col-xs-3\">Doe</td>";
-$employee_display .= "<td class=\"col-xs-4\">johndoe@email.com</td>";
-$employee_display .= "</tr>";
-$employee_display .= "<tr>";
-$employee_display .= "<td class=\"col-xs-1\"><input type=\"radio\" name=\"list01\" value=\"john5\"></td>";
-$employee_display .= "<td class=\"col-xs-1\">90008</td>";
-$employee_display .= "<td class=\"col-xs-3\">John</td>";
-$employee_display .= "<td class=\"col-xs-3\">Doe</td>";
-$employee_display .= "<td class=\"col-xs-4\">johndoe@email.com</td>";
-$employee_display .= "</tr>";
-$employee_display .= "<tr>";
-$employee_display .= "<td class=\"col-xs-1\"><input type=\"radio\" name=\"list01\" value=\"john5\"></td>";
-$employee_display .= "<td class=\"col-xs-1\">90009</td>";
-$employee_display .= "<td class=\"col-xs-3\">John</td>";
-$employee_display .= "<td class=\"col-xs-3\">Doe</td>";
-$employee_display .= "<td class=\"col-xs-4\">johndoe@email.com</td>";
-$employee_display .= "</tr>";
-$employee_display .= "</tbody>";
-$employee_display .= "</table>";
+include "./cookie_operations.php";
+// If cookie expires, go to index.html
+CookieOperations::checkCookieTimeout();
+//CookieOperations::extendCookieTimeout();
 
 
 ?>
@@ -219,7 +50,7 @@ $employee_display .= "</table>";
     <link rel="stylesheet" type="text/css" href="../app-assets/css/core/colors/palette-gradient.css">
     <!-- END Page Level CSS-->
     <!-- BEGIN Custom CSS-->
-    <link rel="stylesheet" type="text/css" href="../assets/css/zhongjie_style.css">
+    <link rel="stylesheet" type="text/css" href="../assets/css/zhongjie_style/zhongjie_style.css">
     <!-- END Custom CSS-->
     <!--Start & End Calendar-->
     <link rel="stylesheet" type="text/css" href="../assets/css/datetimepicker/bootstrap-datetimepicker.css">
@@ -254,17 +85,18 @@ $employee_display .= "</table>";
                 </ul>
                 <ul class="nav navbar-nav float-xs-right">
 
-                    <li class="dropdown dropdown-user nav-item"><a href="#" data-toggle="dropdown"
-                                                                   class="dropdown-toggle nav-link dropdown-user-link"><span
-                                    class="avatar avatar-online"><img src="../app-assets/images/portrait/small/avatar-s-1.png"
-                                                                      alt="avatar"><i></i></span><span
-                                    class="user-name"><?= $_SESSION['login_username']; ?></span></a>
-                        <div class="dropdown-menu dropdown-menu-right"><a href="#" class="dropdown-item"><i class="icon-head"></i> Edit
-                                Profile</a><a href="#" class="dropdown-item"><i class="icon-mail6"></i> My Inbox</a><a href="#"
-                                                                                                                       class="dropdown-item"><i
-                                        class="icon-clipboard2"></i> Task</a><a href="#" class="dropdown-item"><i
-                                        class="icon-calendar5"></i>
-                                Calender</a>
+                    <li class="dropdown dropdown-user nav-item">
+                        <a href="#" data-toggle="dropdown" class="dropdown-toggle nav-link dropdown-user-link">
+                            <span class="avatar avatar-online">
+                                <img src="../assets/images/portrait_img/<?= $_COOKIE['portraintImg']; ?>" alt="portraitImg"><i></i>
+                            </span>
+                            <span class="user-name"><?= $_COOKIE['userName']; ?></span>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <a href="#" class="dropdown-item"><i class="icon-head"></i> Edit Profile</a>
+                            <a href="#" class="dropdown-item"><i class="icon-mail6"></i> My Inbox</a>
+                            <a href="#" class="dropdown-item"><i class="icon-clipboard2"></i> Task</a>
+                            <a href="#" class="dropdown-item"><i class="icon-calendar5"></i> Calender</a>
                             <div class="dropdown-divider"></div>
                             <a href="logout.php" class="dropdown-item"><i class="icon-power3"></i> Logout</a>
                         </div>
@@ -289,16 +121,30 @@ $employee_display .= "</table>";
     <div class="main-menu-content">
         <ul id="main-menu-navigation" data-menu="menu-navigation" class="navigation navigation-main">
 
-            <li class=" nav-item"><a href="#"><i class="icon-stack-2"></i><span data-i18n="nav.page_layouts.main" class="menu-title">Manager</span></a>
+            <li class=" nav-item">
+                <a href="#"><i class="icon-building"></i>
+                    <span data-i18n="nav.page_layouts.main" class="menu-title">Company</span>
+                </a>
                 <ul class="menu-content">
-                    <li class="active"><a href="manager_assign_shift.php" data-i18n="nav.page_layouts.1_column" class="menu-item">Assign
-                            Shift</a>
-                    </li>
-                    <li><a href="manager_view_shift.php" data-i18n="nav.page_layouts.2_columns" class="menu-item">View Shift</a>
+                    <li">
+                    <a href="./companyRegistration.html" data-i18n="nav.page_layouts.1_column" class="menu-item">Registration</a>
                     </li>
                 </ul>
             </li>
 
+            <li class=" nav-item">
+                <a href="#"><i class="icon-home3"></i>
+                    <span data-i18n="nav.page_layouts.main" class="menu-title">Manager</span>
+                </a>
+                <ul class="menu-content">
+                    <li class="active">
+                        <a href="manager_assign_shift_frontend.php" data-i18n="nav.page_layouts.1_column" class="menu-item">Assign Shift</a>
+                    </li>
+                    <li>
+                        <a href="manager_view_shift_frontend.php" data-i18n="nav.page_layouts.2_columns" class="menu-item">View Shift</a>
+                    </li>
+                </ul>
+            </li>
 
         </ul>
     </div>
@@ -317,7 +163,7 @@ $employee_display .= "</table>";
 
 
         <div class="content-body">
-<!--            below form is for searching shifts that are created by clients.-->
+            <!--            below form is for searching shifts that are created by clients.-->
             <form method="post" action="">
 
                 <div class="row mt-0 col-md-12">
@@ -340,7 +186,7 @@ $employee_display .= "</table>";
                         </div>
                     </div>
 
-<!--                    company location selection-->
+                    <!--                    company location selection-->
                     <div class="col-xl-3 col-lg-3 col-xs-12">
                         <div class="card-body">
                             <div class="media">
@@ -361,7 +207,7 @@ $employee_display .= "</table>";
                         </div>
                     </div>
 
-<!--                    start_date_time_picker control-->
+                    <!--                    start_date_time_picker control-->
                     <div class="col-xl-3 col-lg-3 col-xs-12">
                         <div class="card-body">
                             <div style="overflow: visible" class="media">
@@ -381,7 +227,7 @@ $employee_display .= "</table>";
                         </div>
                     </div>
 
-<!--                    end_date_time_picker control-->
+                    <!--                    end_date_time_picker control-->
                     <div class="col-xl-3 col-lg-3 col-xs-12">
                         <div class="card-body">
                             <div style="overflow: visible" class="media">
@@ -402,7 +248,7 @@ $employee_display .= "</table>";
                     </div>
                 </div>
 
-<!--                search shift button-->
+                <!--                search shift button-->
                 <div class="row mt-1 col-md-12">
                     <div class="col-xl-1 col-lg-1 col-xs-12" align="center">
                         <button type="button" formmethod="post" class="btn btn-success btn-lg font-weight-bold">Search Shift</button>
@@ -449,20 +295,20 @@ $employee_display .= "</table>";
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
 
-<!--                header of modal-->
+                <!--                header of modal-->
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                     <h4 class="modal-title" id="myModalLabel">Employee selection</h4>
                 </div>
 
-<!--                body of modal-->
+                <!--                body of modal-->
                 <div class="modal-body">
                     <div class="container">
 
                         <form method="post" action="">
                             <div class="row mt-0 col-md-12">
 
-<!--                                city selection-->
+                                <!--                                city selection-->
                                 <div class="col-xl-6 col-lg-6 col-xs-12">
                                     <label for="city_select" class="font-weight-bold">City:</label>
                                           <select class="form-control" id="city_select">
@@ -473,7 +319,7 @@ $employee_display .= "</table>";
                                           </select>
                                 </div>
 
-<!--                                date selection-->
+                                <!--                                date selection-->
                                 <div class="col-xl-6 col-lg-6 col-xs-12">
                                     <label for="preferred_date" class="font-weight-bold">Preferred Date:</label><br/>
                                     <input type="checkbox" name="preferred_date" value="monday"> Monday
@@ -486,7 +332,7 @@ $employee_display .= "</table>";
                                 </div>
                             </div>
 
-<!--                            first name and last name-->
+                            <!--                            first name and last name-->
                             <div class="row mt-1 col-md-12">
                                 <div class="col-xl-6 col-lg-6 col-xs-12">
                                     <label for="first_name" class="font-weight-bold">First Name:</label>
@@ -499,7 +345,7 @@ $employee_display .= "</table>";
                                 </div>
                             </div>
 
-<!--                            search employee button-->
+                            <!--                            search employee button-->
                             <div class="row mt-1 col-md-12">
                                 <div class="col-xl-2 col-lg-2 col-xs-12" align="center">
                                     <button type="button" formmethod="post" class="btn btn-success font-weight-bold">Search Employee
@@ -569,7 +415,6 @@ $employee_display .= "</table>";
 <script src="../app-assets/js/core/app.js" type="text/javascript"></script>
 <!-- END ROBUST JS-->
 <!-- BEGIN PAGE LEVEL JS-->
-<!--<script src="../app-assets/js/scripts/pages/dashboard-lite.js" type="text/javascript"></script>-->
 <!-- END PAGE LEVEL JS-->
 <!--START & END CALENDAR JS-->
 <script src="../assets/js/datetimepicker/moment.js" type="text/javascript"></script>
@@ -577,8 +422,9 @@ $employee_display .= "</table>";
 <script src="../assets/js/datetimepicker/transition.js" type="text/javascript"></script>
 <script src="../assets/js/datetimepicker/collapse.js" type="text/javascript"></script>
 <!--/START & END CALENDAR JS-->
-
-<script src="../assets/js/zhongjie_scripts.js" type="text/javascript"></script>
-
+<!--Zhongjie JS-->
+<script src="../assets/js/zhongjie_js/date_time_picker.js" type="text/javascript"></script>
+<script src="../assets/js/zhongjie_js/manager_assign_shift_frontend.js" type="text/javascript"></script>
+<!--/Zhongjie JS-->
 </body>
 </html>

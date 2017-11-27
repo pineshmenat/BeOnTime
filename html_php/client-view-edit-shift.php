@@ -1,4 +1,12 @@
+<!---------------->
+<!--By Vaishnavi-->
+<!---------------->
 <?php
+include "./cookie_operations.php";
+// If cookie expires, go to index.html
+CookieOperations::checkCookieTimeout();
+//CookieOperations::extendCookieTimeout();
+
 session_start();
 ?>
 
@@ -12,13 +20,13 @@ session_start();
     <meta name="keywords"
           content="admin template, robust admin template, dashboard template, flat admin template, responsive admin template, web app">
     <meta name="author" content="PIXINVENT">
-    <title>BeOnTime Dashboard</title>
+    <title>Client View Edit Shift</title>
     <link rel="apple-touch-icon" sizes="60x60" href="../app-assets/images/ico/apple-icon-60.png">
     <link rel="apple-touch-icon" sizes="76x76" href="../app-assets/images/ico/apple-icon-76.png">
     <link rel="apple-touch-icon" sizes="120x120" href="../app-assets/images/ico/apple-icon-120.png">
     <link rel="apple-touch-icon" sizes="152x152" href="../app-assets/images/ico/apple-icon-152.png">
-    <link rel="shortcut icon" type="image/x-icon" href="../app-assets/images/ico/favicon.ico">
-    <link rel="shortcut icon" type="image/png" href="../app-assets/images/ico/favicon-32.png">
+    <link rel="shortcut icon" type="image/x-icon" href="../assets/images/favicon.ico">
+    <link rel="shortcut icon" type="image/png" href="../assets/images/favicon-32.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-touch-fullscreen" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -39,11 +47,8 @@ session_start();
     <link rel="stylesheet" type="text/css" href="../app-assets/css/core/menu/menu-types/vertical-overlay-menu.css">
     <link rel="stylesheet" type="text/css" href="../app-assets/css/core/colors/palette-gradient.css">
     <!-- END Page Level CSS-->
-    <!-- BEGIN Custom CSS-->
-    <link rel="stylesheet" type="text/css" href="../assets/css/zhongjie_style.css">
-    <!-- END Custom CSS-->
-<!--Vaishnavi CSS START-------------------------------->
-    <link rel="stylesheet" type="text/css" href="../assets/css/style.css"><!--for SLIDER-->
+    <!--Vaishnavi CSS START-------------------------------->
+    <link rel="stylesheet" type="text/css" href="../assets/css/vaishnavi_style/vaishnavi-style.css"><!--for SLIDER-->
     <!--Start & End Calendar-->
     <link rel="stylesheet" type="text/css" href="../assets/css/datetimepicker/bootstrap-datetimepicker.css">
     <!--/Start & End Calendar-->
@@ -56,26 +61,29 @@ session_start();
     <style>
         .modal {
         }
+
         .vertical-alignment-helper {
-            display:table;
+            display: table;
             height: 100%;
             width: 100%;
         }
+
         .vertical-align-center {
             /* To center vertically */
             display: table-cell;
             vertical-align: middle;
         }
+
         .modal-content {
             /* Bootstrap sets the size of the modal in the modal-dialog class, we need to inherit it */
-            width:inherit;
-            height:inherit;
+            width: inherit;
+            height: inherit;
             /* To center horizontally */
             margin: 0 auto;
         }
     </style>
     <!--/Modal for CKEditor textarea-->
-<!--Vaishnavi CSS END-------------------------------->
+    <!--Vaishnavi CSS END-------------------------------->
 </head>
 <body data-open="click" data-menu="vertical-menu" data-col="2-columns" class="vertical-layout vertical-menu 2-columns  fixed-navbar">
 
@@ -85,174 +93,39 @@ session_start();
         <div class="navbar-header">
             <ul class="nav navbar-nav">
                 <li class="nav-item mobile-menu hidden-md-up float-xs-left"><a class="nav-link nav-menu-main menu-toggle hidden-xs"><i
-                        class="icon-menu5 font-large-1"></i></a></li>
+                                class="icon-menu5 font-large-1"></i></a></li>
                 <li class="nav-item"><a href="#" class="navbar-brand nav-link"><img alt="branding logo"
-                                                                                             src="../assets/images/logo_50.png"
-                                                                                             data-expand="../assets/images/logo_50.png"
-                                                                                             data-collapse="../assets/images/logo_xsmall.png"
-                                                                                             class="brand-logo"></a></li>
+                                                                                    src="../assets/images/logo_50.png"
+                                                                                    data-expand="../assets/images/logo_50.png"
+                                                                                    data-collapse="../assets/images/logo_xsmall.png"
+                                                                                    class="brand-logo"></a></li>
                 <li class="nav-item hidden-md-up float-xs-right"><a data-toggle="collapse" data-target="#navbar-mobile"
                                                                     class="nav-link open-navbar-container"><i
-                        class="icon-ellipsis pe-2x icon-icon-rotate-right-right"></i></a></li>
+                                class="icon-ellipsis pe-2x icon-icon-rotate-right-right"></i></a></li>
             </ul>
         </div>
         <div class="navbar-container content container-fluid">
             <div id="navbar-mobile" class="collapse navbar-toggleable-sm">
                 <ul class="nav navbar-nav">
                     <li class="nav-item hidden-sm-down"><a class="nav-link nav-menu-main menu-toggle hidden-xs"><i
-                            class="icon-menu5"> </i></a></li>
+                                    class="icon-menu5"> </i></a></li>
                     <li class="nav-item hidden-sm-down"><a href="#" class="nav-link nav-link-expand"><i class="ficon icon-expand2"></i></a>
                     </li>
                 </ul>
                 <ul class="nav navbar-nav float-xs-right">
 
-                    <li class="dropdown dropdown-notification nav-item"><a href="#" data-toggle="dropdown"
-                                                                           class="nav-link nav-link-label"><i
-                            class="ficon icon-bell4"></i><span class="tag tag-pill tag-default tag-danger tag-default tag-up">5</span></a>
-                        <ul class="dropdown-menu dropdown-menu-media dropdown-menu-right">
-                            <li class="dropdown-menu-header">
-                                <h6 class="dropdown-header m-0"><span class="grey darken-2">Notifications</span><span
-                                        class="notification-tag tag tag-default tag-danger float-xs-right m-0">5 New</span></h6>
-                            </li>
-                            <li class="list-group scrollable-container"><a href="javascript:void(0)" class="list-group-item">
-                                <div class="media">
-                                    <div class="media-left valign-middle"><i class="icon-cart3 icon-bg-circle bg-cyan"></i></div>
-                                    <div class="media-body">
-                                        <h6 class="media-heading">You have new order!</h6>
-                                        <p class="notification-text font-small-3 text-muted">Lorem ipsum dolor sit amet, consectetuer
-                                            elit.</p>
-                                        <small>
-                                            <time datetime="2015-06-11T18:29:20+08:00" class="media-meta text-muted">30 minutes ago
-                                            </time>
-                                        </small>
-                                    </div>
-                                </div>
-                            </a><a href="javascript:void(0)" class="list-group-item">
-                                <div class="media">
-                                    <div class="media-left valign-middle"><i
-                                            class="icon-monitor3 icon-bg-circle bg-red bg-darken-1"></i></div>
-                                    <div class="media-body">
-                                        <h6 class="media-heading red darken-1">99% Server load</h6>
-                                        <p class="notification-text font-small-3 text-muted">Aliquam tincidunt mauris eu risus.</p>
-                                        <small>
-                                            <time datetime="2015-06-11T18:29:20+08:00" class="media-meta text-muted">Five hour ago
-                                            </time>
-                                        </small>
-                                    </div>
-                                </div>
-                            </a><a href="javascript:void(0)" class="list-group-item">
-                                <div class="media">
-                                    <div class="media-left valign-middle"><i
-                                            class="icon-server2 icon-bg-circle bg-yellow bg-darken-3"></i></div>
-                                    <div class="media-body">
-                                        <h6 class="media-heading yellow darken-3">Warning notifixation</h6>
-                                        <p class="notification-text font-small-3 text-muted">Vestibulum auctor dapibus neque.</p>
-                                        <small>
-                                            <time datetime="2015-06-11T18:29:20+08:00" class="media-meta text-muted">Today</time>
-                                        </small>
-                                    </div>
-                                </div>
-                            </a><a href="javascript:void(0)" class="list-group-item">
-                                <div class="media">
-                                    <div class="media-left valign-middle"><i
-                                            class="icon-check2 icon-bg-circle bg-green bg-accent-3"></i></div>
-                                    <div class="media-body">
-                                        <h6 class="media-heading">Complete the task</h6>
-                                        <small>
-                                            <time datetime="2015-06-11T18:29:20+08:00" class="media-meta text-muted">Last week</time>
-                                        </small>
-                                    </div>
-                                </div>
-                            </a><a href="javascript:void(0)" class="list-group-item">
-                                <div class="media">
-                                    <div class="media-left valign-middle"><i class="icon-bar-graph-2 icon-bg-circle bg-teal"></i></div>
-                                    <div class="media-body">
-                                        <h6 class="media-heading">Generate monthly report</h6>
-                                        <small>
-                                            <time datetime="2015-06-11T18:29:20+08:00" class="media-meta text-muted">Last month</time>
-                                        </small>
-                                    </div>
-                                </div>
-                            </a></li>
-                            <li class="dropdown-menu-footer"><a href="javascript:void(0)"
-                                                                class="dropdown-item text-muted text-xs-center">Read all
-                                notifications</a></li>
-                        </ul>
-                    </li>
-                    <li class="dropdown dropdown-notification nav-item"><a href="#" data-toggle="dropdown"
-                                                                           class="nav-link nav-link-label"><i
-                            class="ficon icon-mail6"></i><span
-                            class="tag tag-pill tag-default tag-info tag-default tag-up">8</span></a>
-                        <ul class="dropdown-menu dropdown-menu-media dropdown-menu-right">
-                            <li class="dropdown-menu-header">
-                                <h6 class="dropdown-header m-0"><span class="grey darken-2">Messages</span><span
-                                        class="notification-tag tag tag-default tag-info float-xs-right m-0">4 New</span></h6>
-                            </li>
-                            <li class="list-group scrollable-container"><a href="javascript:void(0)" class="list-group-item">
-                                <div class="media">
-                                    <div class="media-left"><span class="avatar avatar-sm avatar-online rounded-circle"><img
-                                            src="../app-assets/images/portrait/small/avatar-s-1.png" alt="avatar"><i></i></span></div>
-                                    <div class="media-body">
-                                        <h6 class="media-heading">Margaret Govan</h6>
-                                        <p class="notification-text font-small-3 text-muted">I like your portfolio, let's start the
-                                            project.</p>
-                                        <small>
-                                            <time datetime="2015-06-11T18:29:20+08:00" class="media-meta text-muted">Today</time>
-                                        </small>
-                                    </div>
-                                </div>
-                            </a><a href="javascript:void(0)" class="list-group-item">
-                                <div class="media">
-                                    <div class="media-left"><span class="avatar avatar-sm avatar-busy rounded-circle"><img
-                                            src="../app-assets/images/portrait/small/avatar-s-2.png" alt="avatar"><i></i></span></div>
-                                    <div class="media-body">
-                                        <h6 class="media-heading">Bret Lezama</h6>
-                                        <p class="notification-text font-small-3 text-muted">I have seen your work, there is</p>
-                                        <small>
-                                            <time datetime="2015-06-11T18:29:20+08:00" class="media-meta text-muted">Tuesday</time>
-                                        </small>
-                                    </div>
-                                </div>
-                            </a><a href="javascript:void(0)" class="list-group-item">
-                                <div class="media">
-                                    <div class="media-left"><span class="avatar avatar-sm avatar-online rounded-circle"><img
-                                            src="../app-assets/images/portrait/small/avatar-s-3.png" alt="avatar"><i></i></span></div>
-                                    <div class="media-body">
-                                        <h6 class="media-heading">Carie Berra</h6>
-                                        <p class="notification-text font-small-3 text-muted">Can we have call in this week ?</p>
-                                        <small>
-                                            <time datetime="2015-06-11T18:29:20+08:00" class="media-meta text-muted">Friday</time>
-                                        </small>
-                                    </div>
-                                </div>
-                            </a><a href="javascript:void(0)" class="list-group-item">
-                                <div class="media">
-                                    <div class="media-left"><span class="avatar avatar-sm avatar-away rounded-circle"><img
-                                            src="../app-assets/images/portrait/small/avatar-s-6.png" alt="avatar"><i></i></span></div>
-                                    <div class="media-body">
-                                        <h6 class="media-heading">Eric Alsobrook</h6>
-                                        <p class="notification-text font-small-3 text-muted">We have project party this saturday
-                                            night.</p>
-                                        <small>
-                                            <time datetime="2015-06-11T18:29:20+08:00" class="media-meta text-muted">last month</time>
-                                        </small>
-                                    </div>
-                                </div>
-                            </a></li>
-                            <li class="dropdown-menu-footer"><a href="javascript:void(0)"
-                                                                class="dropdown-item text-muted text-xs-center">Read all messages</a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="dropdown dropdown-user nav-item"><a href="#" data-toggle="dropdown"
-                                                                   class="dropdown-toggle nav-link dropdown-user-link"><span
-                            class="avatar avatar-online"><img src="../app-assets/images/portrait/small/avatar-s-1.png"
-                                                              alt="avatar"><i></i></span><span class="user-name"><?=$_SESSION['login_username']; ?></span></a>
-                        <div class="dropdown-menu dropdown-menu-right"><a href="#" class="dropdown-item"><i class="icon-head"></i> Edit
-                            Profile</a><a href="#" class="dropdown-item"><i class="icon-mail6"></i> My Inbox</a><a href="#"
-                                                                                                                   class="dropdown-item"><i
-                                class="icon-clipboard2"></i> Task</a><a href="#" class="dropdown-item"><i class="icon-calendar5"></i>
-                            Calender</a>
+                    <li class="dropdown dropdown-user nav-item">
+                        <a href="#" data-toggle="dropdown" class="dropdown-toggle nav-link dropdown-user-link">
+                            <span class="avatar avatar-online">
+                                <img src="../assets/images/portrait_img/<?= $_COOKIE['portraintImg']; ?>" alt="portraitImg"><i></i>
+                            </span>
+                            <span class="user-name"><?= $_COOKIE['userName']; ?></span>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <a href="#" class="dropdown-item"><i class="icon-head"></i> Edit Profile</a>
+                            <a href="#" class="dropdown-item"><i class="icon-mail6"></i> My Inbox</a>
+                            <a href="#" class="dropdown-item"><i class="icon-clipboard2"></i> Task</a>
+                            <a href="#" class="dropdown-item"><i class="icon-calendar5"></i> Calender</a>
                             <div class="dropdown-divider"></div>
                             <a href="logout.php" class="dropdown-item"><i class="icon-power3"></i> Logout</a>
                         </div>
@@ -270,19 +143,22 @@ session_start();
 <div data-scroll-to-active="true" class="main-menu menu-fixed menu-dark menu-accordion menu-shadow">
     <!-- main menu header-->
     <div class="main-menu-header">
-        <input type="text" placeholder="Search" class="menu-search form-control round"/>
     </div>
     <!-- / main menu header-->
     <!-- main menu content-->
     <div class="main-menu-content">
         <ul id="main-menu-navigation" data-menu="menu-navigation" class="navigation navigation-main">
-            <li class=" nav-item"><a href="dashboard.php"><i class="icon-home3"></i><span data-i18n="nav.dash.main"
-                                                                                          class="menu-title">Shift</span><span
-                    class="tag tag tag-primary tag-pill float-xs-right mr-2">2</span></a>
+            <li class=" nav-item">
+                <a href="#"><i class="icon-home3"></i>
+                    <!--                    <span data-i18n="nav.dash.main" class="menu-title">Shift</span>-->
+                    <span data-i18n="nav.page_layouts.main" class="menu-title">Shift</span>
+                </a>
                 <ul class="menu-content">
-                    <li class="active"><a href="client-create-shift.php" data-i18n="nav.dash.main" class="menu-item">Create</a>
+                    <li>
+                        <a href="client-create-shift.php" data-i18n="nav.page_layouts.1_column" class="menu-item">Create</a>
                     </li>
-                    <li><a href="view-client-shift.php" data-i18n="nav.dash.main" class="menu-item">View</a>
+                    <li class="active">
+                        <a href="client-view-edit-shift.php" data-i18n="nav.page_layouts.2_columns" class="menu-item">View</a>
                     </li>
                 </ul>
             </li>
@@ -299,7 +175,7 @@ session_start();
     <div class="content-wrapper">
         <div class="content-header row"></div>
         <div class="content-body">
-        <!--/ project charts -->
+            <!--/ project charts -->
             <!--Company Name Row-->
             <div class="row">
                 <div class="col-xl-12 col-lg-6 col-xs-12">
@@ -358,7 +234,7 @@ session_start();
                 <div class="row mt-2 col-md-12">
                     <div class="col-xl-6 col-lg-6 col-xs-12">
                         <div class="card-body">
-                            <div style="overflow: visible" class="media" >
+                            <div style="overflow: visible" class="media">
                                 <div class="p-2 text-xs-center bg-grey bg-darken-2 media-left media-middle">
                                     <i class="icon-android-calendar font-large-2 white"></i>
                                 </div>
@@ -433,7 +309,8 @@ session_start();
                             <div class="card-body">
                                 <div class="media">
                                     <!--<div class="col-xl-0 col-lg-6 col-xs-12"></div>-->
-                                    <div class="col-xl-12 col-lg-6 col-xs-12" class="p-2 text-xs-center bg-accent-2 media-left media-middle">
+                                    <div class="col-xl-12 col-lg-6 col-xs-12"
+                                         class="p-2 text-xs-center bg-accent-2 media-left media-middle">
                                         <input style='border-radius: 0 !important; '
                                                type="submit" class="btn btn-info btn-lg btn-block" value="Display Shifts">
                                     </div>
@@ -451,7 +328,7 @@ session_start();
                 <div class="row mt-2 col-md-12">
                     <div class="col-xl-12 col-lg-12 col-xs-12">
                         <table class="table table-striped table-hover table-responsive">
-                        <thead class="thead-inverse">
+                            <thead class="thead-inverse">
                             <tr>
                                 <th></th>
                                 <th style="padding-right: 5em;">Date</th>
@@ -464,8 +341,8 @@ session_start();
                                 <th style="padding-right: 6.5em;">Rating</th>
                                 <th>Comment</th>
                             </tr>
-                        </thead>
-                        <tbody>
+                            </thead>
+                            <tbody>
                             <tr>
                                 <th scope="row">
                                     <input type="checkbox">
@@ -501,7 +378,9 @@ session_start();
                                 </td>
                                 <td>
                                     <!--<textarea class="ckeditor" id="row1_editor" cols="50" rows="5"></textarea>-->
-                                    <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Comment</button>
+                                    <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">
+                                        Comment
+                                    </button>
                                     <div class="modal fade" id="myModal" role="dialog">
                                         <div class="modal-dialog modal-lg">
 
@@ -517,7 +396,8 @@ session_start();
                                                             <textarea class="ckeditor" id="row_editor" cols="3" rows="1"></textarea>
                                                         </div>
                                                         <div class="modal-footer">
-                                                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                                            <button type="button" class="btn btn-default" data-dismiss="modal">Close
+                                                            </button>
                                                             <button type="button" class="btn btn-primary">Save changes</button>
                                                         </div>
                                                     </div>
@@ -563,7 +443,9 @@ session_start();
                                 </td>
                                 <td>
                                     <!--<textarea class="ckeditor" id="row2_editor" cols="3" rows="1"></textarea>-->
-                                    <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Comment</button>
+                                    <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">
+                                        Comment
+                                    </button>
                                     <div class="modal fade" id="myModal" role="dialog">
                                         <div class="modal-dialog modal-lg">
 
@@ -579,7 +461,8 @@ session_start();
                                                             <textarea class="ckeditor" id="row2_editor" cols="3" rows="1"></textarea>
                                                         </div>
                                                         <div class="modal-footer">
-                                                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                                            <button type="button" class="btn btn-default" data-dismiss="modal">Close
+                                                            </button>
                                                             <button type="button" class="btn btn-primary">Save changes</button>
                                                         </div>
                                                     </div>
@@ -590,7 +473,7 @@ session_start();
                                     </div>
                                 </td>
                             </tr>
-                        </tbody>
+                            </tbody>
                         </table>
                     </div>
                 </div>
@@ -606,14 +489,19 @@ session_start();
                 </div>
             </form>
             <!--/Form 2 View Shift Details Table-->
-		</div>
-	</div>
+        </div>
+    </div>
 </div>
-        <!--/ project charts -->
+<!--/ project charts -->
 <!-- ////////////////////////////////////////////////////////////////////////////-->
 <br/>
 
-
+<footer class="footer footer-static footer-light navbar-border">
+    <p class="clearfix text-muted text-sm-center mb-0 px-2"><span class="float-md-left d-xs-block d-md-inline-block">Copyright  &copy; 2017 <a
+                    href="#" target="_blank"
+                    class="text-bold-800 grey darken-2">BeOnTime Project Group </a>, All rights reserved. </span><span
+                class="float-md-right d-xs-block d-md-inline-block">We made with <i class="icon-heart5 pink"></i></span></p>
+</footer>
 
 <!-- BEGIN VENDOR JS-->
 <script src="../app-assets/js/core/libraries/jquery.min.js" type="text/javascript"></script>
@@ -634,16 +522,19 @@ session_start();
 <script src="../app-assets/js/core/app.js" type="text/javascript"></script>
 <!-- END ROBUST JS-->
 <!-- BEGIN PAGE LEVEL JS-->
-<script src="../app-assets/js/scripts/pages/dashboard-lite.js" type="text/javascript"></script>
 <!-- END PAGE LEVEL JS-->
 
 
 <!--Vaishnavi START-->
 <!--<script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>-->
 <script src='http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js'></script><!--for SLIDER-->
-    <script src="../assets/js/startendtimeslider/start-and-end-time-slider.js"></script><!--for SLIDER-->
+<script src="../assets/js/startendtimeslider/start-and-end-time-slider.js"></script><!--for SLIDER-->
 
 <!--START & END CALENDAR JS-->
+<script src="../assets/js/datetimepicker/moment.js" type="text/javascript"></script>
+<script src="../assets/js/datetimepicker/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
+<script src="../assets/js/datetimepicker/transition.js" type="text/javascript"></script>
+<script src="../assets/js/datetimepicker/collapse.js" type="text/javascript"></script>
 <script type="text/javascript">
     $(function () {
         $('#datetimepicker6').datetimepicker({
@@ -663,10 +554,6 @@ session_start();
         });
     });
 </script>
-<script src="../assets/js/datetimepicker/moment.js" type="text/javascript"></script>
-<script src="../assets/js/datetimepicker/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
-<script src="../assets/js/datetimepicker/transition.js" type="text/javascript"></script>
-<script src="../assets/js/datetimepicker/collapse.js" type="text/javascript"></script>
 <!--/START & END CALENDAR JS-->
 <!--Star Rating JS-->
 <script src="../assets/js/starrating/star-rating.js" type="text/javascript"></script>
@@ -680,9 +567,5 @@ session_start();
 </script>
 <!--/CKEditor JS-->
 </body>
-<footer class="footer footer-static footer-light navbar-border">
-    <p class="clearfix text-muted text-sm-center mb-0 px-2"><span class="float-md-left d-xs-block d-md-inline-block">Copyright  &copy; 2017 <a
-                    href="#" target="_blank" class="text-bold-800 grey darken-2">BeOnTime Project Group </a>, All rights reserved. </span><span
-                class="float-md-right d-xs-block d-md-inline-block">We made with <i class="icon-heart5 pink"></i></span></p>
-</footer>
+
 </html>

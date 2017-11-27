@@ -1,3 +1,6 @@
+<!--------------->
+<!--By Zhongjie-->
+<!--------------->
 <?php
 
 ini_set('display_errors', 'On');
@@ -6,35 +9,79 @@ error_reporting(E_ALL);
 
 <?php
 
-$login_error = "";
-
 include("db_config.php");
-session_start();
+//session_start();
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-// To remove special characters
-    $loginUsername = mysqli_real_escape_string($db_connection, $_POST['login_username']);
-    $loginPassword = mysqli_real_escape_string($db_connection, $_POST['login_password']);
+if (isset($_COOKIE['userId'])) {
 
-    $sql = "SELECT * FROM usermaster WHERE UserName = '$loginUsername' and Password = '$loginPassword'";
-    $queryResult = mysqli_query($db_connection, $sql);
-    $row = mysqli_fetch_array($queryResult, MYSQLI_ASSOC);
+    redirectPage($_COOKIE['roleId']);
 
-    $rowCount = mysqli_num_rows($queryResult);
+} else {
 
-//    error_log(print_r("my_errors: " . $loginUsername . " " . $loginPassword . " " . $rowCount, true));
-    if ($rowCount == 1) {
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-        $_SESSION['login_id'] = $row['UserId'];
-        $_SESSION['login_username'] = $row['UserName'];
-        $_SESSION['login_password'] = $row['Password'];
-        $_SESSION['login_type'] = $row['RoleId'];
+        $loginUsername = $_POST['loginUsername'];
+        $loginPassword = $_POST['loginPassword'];
 
-        header("location: dashboard.php");
-    } else {
-        $login_error = "Username or password is wrong.";
+        if (isset($loginUsername) && isset($loginPassword)) {
+
+            $loginAuthenticationSQL = "SELECT UserId, UserName, RoleId FROM usermaster WHERE UserName = :userName AND Password = :password";
+            $pdpstm = $dbConnection->prepare($loginAuthenticationSQL);
+            $pdpstm->bindValue(':userName', $loginUsername, PDO::PARAM_STR);
+            $pdpstm->bindValue(':password', $loginPassword, PDO::PARAM_STR);
+            $pdpstm->execute();
+            $pdpstm->setFetchMode(PDO::FETCH_ASSOC);
+
+            $rowCount = $pdpstm->rowCount();
+
+            $resultSet = $pdpstm->fetchAll();
+//        var_dump($resultSet);
+
+            if ($rowCount == 1) {
+
+                setcookie('userId', $resultSet[0]['UserId'], 0);
+                setcookie('userName', $resultSet[0]['UserName'], 0);
+                setcookie('roleId', $resultSet[0]['RoleId'], 0);
+                setcookie('portraintImg', $resultSet[0]['UserId'] . '_' . $resultSet[0]['UserName'] . '.png', 0);
+//                $_SESSION['userId'] = $resultSet[0]['UserId'];
+//                $_SESSION['userName'] = $resultSet[0]['UserName'];
+//                $_SESSION['roleId'] = $resultSet[0]['RoleId'];
+//                $_SESSION['portraintImg'] = $resultSet[0]['UserId'] . '_' . $resultSet[0]['UserName'] . '.png';
+                // Displaying cookie needs reload page self.
+//            error_log($_COOKIE['userId'] . ' ' . $_COOKIE['userName'] . ' ' . $_COOKIE['roleId'] . ' ' . $_COOKIE['portraintImg']);
+
+                redirectPage($resultSet[0]['RoleId']);
+            }
+        }
     }
 }
+
+function redirectPage($roleId) {
+
+    // NOTES: 10 is manager
+    // 11 is client
+    // 12 is employee
+    switch ($roleId) {
+        case '10': {
+            header("location: ./manager_assign_shift.php");
+            break;
+        }
+        case '11': {
+            header("location: ./client-create-shift.php");
+            break;
+        }
+        case '12': {
+            header("location: ");
+            break;
+        }
+        default: {
+            header("location: ./index.html");
+            break;
+        }
+    }
+}
+
+
 ?>
 
 <!--<!DOCTYPE html> is important. Removing this indication will cause padding display abnormal in some places.-->
@@ -93,7 +140,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <div class="col-md-4 offset-md-4 col-xs-10 offset-xs-1  box-shadow-2 p-0">
                     <div class="card border-grey border-lighten-3 m-0">
 
-<!--                        header-->
+                        <!--                        header-->
                         <div class="card-header no-border">
                             <div class="card-title text-xs-center">
                                 <div class="p-1"><img src="../assets/images/logo.png" alt="BeOnTime logo" height="50" width="193">
@@ -103,32 +150,34 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                 <span>Login with BeOnTime</span></h6>
                         </div>
 
-<!--                        body-->
+                        <!--                        body-->
                         <div class="card-body collapse in">
                             <div class="card-block">
 
-<!--                                login form consists of username, password, remember me option and a login button-->
+                                <!--                                login form consists of username, password, remember me option and a login button-->
                                 <form class="form-horizontal form-simple" action="" method="post">
 
-<!--                                    username-->
+                                    <!--                                    username-->
                                     <fieldset class="form-group position-relative has-icon-left mb-0">
-                                        <input type="text" class="form-control form-control-lg input-lg" id="login_username" name="login_username"
-                                               placeholder="Your Username" required>
+                                        <input type="text" class="form-control form-control-lg input-lg" id="loginUsername"
+                                               name="loginUsername"
+                                               placeholder="Your Username" required autofocus>
                                         <div class="form-control-position">
                                             <i class="icon-head"></i>
                                         </div>
                                     </fieldset>
 
-<!--                                    password-->
+                                    <!--                                    password-->
                                     <fieldset class="form-group position-relative has-icon-left">
-                                        <input type="password" class="form-control form-control-lg input-lg" id="login_password" name="login_password"
+                                        <input type="password" class="form-control form-control-lg input-lg" id="loginPassword"
+                                               name="loginPassword"
                                                placeholder="Enter Password" required>
                                         <div class="form-control-position">
                                             <i class="icon-key3"></i>
                                         </div>
                                     </fieldset>
 
-<!--                                    remember me option-->
+                                    <!--                                    remember me option-->
                                     <fieldset class="form-group row">
                                         <div class="col-md-6 col-xs-12 text-xs-center text-md-left">
                                             <fieldset>
@@ -141,25 +190,32 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                         </div>
                                     </fieldset>
 
-<!--                                    login button-->
-                                    <button type="submit" class="btn btn-success btn-lg btn-block" formmethod="post" ><i class="icon-unlock2"></i> Login</button>
+                                    <!--                                    login button-->
+                                    <button type="submit" class="btn btn-success btn-lg btn-block" formmethod="post"><i
+                                                class="icon-unlock2"></i> Login
+                                    </button>
 
                                 </form>
 
                                 <!--Login BeOnTime With Social Media account-->
                                 <h6 class="card-subtitle line-on-side text-muted text-xs-center font-small-3 pt-2">
                                     <span>Login BeOnTime With Social Media Account</span></h6>
-                                <a href="#"><img src="../app-assets/images/icons/facebook-logo.jpg" alt="Facebook icon" width="48" height="48"></a>
-                                <a href="#"><img src="../app-assets/images/icons/twitter-logo.jpg" alt="Facebook icon" width="48" height="48"></a>
+                                <a href="#"><img src="../app-assets/images/icons/facebook-logo.jpg" alt="Facebook icon" width="48"
+                                                 height="48"></a>
+                                <a href="#"><img src="../app-assets/images/icons/twitter-logo.jpg" alt="Facebook icon" width="48"
+                                                 height="48"></a>
                             </div>
                         </div>
 
-<!--                        some links to other login related functions-->
+                        <!--                        some links to other login related functions-->
                         <div class="card-footer">
                             <div class="">
-                                <p class="float-sm-left text-xs-center m-0"><a href="index.html" class="card-link">Main page&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a></p>
-                                <p class="float-sm-left text-xs-center m-0"><a href="recover-password.php" class="card-link">Recover password</a></p>
-                                <p class="float-sm-right text-xs-center m-0">New to BeOnTime ? <a href="register-simple.php" class="card-link">Sign Up</a></p>
+                                <p class="float-sm-left text-xs-center m-0"><a href="index.html" class="card-link">Main page&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
+                                </p>
+                                <p class="float-sm-left text-xs-center m-0"><a href="recover-password.php" class="card-link">Recover
+                                        password</a></p>
+                                <p class="float-sm-right text-xs-center m-0">New to BeOnTime ? <a href="register-simple.php"
+                                                                                                  class="card-link">Sign Up</a></p>
                             </div>
                         </div>
 
@@ -190,7 +246,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <script src="../app-assets/js/core/app.js" type="text/javascript"></script>
 <!-- END ROBUST JS-->
 <!-- BEGIN PAGE LEVEL JS-->
-<!--<script src="../assets/js/login-simple.js" type="text/javascript"></script>-->
+
 <!-- END PAGE LEVEL JS-->
 </body>
 </html>

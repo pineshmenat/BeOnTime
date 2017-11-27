@@ -1,23 +1,27 @@
+<!--------------->
+<!--By Zhongjie-->
+<!--------------->
 <?php
 
-//define('DB_SERVER', '192.168.126.136');
-//define('DB_PORT', '3306');
-//define('DB_USERNAME', 'root');
-//define('DB_PASSWORD', 'aaaaaa');
-//define('DB_DATABASE', 'php');
+const DB_HOST = "192.168.126.140";
+const DB_PORT = "3306";
+const DB_NAME = "b16_20802573_beontime";
+const DB_USERNAME = "root";
+const DB_PASSWORD = "aaaaaa";
 
-//define('DB_SERVER', 'sql210.byethost16.com');
-//define('DB_PORT', '3306');
-//define('DB_USERNAME', 'b16_20802573');
-//define('DB_PASSWORD', 'beontime');
-//define('DB_DATABASE', 'b16_20802573_php');
+//const DB_HOST = "sql210.byethost16.com";
+//const DB_PORT = "3306";
+//const DB_NAME = "b16_20802573_beontime";
+//const DB_USERNAME = "b16_20802573";
+//const DB_PASSWORD = "beontime";
 
-define('DB_SERVER', 'sql210.byethost16.com');
-define('DB_PORT', '3306');
-define('DB_USERNAME', 'b16_20802573');
-define('DB_PASSWORD', 'beontime');
-define('DB_DATABASE', 'b16_20802573_beontime');
-
-$db_connection = mysqli_connect(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_DATABASE, DB_PORT);
+try {
+    $dataSourceName = "mysql:host=".DB_HOST.";dbname=".DB_NAME.";port=".DB_PORT;
+    $dbConnection = new PDO($dataSourceName, DB_USERNAME, DB_PASSWORD);
+} catch (PDOException $e) {
+    $dbErrorMessage = $e->getMessage();
+    include('database_error.php');
+    exit();
+}
 
 ?>

@@ -1,0 +1,84 @@
+BeOnTime PHP project
+
+============================================================
+Task distribution:
+1. Dhruvin
+(1) Managers create company account
+(2) Managers manage employee account
+(3) Employees sign-up
+
+2. Pinesh
+(1) Employees view/reject/confirm shift
+(2)* Employees view payment.
+(3) DB design and development
+* optional task
+
+3. Vaishnavi
+(1) Clients create shift
+(2) Clients view shfit
+(3) Project integration
+
+4. Anubhav
+(1) Manager check the positions of employee (Google Maps API)
+(2) Manager view the working hours of employee (Google Charts API)
+
+5. Zhongjie
+(1) Managers manage shift
+(2) Managers assign shift to employees
+(3) Employees check their current Geo position
+(4) Project integration
+
+
+============================================================
+Task completed:
+
+1. 5 DB tables have been created.
+mysql> show tables;
++---------------------------------+
+| Tables_in_b16_20802573_beontime |
++---------------------------------+
+| companylocationmaster           |
+| companymaster                   |
+| rolemaster                      |
+| shiftmaster                     |
+| usermaster                      |
++---------------------------------+
+5 rows in set (0.00 sec)
+
+2. Static pages are done 90%, including CSS, framework testing, adaption to project topic.
+
+3. Dhruvin made files:
+./html_php/companyRegistration.html
+../assets/js/dhruvin_js/CompanyRegistration-scripts.js
+and some more.
+
+4. Vaishnavi made files:
+./html_php/client-create-shift.php
+./html_php/client-view-edit-shift.php
+../assets/js/startendtimeslider/start-and-end-time-slider.js
+and some more.
+
+5. Pinesh made files:
+./html_php/calendar.php
+and some more.
+
+6. Zhongjie made files:
+./html_php/cookie_operations.php
+./html_php/database_error.php
+./html_php/db_config.php
+./html_php/login.php
+./html_php/logout.php
+./html_php/manager_assign_shift_backend.php
+./html_php/manager_assign_shift_frontend.php
+./html_php/manager_view_shift_frontend.php
+../assets/js/zhongjie_js/date_time_picker.js
+../assets/js/zhongjie_js/manager_assign_shift_frontend.js
+and some more.
+
+============================================================
+Task not completed:
+
+1. In manager search shift section, mysqli needs to be converted to PDO
+2. DB design and development.
+3. Still many PHP functions need to be worked on.
+4. Using Google API to display Geo data has not been stated yet.
