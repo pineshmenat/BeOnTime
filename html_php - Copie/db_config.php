@@ -1,7 +1,8 @@
+<!--------------->
+<!--By Zhongjie-->
+<!--------------->
 <?php
-//
-// By Zhongjie
-//
+
 const DB_HOST = "192.168.126.140";
 const DB_PORT = "3306";
 const DB_NAME = "b16_20802573_beontime";

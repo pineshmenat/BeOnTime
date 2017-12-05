@@ -1,0 +1,26 @@
+table .first_column {
+    padding: 0rem;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.table-scroll {
+    overflow: scroll;
+    height: 18rem;
+}
+
+.table-head-fixed thead {
+    width: 100%;
+}
+.table-head-fixed tbody {
+    height: 190px;
+    overflow-y: auto;
+    width: 100%;
+}
+.table-head-fixed thead, .table-head-fixed tbody, .table-head-fixed tr, .table-head-fixed td, .table-head-fixed th {
+    display: block;
+}
+.table-head-fixed tbody td, .table-head-fixed thead > tr> th {
+    float: left;
+    border-bottom-width: 0;
+}

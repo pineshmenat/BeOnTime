@@ -1,12 +1,11 @@
-const url = "example2_backend.php";
+const backendURL = "./manager_assign_shift_backend.php";
 const startTimeFormatted = "00:00:00", endTimeFormatted = "23:59:59";
+var shifts, selectedShiftId;
 
 // When page get loaded properly, issue backend an AJAX call to get company list.
 // Fill out dropdown selection with returned values.
 //
 $(document).ready(function () {
-    $("#companySelection").css("width", "250px");
-    $("#companyLocationSelection").css("width", "250px");
 
     loadAllCompanys();
 });
@@ -21,11 +20,11 @@ $("#companySelection").change(function () {
 
     if (!jQuery.isEmptyObject(companyId)) {
 
-        loadAllCompanyLocations(companyId);
+        loadCompanyLocations(companyId);
 
     } else {
         // If none of company is selected, just fill out a description in company location selection.
-        $("#companyLocationSelection").html("<option>Company Location List</option>");
+        $("#companyLocationSelection").html("<option>Select Location</option>");
     }
 
 });
@@ -76,23 +75,27 @@ $("#btnSearchShift").click(function () {
     // REQUIRED: companyId, startDate and endDate
     // OPTIONAL: companyLocationId
     if (jQuery.isEmptyObject(companyId)) {
-        errorDisplayMessage += "<p>Company field is required.</p>";
+        errorDisplayMessage += "<span>Company field is required.</span><br/>";
     }
     if (jQuery.isEmptyObject(startDateObject)) {
-        errorDisplayMessage += "<p>Start date field is required.</p>";
+        errorDisplayMessage += "<span>Start date field is required.</span><br/>";
     }
     if (jQuery.isEmptyObject(endDateObject)) {
-        errorDisplayMessage += "<p>End date field is required.</p>";
+        errorDisplayMessage += "<span>End date field is required.</span><br/>";
     }
 //        console.log(errorDisplayMessage);
 
-    $("#errorDisplay").html(errorDisplayMessage);
+    $("#errorDisplayForShiftSearch").html(errorDisplayMessage);
 
     // STEP 4:
     // If all required fields are selected and not empty, retrieve data from db, otherwise do nothing.
     if (!jQuery.isEmptyObject(companyId) && !jQuery.isEmptyObject(startDateObject) && !jQuery.isEmptyObject(endDateObject)) {
 
-        loadShift(companyId, companyLocationId, startDateFormatted, startTimeFormatted, endDateFormatted, endTimeFormatted);
+        // console.log("companyId: " + companyId + " companyLocationId: " + companyLocationId
+        //     + " startDateFormatted: " + startDateFormatted + " startTimeFormatted: " + startTimeFormatted
+        //     + " endDateFormatted: " + endDateFormatted + " endTimeFormatted: " + endTimeFormatted);
+
+        loadShifts(companyId, companyLocationId, startDateFormatted, startTimeFormatted, endDateFormatted, endTimeFormatted);
     }
 });
 
@@ -100,10 +103,13 @@ $("#btnSearchShift").click(function () {
 //
 $("#btnAssignEmployee").click(function () {
 
+    if (selectedShiftId == null) {
+
+    }
     // Clear error display, employee display and form.
     // The effect of loadAllCities() method is like reset selection.
     $("#employeeDisplay").empty();
-    $("#errorDisplayInModal").empty();
+    $("#errorDisplayForEmployeeSearch").empty();
     loadAllCities();
     clearFormInModal();
 
@@ -139,24 +145,43 @@ $("#btnAssignEmployee").click(function () {
 
 });
 
-// Select all shifts checkbox check
+// Select a row from table and get the value attribute of the row
 // NOTE: For any results returned by AJAX call, use on() to attach event handler
 //
-$(document).on("change", "#selectAllShifts", function (e) {
+$(document).on("click", "#shiftDisplay tbody tr", function (e) {
+    // Clear all the background color
+    $("#shiftDisplay tbody tr").css("background-color", "#f3f3f3");
+    // Set the background color of clicked row to grey
+    $(this).css("background-color", "#c2c2c2");
+    // Prevent all default behaviors.
+//        e.preventDefault();
+    // Get clicked row index
+    // rowIndexInAllTable = $(this).index();
+//        console.log("rowIndexInAllTable_4: " + $(this).index());
+    // Set global values
+    selectedShiftId = $(this).attr('value');
+    // console.log("selectedShiftId: " + selectedShiftId);
 
-    if(this.checked) {
-        $("input[name='shiftList']").prop('checked', true);
-    } else {
-        $("input[name='shiftList']").prop('checked', false);
-    }
-
+    // For METHOD1: If use method1, below 3 lines need to be uncommented.
+//        selectedProductName = $(this).find("td:eq(1)").text();
+//        selectedProductType = $(this).find("td:eq(2)").text();
+//        selectedProductPrice = $(this).find("td:eq(3)").text();
+//     $.each(allProducts.products, function (key, value) {
+//         if (selectedProductId == value.ID) {
+//             console.log(key + " " + value.ID + " " + value.Name + " " + value.Type + " " + value.Price);
+//             selectedProductName = value.Name;
+//             selectedProductType = value.Type;
+//             selectedProductPrice = value.Price;
+//         }
+//     });
+//        console.log("selectedProductName: " + selectedProductName + " selectedProductType: " + selectedProductType + " selectedProductPrice: " + selectedProductPrice);
 });
 
 $("#btnSearchEmployee").click(function () {
 
     // STEP 1:
     // Always clears div at first. Sometimes if users don't select any fields, the div should be display nothing.
-    $("#employeeDisplay").empty();
+    $("#errorDisplayForEmployeeSearch").empty();
 
     var errorDisplayMessage = "";
 
@@ -166,11 +191,17 @@ $("#btnSearchEmployee").click(function () {
     var employeeId = $("#employeeId").val();
     var firstName = $("#firstName").val();
     var lastName = $("#lastName").val();
-    var desiredDaySelection = [];
-    $.each($("input[name='employeeDesiredDay']:checked"), function(){
-        desiredDaySelection.push($(this).val());
+    var desiredDaySelectionInString = [];
+    $.each($("input[name='employeeDesiredDay']:checked"), function () {
+        desiredDaySelectionInString.push($(this).val());
     });
-    // console.log("Selected desired days: " + employeeDesiredDaySelection.join(", "));
+    // console.log("Selected desired days: " + desiredDaySelection.join(", "));
+    // If no desired day is selected, give desiredDaySelectionInBit an empty string.
+    // Otherwise it won't be good for sql query if it is 0000000
+    var desiredDaySelectionInBit = convertDesiredDayFromStringToBit(desiredDaySelectionInString);
+    desiredDaySelectionInBit = desiredDaySelectionInBit == '0000000' ? "" : desiredDaySelectionInBit;
+    // console.log("desiredDaySelectionInBit: " + desiredDaySelectionInBit);
+
 
     // STEP 3:
     // Check whether all the values user selected are empty or not.
@@ -181,12 +212,12 @@ $("#btnSearchEmployee").click(function () {
     }
 //        console.log(errorDisplayMessage);
 
-    $("#errorDisplayInModal").html(errorDisplayMessage);
+    $("#errorDisplayForEmployeeSearch").html(errorDisplayMessage);
 
     // STEP 4:
     // If all required fields are selected and not empty, retrieve data from db, otherwise do nothing.
     if (!jQuery.isEmptyObject(cityName)) {
-        loadEmployees(cityName, employeeId, firstName, lastName, desiredDaySelection);
+        loadEmployees(cityName, employeeId, firstName, lastName, desiredDaySelectionInBit);
     }
 });
 
@@ -194,7 +225,7 @@ $("#btnSearchEmployee").click(function () {
 //
 $("#selectAllDesiredDays").change(function () {
 
-    if(this.checked) {
+    if (this.checked) {
         $("input[name='employeeDesiredDay']").prop('checked', true);
     } else {
         $("input[name='employeeDesiredDay']").prop('checked', false);
@@ -203,40 +234,51 @@ $("#selectAllDesiredDays").change(function () {
 
 function loadAllCompanys() {
 
-    var paramOperation = "operation=searchAllCompanys";
+    var paramOperation = "operation=searchAllCompanies";
     var xmlhttp = new XMLHttpRequest();
-    xmlhttp.open("POST", url, true);
+    xmlhttp.open("POST", backendURL, true);
     // Set request header, otherwise AJAX call won't work.
     xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xmlhttp.send(paramOperation);
+
     xmlhttp.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
-            $("#companySelection").html(this.responseText);
-//                console.log(this.responseText);
+            // $("#companySelection").html(this.responseText);
+            //    console.log(this.responseText);
+
+            var allCompanies = JSON.parse(this.responseText);
+
+            displayAllCompanies(allCompanies);
         }
     }
-    xmlhttp.send(paramOperation);
+
 }
 
-function loadAllCompanyLocations(companyId) {
-    var paramOperation = "operation=searchCompanyLocation";
+function loadCompanyLocations(companyId) {
+    var paramOperation = "operation=searchCompanyLocations";
     var paramCompanyId = "companyId=" + companyId;
 
     var xmlhttp = new XMLHttpRequest();
-    xmlhttp.open("POST", url, true);
+    xmlhttp.open("POST", backendURL, true);
     // Set request header, otherwise AJAX call won't work.
     xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xmlhttp.send(paramOperation + "&" + paramCompanyId);
+
     xmlhttp.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
-            $("#companyLocationSelection").html(this.responseText);
+            // $("#companyLocationSelection").html(this.responseText);
 //                console.log(this.responseText);
+            var companyLocations = JSON.parse(this.responseText);
+
+            displayCompanyLocations(companyLocations);
         }
     }
-    xmlhttp.send(paramOperation + "&" + paramCompanyId);
+
 }
 
-function loadShift(companyId, companyLocationId, startDateFormatted, startTimeFormatted, endDateFormatted, endTimeFormatted) {
+function loadShifts(companyId, companyLocationId, startDateFormatted, startTimeFormatted, endDateFormatted, endTimeFormatted) {
     // Set HTTP post header. Pass all of parameters to backend PHP program in header.
-    var paramOperation = "operation=searchShift";
+    var paramOperation = "operation=searchShifts";
     var paramCompanyId = "companyId=" + companyId;
     var paramCompanyLocationId = "companyLocationId=" + companyLocationId;
     var paramStartDateFormatted = "startDateFormatted=" + startDateFormatted;
@@ -247,56 +289,72 @@ function loadShift(companyId, companyLocationId, startDateFormatted, startTimeFo
     // console.log("paramCompanyLocationId: " + paramCompanyLocationId);
 
     var xmlhttp = new XMLHttpRequest();
-    xmlhttp.open("POST", url, true);
+    xmlhttp.open("POST", backendURL, true);
     // Set request header, otherwise AJAX call won't work.
     xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xmlhttp.onreadystatechange = function () {
-        if (this.readyState == 4 && this.status == 200) {
-            $("#shiftDisplay").html(this.responseText);
-            // console.log(this.responseText);
-        }
-    }
     xmlhttp.send(paramOperation + "&" + paramCompanyId + "&" + paramCompanyLocationId + "&"
         + paramStartDateFormatted + "&" + paramStartTimeFormatted + "&" + paramEndDateFormatted + "&" + paramEndTimeFormatted);
+
+    xmlhttp.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+
+            // console.log(this.responseText);
+
+            shifts = JSON.parse(this.responseText);
+            // console.log("shifts: " + shifts);
+            displayShifts();
+        }
+    }
+
 }
 
 function loadAllCities() {
     var paramOperation = "operation=searchAllCities";
     var xmlhttp = new XMLHttpRequest();
-    xmlhttp.open("POST", url, true);
+    xmlhttp.open("POST", backendURL, true);
     // Set request header, otherwise AJAX call won't work.
     xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xmlhttp.send(paramOperation);
+
     xmlhttp.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
-            $("#citySelection").html(this.responseText);
-//                console.log(this.responseText);
+
+            // console.log(this.responseText);
+            var allCities = JSON.parse(this.responseText);
+
+            displayAllCities(allCities);
         }
     }
-    xmlhttp.send(paramOperation);
+
 }
 
-function loadEmployees(cityName, employeeId, firstName, lastName, desiredDaySelection) {
+function loadEmployees(cityName, employeeId, firstName, lastName, desiredDaySelectionInBit) {
     // Set HTTP post header. Pass all of parameters to backend PHP program in header.
     var paramOperation = "operation=searchEmployees";
     var paramCityName = "cityName=" + cityName;
     var paramEmployeeId = "employeeId=" + employeeId;
     var paramFirstName = "firstName=" + firstName;
     var paramLastName = "lastName=" + lastName;
-    var paramDesiredDaySelection = "desiredDaySelection=" + desiredDaySelection;
+    var paramDesiredDaySelection = "desiredDaySelection=" + desiredDaySelectionInBit;
     // console.log("paramCityName: " + paramCityName);
     // console.log("paramDesiredDaySelection: " + paramDesiredDaySelection);
 
     var xmlhttp = new XMLHttpRequest();
-    xmlhttp.open("POST", url, true);
+    xmlhttp.open("POST", backendURL, true);
     // Set request header, otherwise AJAX call won't work.
     xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xmlhttp.send(paramOperation + "&" + paramCityName + "&" + paramEmployeeId + "&" + paramFirstName + "&" + paramLastName + "&" + paramDesiredDaySelection);
+
     xmlhttp.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
-            $("#employeeDisplay").html(this.responseText);
-            // console.log(this.responseText);
+
+            console.log(this.responseText);
+
+            var employees = JSON.parse(this.responseText);
+
+            displayEmployees(employees);
         }
     }
-    xmlhttp.send(paramOperation + "&" + paramCityName + "&" + paramEmployeeId + "&" + paramFirstName + "&" + paramLastName + "&" + paramDesiredDaySelection);
 }
 
 function clearFormInModal() {
@@ -305,4 +363,154 @@ function clearFormInModal() {
     $("#lastName").val('');
     $("input[name='employeeDesiredDay']").prop('checked', false);
     $("input[id='selectAllDesiredDays']").prop('checked', false);
+}
+
+function displayAllCompanies(allCompanies) {
+
+    var companiesOption = "<option value=\"\" selected>Select Company</option>";
+
+    $.each(allCompanies.companies, function (key, value) {
+//            console.log(key, value);
+        companiesOption += "<option value=\"" + value.CompanyId + "\">" + value.CompanyName + "</option>"
+    });
+
+//        console.log("companiesOption" + companiesOption);
+    $("#companySelection").html(companiesOption);
+
+}
+
+function displayCompanyLocations(companyLocations) {
+
+    var companyLocationOption = "<option value=\"\" selected>Select Location</option>";
+
+    $.each(companyLocations.companylocations, function (key, value) {
+//            console.log(key, value);
+        companyLocationOption += "<option value=\"" + value.CompanyLocationId + "\">" + value.Address + "</option>"
+    });
+
+//        console.log("companyLocationOption" + companyLocationOption);
+    $("#companyLocationSelection").html(companyLocationOption);
+}
+
+function displayShifts() {
+
+    var shiftsTable = "<table class=\"table table-condensed\">";
+    shiftsTable += "<thead><tr>";
+    shiftsTable += "<th>Shift Id</th>";
+    shiftsTable += "<th>Assigned By</th>";
+    shiftsTable += "<th>Assigned To</th>";
+    shiftsTable += "<th>Company Name</th>";
+    shiftsTable += "<th>Company Location</th>";
+    shiftsTable += "<th>Start Time</th>";
+    shiftsTable += "<th>End Time</th>";
+    shiftsTable += "</tr></thead>";
+    shiftsTable += "<tbody>";
+
+    $.each(shifts.shifts, function (key, value) {
+        // console.log(key + " " + value.ShiftId);
+        shiftsTable += "<tr value=" + value.ShiftId + ">";
+        shiftsTable += "<td>" + value.ShiftId + "</td>";
+        shiftsTable += "<td>" + value.AssignedBy + "</td>";
+        shiftsTable += "<td>" + value.AssignedTo + "</td>";
+        shiftsTable += "<td>" + value.CompanyName + "</td>";
+        shiftsTable += "<td>" + value.Address + "</td>";
+        shiftsTable += "<td>" + value.StartTime + "</td>";
+        shiftsTable += "<td>" + value.EndTime + "</td>";
+        shiftsTable += "<tr>";
+    });
+
+    shiftsTable += "</tbody></table>";
+
+    $("#shiftDisplay").html(shiftsTable);
+
+    // Set cursor to hand shape when mouse hover on a row in the table
+    $("#shiftDisplay tbody tr").css("cursor", "pointer");
+}
+
+function displayAllCities(allCities) {
+
+    var citiesOption = "<option value=\"\" selected>Select City</option>";
+
+    $.each(allCities.cities, function (key, value) {
+//            console.log(key, value);
+        citiesOption += "<option value=\"" + value.City + "\">" + value.City + "</option>"
+    });
+
+//        console.log("citiesOption" + citiesOption);
+    $("#citySelection").html(citiesOption);
+}
+
+function displayEmployees(employees) {
+
+    var EmployeesTable = "<table class=\"table table-condensed\">";
+    EmployeesTable += "<thead><tr>";
+    EmployeesTable += "<th class='col-sm-1'>ID</th>";
+    EmployeesTable += "<th class='col-sm-3'>Name</th>";
+    EmployeesTable += "<th class='col-sm-4'>Home Address</th>";
+    EmployeesTable += "<th class='col-sm-3'>Desired Day</th>";
+    EmployeesTable += "</tr></thead>";
+    EmployeesTable += "<tbody>";
+
+    $.each(employees.employees, function (key, value) {
+        // console.log(key + " " + value.ShiftId);
+        EmployeesTable += "<tr value=" + value.UserId + ">";
+        EmployeesTable += "<td class='col-sm-1'>" + value.UserId + "</td>";
+        EmployeesTable += "<td class='col-sm-3'>" + value.UserName + "</td>";
+        EmployeesTable += "<td class='col-sm-4'>" + value.Address + "</td>";
+        EmployeesTable += "<td class='col-sm-3'>" + value.DesiredDay + "</td>";
+        EmployeesTable += "<tr>";
+    });
+
+    EmployeesTable += "</tbody></table>";
+
+    $("#employeeDisplay").html(EmployeesTable);
+
+    // Set cursor to hand shape when mouse hover on a row in the table
+    $("#employeeDisplay tbody tr").css("cursor", "pointer");
+}
+
+function convertDesiredDayFromStringToBit(desiredDaySelection) {
+
+
+    // Initalize string as all bits are set to 0
+    var desiredDay = '0000000';
+    $.each(desiredDaySelection, function (key, value) {
+        // console.log(key + " " + value);
+
+        switch (value) {
+            case 'Mon': {
+                desiredDay = '1' + desiredDay.substr(1);
+                // console.log(desiredDay);
+                break;
+            }
+            case 'Tue': {
+                desiredDay = desiredDay.substr(0, 1) + '1' + desiredDay.substr(2);
+                // console.log(desiredDay);
+                break;
+            }
+            case 'Wed': {
+                desiredDay = desiredDay.substr(0, 2) + '1' + desiredDay.substr(3);
+                break;
+            }
+            case 'Thur': {
+                desiredDay = desiredDay.substr(0, 3) + '1' + desiredDay.substr(4);
+                break;
+            }
+            case 'Fri': {
+                desiredDay = desiredDay.substr(0, 4) + '1' + desiredDay.substr(5);
+                break;
+            }
+            case 'Sat': {
+                desiredDay = desiredDay.substr(0, 5) + '1' + desiredDay.substr(6);
+                break;
+            }
+            case 'Sun': {
+                desiredDay = desiredDay.substr(0, 6) + '1' + desiredDay.substr(7);
+                break;
+            }
+        }
+        // console.log(desiredDay);
+    });
+
+     return desiredDay;
 }
