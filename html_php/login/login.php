@@ -77,7 +77,7 @@ function redirectPage($roleId) {
             break;
         }
         case '12': {
-            header("location: ");
+            header("location: ../employee_operations/employee-dashboard.php");
             break;
         }
         default: {

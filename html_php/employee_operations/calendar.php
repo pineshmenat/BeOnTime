@@ -24,7 +24,7 @@ class Calendar {
 
     private $naviHref= null;
 
-    /********************* PUBLIC **********************/
+    /********************* PUBLIC *********************
 
     /**
      * print out the calendar
