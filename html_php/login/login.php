@@ -31,7 +31,7 @@ if (isset($_SESSION['userId'])) {
         if (isset($loginUsername) && isset($loginPassword)) {
 
             $loginAuthenticationSQL = "SELECT UserId, UserName, RoleId FROM usermaster WHERE UserName = :userName AND Password = :password";
-            $pdpstm = $dbConnection->prepare($loginAuthenticationSQL);
+            $pdpstm = DB::getDBConnection()->prepare($loginAuthenticationSQL);
             $pdpstm->bindValue(':userName', $loginUsername, PDO::PARAM_STR);
             $pdpstm->bindValue(':password', $loginPassword, PDO::PARAM_STR);
             $pdpstm->execute();
