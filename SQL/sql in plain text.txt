@@ -1,0 +1,193 @@
+create database b16_20802573_beontime;
+
+# change CHARACTER SET and COLLATE
+ALTER DATABASE b16_20802573_beontime CHARACTER SET utf8 COLLATE utf8_general_ci;
+SELECT * FROM information_schema.SCHEMATA;
+
+# check table engine
+show table status where name = 'rolemaster';
+
+
+/////////////////////////////////////////////////////////
+TRICKS
+
+# Drop a table ignoring any foreign key constraints
+
+SET FOREIGN_KEY_CHECKS=0;
+DROP TABLE b16_20802573_beontime.companylocationmaster;
+SET FOREIGN_KEY_CHECKS=1;
+
+
+# Check all the contraints
+
+SELECT
+  TABLE_NAME,
+  COLUMN_NAME,
+  CONSTRAINT_NAME, 
+  REFERENCED_TABLE_NAME,
+  REFERENCED_COLUMN_NAME
+FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE;
+
+/////////////////////////////////////////////////////////
+
+use b16_20802573_beontime;
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+CREATE TABLE `rolemaster` (
+`RoleId` tinyint(4) NOT NULL AUTO_INCREMENT,
+`RoleName` varchar(45) NOT NULL,
+`EntryDateTime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+`ModDateTime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+`ModifiedBy` int(11) NOT NULL,
+PRIMARY KEY (`RoleId`)
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+INSERT INTO `b16_20802573_beontime`.`rolemaster` (`RoleId`, `RoleName`, `EntryDateTime`, `ModDateTime`, `ModifiedBy`) VALUES ('10', 'Manager', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 10001);
+
+INSERT INTO `b16_20802573_beontime`.`rolemaster` (`RoleId`, `RoleName`, `EntryDateTime`, `ModDateTime`, `ModifiedBy`) VALUES ('11', 'Client', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 10001);
+
+INSERT INTO `b16_20802573_beontime`.`rolemaster` (`RoleId`, `RoleName`, `EntryDateTime`, `ModDateTime`, `ModifiedBy`) VALUES ('12', 'Employee', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 10001);
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+@@ updated
+
+CREATE TABLE `usermaster` (
+`UserId` int(11) NOT NULL AUTO_INCREMENT,
+`RoleId` tinyint(4) NOT NULL,
+`CompanyId` int(11) NOT NULL,
+`UserName` varchar(45) NOT NULL,
+`Password` varbinary(150) NOT NULL,
+`PasswordExpiry` datetime NOT NULL,
+`PasswordCounter` tinyint(4) NOT NULL,
+`FirstName` varchar(20) NOT NULL,
+`LastName` varchar(20) NOT NULL,
+`FirstLogin` bit(1) NOT NULL,
+`UserStatus` tinyint(4) NOT NULL,
+`EMail` varchar(65) NOT NULL,
+`SIN` int(11) NOT NULL,
+`Address` varchar(150) NOT NULL,
+`City` varchar(45) NOT NULL,
+`Provience` varchar(45) NOT NULL,
+`PostalCode` varchar(6) NOT NULL,
+`DesiredDay` varchar(7),
+`RegistrationDate` datetime NOT NULL,
+`EntryDateTime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+`ModDateTime` varchar(45) NOT NULL DEFAULT 'CURRENT_TIMESTAMP',
+PRIMARY KEY (`UserId`),
+KEY `FK_usermaster_RoleId_idx` (`RoleId`),
+CONSTRAINT `FK_usermaster_RoleId` FOREIGN KEY (`RoleId`) REFERENCES `rolemaster` (`RoleId`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+KEY `FK_usermaster_CompanyId_idx` (`CompanyId`),
+CONSTRAINT `FK_usermaster_CompanyId` FOREIGN KEY (`CompanyId`) REFERENCES `companymaster` (`CompanyId`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+
+INSERT INTO `b16_20802573_beontime`.`usermaster` (`UserId`, `RoleId`, `CompanyId`, `UserName`, `Password`, `PasswordExpiry`, `PasswordCounter`, `FirstName`, `LastName`, `FirstLogin`, `UserStatus`, `EMail`, `SIN`, `Address`, `City`, `Provience`, `PostalCode`, `DesiredDay`, `RegistrationDate`, `EntryDateTime`, `ModDateTime`) VALUES ('10001', '10', '1001', 'fzhongjie', '123', '2018-01-01 00:00:00', '0', 'Zhongjie', 'Fan', b'0', '0', 'fzhongjie@msn.com', '123456789', '205 Humber College Blvd', 'Toronto', 'Ontario', 'M9W5L7', NULL, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'CURRENT_TIMESTAMP');
+
+
+INSERT INTO `b16_20802573_beontime`.`usermaster` (`UserId`, `RoleId`, `CompanyId`, `UserName`, `Password`, `PasswordExpiry`, `PasswordCounter`, `FirstName`, `LastName`, `FirstLogin`, `UserStatus`, `EMail`, `SIN`, `Address`, `City`, `Provience`, `PostalCode`, `DesiredDay`, `RegistrationDate`, `EntryDateTime`, `ModDateTime`) VALUES ('10002', '10', '1001', 'pineshmenat', '123', '2018-01-01 00:00:00', '0', 'Pinesh', 'Menat', b'0', '0', 'pineshmenat@gmail.com', '123456789', '205 Humber College Blvd', 'Toronto', 'Ontario', 'M9W5L7', NULL, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'CURRENT_TIMESTAMP');
+
+
+INSERT INTO `b16_20802573_beontime`.`usermaster` (`UserId`, `RoleId`, `CompanyId`, `UserName`, `Password`, `PasswordExpiry`, `PasswordCounter`, `FirstName`, `LastName`, `FirstLogin`, `UserStatus`, `EMail`, `SIN`, `Address`, `City`, `Provience`, `PostalCode`, `DesiredDay`, `RegistrationDate`, `EntryDateTime`, `ModDateTime`) VALUES ('10003', '10', '1001', 'manager1', '123', '2018-01-01 00:00:00', '0', 'f1', 'l1', b'0', '0', 'fzhongjie@msn.com', '123456789', '205 Humber College Blvd', 'Toronto', 'Ontario', 'M9W5L7', NULL, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'CURRENT_TIMESTAMP');
+
+
+INSERT INTO `b16_20802573_beontime`.`usermaster` (`UserId`, `RoleId`, `CompanyId`, `UserName`, `Password`, `PasswordExpiry`, `PasswordCounter`, `FirstName`, `LastName`, `FirstLogin`, `UserStatus`, `EMail`, `SIN`, `Address`, `City`, `Provience`, `PostalCode`, `DesiredDay`, `RegistrationDate`, `EntryDateTime`, `ModDateTime`) VALUES ('10004', '11', '1001', 'client1', '123', '2018-01-01 00:00:00', '0', 'f2', 'l2', b'0', '0', 'fzhongjie@msn.com', '123456789', '205 Humber College Blvd', 'Toronto', 'Ontario', 'M9W5L7', NULL, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'CURRENT_TIMESTAMP');
+
+
+INSERT INTO `b16_20802573_beontime`.`usermaster` (`UserId`, `RoleId`, `CompanyId`, `UserName`, `Password`, `PasswordExpiry`, `PasswordCounter`, `FirstName`, `LastName`, `FirstLogin`, `UserStatus`, `EMail`, `SIN`, `Address`, `City`, `Provience`, `PostalCode`, `DesiredDay`, `RegistrationDate`, `EntryDateTime`, `ModDateTime`) VALUES ('10005', '12', '1001', 'employee1', '123', '2018-01-01 00:00:00', '0', 'f3', 'l3', b'0', '0', 'fzhongjie@msn.com', '123456789', '205 Humber College Blvd', 'Toronto', 'Ontario', 'M9W5L7', '0000011', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'CURRENT_TIMESTAMP');
+
+
+INSERT INTO `b16_20802573_beontime`.`usermaster` (`UserId`, `RoleId`, `CompanyId`, `UserName`, `Password`, `PasswordExpiry`, `PasswordCounter`, `FirstName`, `LastName`, `FirstLogin`, `UserStatus`, `EMail`, `SIN`, `Address`, `City`, `Provience`, `PostalCode`, `DesiredDay`, `RegistrationDate`, `EntryDateTime`, `ModDateTime`) VALUES ('10006', '11', '1002', 'client2', '123', '2018-01-01 00:00:00', '0', 'f4', 'l4', b'0', '0', 'fzhongjie@msn.com', '123456789', '205 Humber College Blvd', 'Toronto', 'Ontario', 'M9W5L7', NULL, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'CURRENT_TIMESTAMP');
+
+INSERT INTO `b16_20802573_beontime`.`usermaster` (`UserId`, `RoleId`, `CompanyId`, `UserName`, `Password`, `PasswordExpiry`, `PasswordCounter`, `FirstName`, `LastName`, `FirstLogin`, `UserStatus`, `EMail`, `SIN`, `Address`, `City`, `Provience`, `PostalCode`, `DesiredDay`, `RegistrationDate`, `EntryDateTime`, `ModDateTime`) VALUES ('10007', '12', '1002', 'employee2', '123', '2018-01-01 00:00:00', '0', 'f5', 'l5', b'0', '0', 'fzhongjie@msn.com', '123456789', '205 Humber College Blvd', 'Toronto', 'Ontario', 'M9W5L7', '1111111', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'CURRENT_TIMESTAMP');
+
+INSERT INTO `b16_20802573_beontime`.`usermaster` (`UserId`, `RoleId`, `CompanyId`, `UserName`, `Password`, `PasswordExpiry`, `PasswordCounter`, `FirstName`, `LastName`, `FirstLogin`, `UserStatus`, `EMail`, `SIN`, `Address`, `City`, `Provience`, `PostalCode`, `DesiredDay`, `RegistrationDate`, `EntryDateTime`, `ModDateTime`) VALUES ('10008', '12', '1003', 'employee3', '123', '2019-01-01 00:00:00', '0', 'f6', 'l6', b'0', '0', 'fzhongjie@msn.com', '123456789', '240 McLeod St', 'Ottawa', 'Ontario', 'K2P2R1', '0000011', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'CURRENT_TIMESTAMP');
+
+INSERT INTO `b16_20802573_beontime`.`usermaster` (`UserId`, `RoleId`, `CompanyId`, `UserName`, `Password`, `PasswordExpiry`, `PasswordCounter`, `FirstName`, `LastName`, `FirstLogin`, `UserStatus`, `EMail`, `SIN`, `Address`, `City`, `Provience`, `PostalCode`, `DesiredDay`, `RegistrationDate`, `EntryDateTime`, `ModDateTime`) VALUES ('10009', '12', '1001', 'employee4', '123', '2019-01-01 00:00:00', '0', 'f7', 'l7', b'0', '0', 'fzhongjie@msn.com', '123456789', '4555 Erie Ave', 'Niagara Fall', 'Ontario', 'L2E7G9', '1000010', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'CURRENT_TIMESTAMP');
+
+INSERT INTO `b16_20802573_beontime`.`usermaster` (`UserId`, `RoleId`, `CompanyId`, `UserName`, `Password`, `PasswordExpiry`, `PasswordCounter`, `FirstName`, `LastName`, `FirstLogin`, `UserStatus`, `EMail`, `SIN`, `Address`, `City`, `Provience`, `PostalCode`, `DesiredDay`, `RegistrationDate`, `EntryDateTime`, `ModDateTime`) VALUES ('10010', '12', '1003', 'employee5', '123', '2019-01-01 00:00:00', '0', 'f8', 'l8', b'0', '0', 'fzhongjie@msn.com', '123456789', '88 Bronte College Ct', 'Mississauga', 'Ontario', 'L5B1M9', '1100010', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'CURRENT_TIMESTAMP');
+
+INSERT INTO `b16_20802573_beontime`.`usermaster` (`UserId`, `RoleId`, `CompanyId`, `UserName`, `Password`, `PasswordExpiry`, `PasswordCounter`, `FirstName`, `LastName`, `FirstLogin`, `UserStatus`, `EMail`, `SIN`, `Address`, `City`, `Provience`, `PostalCode`, `DesiredDay`, `RegistrationDate`, `EntryDateTime`, `ModDateTime`) VALUES ('10011', '12', '1002', 'employee6', '123', '2019-01-01 00:00:00', '0', 'f9', 'l9', b'0', '0', 'fzhongjie@msn.com', '123456789', '680 Rexdale Blvd', 'Toronto', 'Ontario', 'M9W6T4', '1000001', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'CURRENT_TIMESTAMP');
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+CREATE TABLE shiftmaster (
+  ShiftId INT NOT NULL AUTO_INCREMENT,
+  AssignedBy INT NOT NULL,
+  AssignedTo INT NOT NULL,
+  CompanyId int(11) NOT NULL,
+  CompanyLocationId int(11) NOT NULL,
+  StartTime DATETIME NOT NULL,
+  EndTime DATETIME NOT NULL,
+  EntryDateTime DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  ModDateTime DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  ShiftStatus VARCHAR(1) NOT NULL,
+  SpecialNote VARCHAR(150) NULL,
+  PRIMARY KEY (ShiftId),
+  KEY `FK_shiftmaster_AssignedBy_idx` (`AssignedBy`),
+  CONSTRAINT `FK_shiftmaster_AssignedBy` FOREIGN KEY (`AssignedBy`) REFERENCES `usermaster` (`UserId`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  KEY `FK_shiftmaster_AssignedTo_idx` (`AssignedTo`),
+  CONSTRAINT `FK_shiftmaster_AssignedTo` FOREIGN KEY (`AssignedTo`) REFERENCES `usermaster` (`UserId`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  KEY `FK_shiftmaster_CompanyId_idx` (`CompanyId`),
+  CONSTRAINT `FK_shiftmaster_CompanyId` FOREIGN KEY (`CompanyId`) REFERENCES `companymaster` (`CompanyId`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  KEY `FK_shiftmaster_CompanyLocationId_idx` (`CompanyLocationId`),
+  CONSTRAINT `FK_shiftmaster_CompanyLocationId` FOREIGN KEY (`CompanyLocationId`) REFERENCES `companylocationmaster` (`CompanyLocationId`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+
+INSERT INTO `b16_20802573_beontime`.`shiftmaster` (`ShiftId`, `AssignedBy`, `AssignedTo`, `CompanyId`, `CompanyLocationId`, `StartTime`, `EndTime`, `EntryDateTime`, `ModDateTime`, `ShiftStatus`, `SpecialNote`) VALUES ('500001', '10001', '10005', '1001', '10001', '2017-11-18 09:00:00', '2017-11-18 14:00:00', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'N', NULL);
+
+INSERT INTO `b16_20802573_beontime`.`shiftmaster` (`ShiftId`, `AssignedBy`, `AssignedTo`, `CompanyId`, `CompanyLocationId`, `StartTime`, `EndTime`, `EntryDateTime`, `ModDateTime`, `ShiftStatus`, `SpecialNote`) VALUES ('500002', '10001', '10007', '1002', '10003', '2017-11-20 09:00:00', '2017-11-20 14:00:00', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'N', NULL);
+
+INSERT INTO `b16_20802573_beontime`.`shiftmaster` (`ShiftId`, `AssignedBy`, `AssignedTo`, `CompanyId`, `CompanyLocationId`, `StartTime`, `EndTime`, `EntryDateTime`, `ModDateTime`, `ShiftStatus`, `SpecialNote`) VALUES ('500003', '10001', '10007', '1001', '10002', '2017-11-21 07:00:00', '2017-11-21 12:00:00', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'N', NULL);
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+--------------------------------
+-- CompanyId, d is in lower case
+--------------------------------
+
+create table companymaster (
+  `CompanyId` int(11) NOT NULL AUTO_INCREMENT,
+  `CompanyName` varchar(100) NOT NULL,
+  `CompanyEmail` varchar(50) NOT NULL,
+  `CompanyURL` varchar(50) NOT NULL,
+  `CompanyPassword` varchar(50) NOT NULL,
+  `CompanyStreetNumber` int(11) NOT NULL,
+  `CompanyStreetName` varchar(150) NOT NULL,
+  `CompanyCity` varchar(50) NOT NULL,
+  `CompanyState` varchar(50) NOT NULL,
+  `CompanyPostal` varchar(7) NOT NULL,
+  `CompanyCountry` varchar(50) NOT NULL,
+PRIMARY KEY (`CompanyId`)
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+
+INSERT INTO `b16_20802573_beontime`.`companymaster` (`CompanyId`, `CompanyName`, `CompanyEmail`, `CompanyURL`, `CompanyPassword`, `CompanyStreetNumber`, `CompanyStreetName`, `CompanyCity`, `CompanyState`, `CompanyPostal`, `CompanyCountry`) VALUES ('1001', 'Bell', 'bell@beontime.com', 'www.bell.ca', 'password1', 1, 'street name 2', 'Toronto', 'Ontario', 'Q1Q 2W2', 'Canada');
+INSERT INTO `b16_20802573_beontime`.`companymaster` (`CompanyId`, `CompanyName`, `CompanyEmail`, `CompanyURL`, `CompanyPassword`, `CompanyStreetNumber`, `CompanyStreetName`, `CompanyCity`, `CompanyState`, `CompanyPostal`, `CompanyCountry`) VALUES ('1002', 'Walmart', 'walmart@beontime.com', 'www.walmart.ca', 'password2', 2, 'street name 3', 'Toronto', 'Ontario', 'Q1Q 2W2', 'Canada');
+INSERT INTO `b16_20802573_beontime`.`companymaster` (`CompanyId`, `CompanyName`, `CompanyEmail`, `CompanyURL`, `CompanyPassword`, `CompanyStreetNumber`, `CompanyStreetName`, `CompanyCity`, `CompanyState`, `CompanyPostal`, `CompanyCountry`) VALUES ('1003', 'Sunny Foodmart', 'sunny@beontime.com', 'www.sunnyfoodmart.ca', 'password3', 4, 'street name 5', 'Toronto', 'Ontario', 'Q1Q 2W2', 'Canada');
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+create table companylocationmaster (
+CompanyLocationId int(11) NOT NULL AUTO_INCREMENT,
+CompanyId int(11) NOT NULL,
+Address varchar(125) NOT NULL,
+City varchar(20)  NOT NULL,
+Latitude numeric(10,8) NOT NULL,
+Longitude numeric(10,8) NOT NULL,
+PRIMARY KEY (`CompanyLocationId`),
+KEY `FK_companylocationmaster_CompanyId_idx` (`CompanyId`),
+CONSTRAINT `FK_companylocationmaster_CompanyId` FOREIGN KEY (`CompanyId`) REFERENCES `companymaster` (`CompanyId`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+
+INSERT INTO `b16_20802573_beontime`.`companylocationmaster` (`CompanyLocationId`, `CompanyId`, `Address`, `City`, `Latitude`, `Longitude`) VALUES ('10001', '1001', '205 Humber College Blvd', 'Etobicoke', 44.11111111, -79.22222222);
+INSERT INTO `b16_20802573_beontime`.`companylocationmaster` (`CompanyLocationId`, `CompanyId`, `Address`, `City`, `Latitude`, `Longitude`) VALUES ('10002', '1001', '206 Humber College Blvd', 'Etobicoke', 45.11111111, -78.22222222);
+INSERT INTO `b16_20802573_beontime`.`companylocationmaster` (`CompanyLocationId`, `CompanyId`, `Address`, `City`, `Latitude`, `Longitude`) VALUES ('10003', '1002', '207 Humber College Blvd', 'Etobicoke', 46.33333333, -78.55555555);
+INSERT INTO `b16_20802573_beontime`.`companylocationmaster` (`CompanyLocationId`, `CompanyId`, `Address`, `City`, `Latitude`, `Longitude`) VALUES ('10004', '1003', '208 Humber College Blvd', 'Etobicoke', 43.11111111, -72.22222222);
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
