@@ -1,26 +1,51 @@
 <?php
-//
-// By Zhongjie
-//
-const DB_HOST = "192.168.126.140";
-const DB_PORT = "3306";
-const DB_NAME = "b16_20802573_beontime";
-const DB_USERNAME = "root";
-const DB_PASSWORD = "aaaaaa";
+ /*
+  * Description: Database Connectivity
+  * Created by: Zhongjie (for Phase 1)
+  * Modified by: Vaishnavi  (for Phase 2 - making it as a DB class)
+ */
+class DB
+{
+    /*
+    //for Server DB (when deployed)
+    private static $username = "b16_20802573";
+    private static $password = "beontime";
+    private static $host = "sql210.byethost16.com";
+    private static $port = "3306";
+    private static $dbname = "b16_20802573_beontime";
+    */
 
-//const DB_HOST = "sql210.byethost16.com";
-//const DB_PORT = "3306";
-//const DB_NAME = "b16_20802573_beontime";
-//const DB_USERNAME = "b16_20802573";
-//const DB_PASSWORD = "beontime";
+    //for developer local DB
+    private static $username = "root";
+    private static $password = "1234";
+    private static $host = "localhost";
+    private static $port = "3306";
+    private static $dbname = "beontime";
 
-try {
-    $dataSourceName = "mysql:host=".DB_HOST.";dbname=".DB_NAME.";port=".DB_PORT;
-    $dbConnection = new PDO($dataSourceName, DB_USERNAME, DB_PASSWORD);
-} catch (PDOException $e) {
-    $dbErrorMessage = $e->getMessage();
-    include('database_error.php');
-    exit();
+    private static $dbErrorMessage = '';
+    private static $db;
+
+    private function __construct() {}
+
+    public static function getDBConnection()
+    {
+        if (!isset(self::$db))
+        {
+            try {
+                $dataSourceName = 'mysql:host='.self::$host.';dbname='.self::$dbname.';port='.self::$port;
+                self::$db = new PDO($dataSourceName, self::$username, self::$password);
+                self::$db->setAttribute(PDO::ATTR_ERRMODE, PDO:: ERRMODE_EXCEPTION);
+            }
+            catch (PDOException $e) {
+                self::$dbErrorMessage =  $e->getMessage();
+                include('database_error.php');
+                exit();
+            }
+        }
+        return self::$db;
+    }
+
+    public static function getDbErrorMessage(){
+        return self::$dbErrorMessage;
+    }
 }
-
-?>
