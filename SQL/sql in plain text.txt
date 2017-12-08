@@ -14,7 +14,7 @@ TRICKS
 # Drop a table ignoring any foreign key constraints
 
 SET FOREIGN_KEY_CHECKS=0;
-DROP TABLE b16_20802573_beontime.companylocationmaster;
+DROP TABLE b16_20802573_beontime.usermaster;
 SET FOREIGN_KEY_CHECKS=1;
 
 
@@ -92,7 +92,7 @@ INSERT INTO `b16_20802573_beontime`.`usermaster` (`UserId`, `RoleId`, `CompanyId
 INSERT INTO `b16_20802573_beontime`.`usermaster` (`UserId`, `RoleId`, `CompanyId`, `UserName`, `Password`, `PasswordExpiry`, `PasswordCounter`, `FirstName`, `LastName`, `FirstLogin`, `UserStatus`, `EMail`, `SIN`, `Address`, `City`, `Provience`, `PostalCode`, `DesiredDay`, `RegistrationDate`, `EntryDateTime`, `ModDateTime`) VALUES ('10003', '10', '1001', 'manager1', '123', '2018-01-01 00:00:00', '0', 'f1', 'l1', b'0', '0', 'fzhongjie@msn.com', '123456789', '205 Humber College Blvd', 'Toronto', 'Ontario', 'M9W5L7', NULL, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'CURRENT_TIMESTAMP');
 
 
-INSERT INTO `b16_20802573_beontime`.`usermaster` (`UserId`, `RoleId`, `CompanyId`, `UserName`, `Password`, `PasswordExpiry`, `PasswordCounter`, `FirstName`, `LastName`, `FirstLogin`, `UserStatus`, `EMail`, `SIN`, `Address`, `City`, `Provience`, `PostalCode`, `DesiredDay`, `RegistrationDate`, `EntryDateTime`, `ModDateTime`) VALUES ('10004', '11', '1001', 'client1', '123', '2018-01-01 00:00:00', '0', 'f2', 'l2', b'0', '0', 'fzhongjie@msn.com', '123456789', '205 Humber College Blvd', 'Toronto', 'Ontario', 'M9W5L7', NULL, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'CURRENT_TIMESTAMP');
+INSERT INTO `b16_20802573_beontime`.`usermaster` (`UserId`, `RoleId`, `CompanyId`, `UserName`, `Password`, `PasswordExpiry`, `PasswordCounter`, `FirstName`, `LastName`, `FirstLogin`, `UserStatus`, `EMail`, `SIN`, `Address`, `City`, `Provience`, `PostalCode`, `DesiredDay`, `RegistrationDate`, `EntryDateTime`, `ModDateTime`) VALUES ('10004', '11', '1001', 'vaishnavi', '123', '2018-01-01 00:00:00', '0', 'f2', 'l2', b'0', '0', 'fzhongjie@msn.com', '123456789', '205 Humber College Blvd', 'Toronto', 'Ontario', 'M9W5L7', NULL, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'CURRENT_TIMESTAMP');
 
 
 INSERT INTO `b16_20802573_beontime`.`usermaster` (`UserId`, `RoleId`, `CompanyId`, `UserName`, `Password`, `PasswordExpiry`, `PasswordCounter`, `FirstName`, `LastName`, `FirstLogin`, `UserStatus`, `EMail`, `SIN`, `Address`, `City`, `Provience`, `PostalCode`, `DesiredDay`, `RegistrationDate`, `EntryDateTime`, `ModDateTime`) VALUES ('10005', '12', '1001', 'employee1', '123', '2018-01-01 00:00:00', '0', 'f3', 'l3', b'0', '0', 'fzhongjie@msn.com', '123456789', '205 Humber College Blvd', 'Toronto', 'Ontario', 'M9W5L7', '0000011', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'CURRENT_TIMESTAMP');
