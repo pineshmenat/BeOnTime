@@ -1,0 +1,43 @@
+gmail account for our project:
+
+mail.beontime@gmail.com
+Beontime1
+
+
+Sample code for sending an email by using PHPMailer
+========================================================
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
+include_once "../../assets/PHPMailer-master/src/Exception.php";
+include_once "../../assets/PHPMailer-master/src/PHPMailer.php";
+include_once "../../assets/PHPMailer-master/src/SMTP.php";
+
+
+    $mail = new PHPMailer();
+    $mail->isSMTP();
+    $mail->SMTPDebug = 0;
+    $mail->Host = 'smtp.gmail.com';
+    $mail->Port = 587;
+    $mail->SMTPSecure = 'tls';
+    $mail->SMTPAuth = true;
+    $mail->Username = "mail.beontime@gmail.com";
+    $mail->Password = "Beontime1";
+    $mail->setFrom('mail.beontime@gmail.com', 'BeOnTime Admin');
+    $mail->addReplyTo('mail.beontime@gmail.com', 'BeOnTime Admin');
+    $mail->addAddress($userEmail, $firstname . ' ' . $lastname);
+    $mail->Subject = 'PHP lab 7 forget password feature';
+    $mail->Body = "test\r\n\r\ntest";
+
+    if ($mail->send()) {
+
+        return "Sending Email with success";
+
+    } else {
+
+        return "Email sending failure";
+    }
+
+========================================================
+By Zhongjie

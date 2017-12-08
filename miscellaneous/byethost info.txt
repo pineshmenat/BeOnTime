@@ -1,0 +1,25 @@
+Now you have your free hosting account, if you did not like us before on facebook, please consider doing so now ! http://www.facebook.com/free.byethost , it takes only a few seconds and we really appreciate the support.
+
+For more information on premium hosting please visit : https://ifastnet.com/portal/ 
+
+For a searchable knowlegebase with most answers to common questions please use : http://kb.ifastnet.com/ 
+For tutorials on common tasks please visit http://tutorials.ifastnet.com/
+
+Our customer forum us located at http://byet.net, please do join here and ask the community any questions you may have !
+
+---------------------------------------------------
+
+Cpanel Username: b16_20802573
+Cpanel Password: beontime
+Your URL: http://beontime.byethost16.com or http://www.beontime.byethost16.com
+FTP Server : ftp.byethost16.com
+FTP Login : b16_20802573
+FTP Password : beontime
+MySQL Database Name: MUST CREATE IN CPANEL
+MySQL Username : b16_20802573
+MySQL Password : beontime
+MySQL Server: SEE THE CPANEL
+
+
+Cpanel URL: http://cpanel.byethost16.com/
+---------------------------------------------------
