@@ -3,6 +3,7 @@
 // By Zhongjie
 //
 include "../db_config.php";
+
 $dbConnection = DB::getDBConnection();
 $ajaxCallReturn;
 

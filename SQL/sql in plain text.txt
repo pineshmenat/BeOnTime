@@ -142,6 +142,7 @@ INSERT INTO `b16_20802573_beontime`.`shiftmaster` (`ShiftId`, `AssignedBy`, `Ass
 
 INSERT INTO `b16_20802573_beontime`.`shiftmaster` (`ShiftId`, `AssignedBy`, `AssignedTo`, `CompanyId`, `CompanyLocationId`, `StartTime`, `EndTime`, `EntryDateTime`, `ModDateTime`, `ShiftStatus`, `SpecialNote`) VALUES ('500003', '10001', '10007', '1001', '10002', '2017-11-21 07:00:00', '2017-11-21 12:00:00', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'N', NULL);
 
+
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 --------------------------------
