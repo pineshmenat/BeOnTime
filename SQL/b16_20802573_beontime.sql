@@ -27,6 +27,8 @@ CREATE TABLE `companylocationmaster` (
   `CompanyId` int(11) NOT NULL,
   `Address` varchar(125) NOT NULL,
   `City` varchar(20) NOT NULL,
+  `Province` varchar(45) NOT NULL,
+  `PostalCode` varchar(6) NOT NULL,
   `Latitude` decimal(10,8) NOT NULL,
   `Longitude` decimal(10,8) NOT NULL,
   PRIMARY KEY (`CompanyLocationId`),
@@ -41,7 +43,7 @@ CREATE TABLE `companylocationmaster` (
 
 LOCK TABLES `companylocationmaster` WRITE;
 /*!40000 ALTER TABLE `companylocationmaster` DISABLE KEYS */;
-INSERT INTO `companylocationmaster` VALUES (10001,1001,'205 Humber College Blvd','Etobicoke',44.11111111,-79.22222222),(10002,1001,'206 Humber College Blvd','Etobicoke',45.11111111,-78.22222222),(10003,1002,'207 Humber College Blvd','Etobicoke',46.33333333,-78.55555555),(10004,1003,'208 Humber College Blvd','Etobicoke',43.11111111,-72.22222222);
+INSERT INTO `companylocationmaster` VALUES (10001,1001,'205 Humber College Blvd','Etobicoke','Ontario','M9W5L7',44.11111111,-79.22222222),(10002,1001,'206 Humber College Blvd','Etobicoke','Ontario','M9W5L7',45.11111111,-78.22222222),(10003,1002,'207 Humber College Blvd','Etobicoke','Ontario','M9W5L7',46.33333333,-78.55555555),(10004,1003,'208 Humber College Blvd','Etobicoke','Ontario','M9W5L7',43.11111111,-72.22222222);
 /*!40000 ALTER TABLE `companylocationmaster` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -169,7 +171,7 @@ CREATE TABLE `usermaster` (
   `SIN` int(11) NOT NULL,
   `Address` varchar(150) NOT NULL,
   `City` varchar(45) NOT NULL,
-  `Provience` varchar(45) NOT NULL,
+  `Province` varchar(45) NOT NULL,
   `PostalCode` varchar(6) NOT NULL,
   `DesiredDay` varchar(7) DEFAULT NULL,
   `RegistrationDate` datetime NOT NULL,
