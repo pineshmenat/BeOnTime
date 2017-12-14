@@ -38,14 +38,11 @@ class DB
             }
             catch (PDOException $e) {
                 self::$dbErrorMessage =  $e->getMessage();
-                include('database_error.php');
+                include('../error/database_error.php');
                 exit();
             }
         }
         return self::$db;
     }
 
-    public static function getDbErrorMessage(){
-        return self::$dbErrorMessage;
-    }
 }
