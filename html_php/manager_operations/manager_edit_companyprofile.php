@@ -1,5 +1,5 @@
 <?php
-include "../db_config.php";
+include "../model/db_config.php";
 session_start();
 $error_name="";
 if(isset($_POST['save_changes']) && $_POST['save_changes']){
@@ -12,11 +12,12 @@ if(isset($_POST['save_changes']) && $_POST['save_changes']){
     $state = $_POST['administrative_area_level_1'];
     $postal_code = $_POST['postal_code'];
     $country = $_POST['country'];
-    $insertcompanydataSQL = 'UPDATE managermaster SET CompanyName = :name,CompanyURL = :url, 
+    $insertcompanydataSQL = 'UPDATE companymaster SET CompanyName = :name,CompanyURL = :url, 
                              CompanyStreetNumber = :street_number, CompanyStreetName = :street_name,
                              CompanyCity = :city, CompanyState = :state, CompanyPostal = :postal_code,
                              CompanyCountry = :country
-                             WHERE CompanyID = :id';
+                             WHERE CompanyId = :id';
+    $dbConnection = DB::getDBConnection();
     $pdpstm = $dbConnection->prepare($insertcompanydataSQL);
     $pdpstm->bindValue(':name',$name);
     $pdpstm->bindValue(':url',$url);
@@ -31,10 +32,10 @@ if(isset($_POST['save_changes']) && $_POST['save_changes']){
     $pdpstm->closeCursor();
     header("location:manager_create_employee.php");
 }
-
+/*
 if(!isset($_SESSION['userName'])) {
     header("location:../login/login.php");
-}
+}*/
 ?>
 <!DOCTYPE html>
 <html lang="en" data-textdirection="ltr" class="loading">
@@ -108,9 +109,6 @@ if(!isset($_SESSION['userName'])) {
 
                     <li class="dropdown dropdown-user nav-item">
                         <a href="#" data-toggle="dropdown" class="dropdown-toggle nav-link dropdown-user-link">
-                            <span class="avatar avatar-online">
-                                <img src="../../assets/images/portrait_img/<?= $_SESSION['portraintImg']; ?>" alt="portraitImg"><i></i>
-                            </span>
                             <span class="user-name"><?= $_SESSION['userName']; ?></span>
                         </a>
                         <div class="dropdown-menu dropdown-menu-right">

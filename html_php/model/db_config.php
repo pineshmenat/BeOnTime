@@ -17,7 +17,7 @@ class DB
 
     //for developer local DB
     private static $username = "root";
-    private static $password = "1234";
+    private static $password = "";
     private static $host = "localhost";
     private static $port = "3306";
     private static $dbname = "beontime";
@@ -38,7 +38,7 @@ class DB
             }
             catch (PDOException $e) {
                 self::$dbErrorMessage =  $e->getMessage();
-                include('../error/database_error.php');
+                include('../errors/database_error.php');
                 exit();
             }
         }

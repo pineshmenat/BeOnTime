@@ -1,12 +1,10 @@
 <?php
-
+session_start();
 ini_set('display_errors', 'On');
 error_reporting(E_ALL);
 ?>
-
 <?php
-session_start();
-include("../db_config.php");
+include("../model/db_config.php");
 
 // Login logic:
 // If user already logs in, when he/she opens another window or tab of browser, no need to login again.
@@ -61,9 +59,7 @@ if (isset($_SESSION['userId'])) {
         }
     }
 }
-
 function redirectPage($roleId) {
-
     // NOTES: 10 is manager
     // 11 is client
     // 12 is employee
