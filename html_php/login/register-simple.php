@@ -4,8 +4,8 @@ include "../model/db_config.php";
 include "../model/Validate.php";
 if(isset($_POST['register']) && $_POST['register']){
     $email = $_POST['userName'];
-    $password = $_POST['user_password'];
-    $repeatpassword = $_POST['user_repeat_password'];
+    $password = $_POST['password'];
+    $repeatpassword = $_POST['repeat_password'];
     if(isset($email) && isset($password) && isset($repeatpassword)) {
         $email_error = Validate::validateEmail($email);
         $password_error = Validate::validatePassword($password, $repeatpassword);
@@ -22,7 +22,7 @@ if(isset($_POST['register']) && $_POST['register']){
                 $email_error="has already been taken";
             }
             else {
-                $createAccountSQL = "INSERT INTO companymaster(CompanyEmail,CompanyPassword) VALUES (:email,:password)";
+               /* $createAccountSQL = "INSERT INTO companymaster(CompanyEmail,CompanyPassword) VALUES (:email,:password)";
                 $dbConnection = DB::getDBConnection();
                 $pdpstm =$dbConnection->prepare($createAccountSQL);
                 $pdpstm->bindValue(':email',$email);
@@ -33,8 +33,10 @@ if(isset($_POST['register']) && $_POST['register']){
                 $pdpstm->bindValue(':email',$email);
                 $pdpstm->execute();
                 $id = $pdpstm->fetch();
-                $_SESSION['company_id'] = $id['CompanyId'];
+                $_SESSION['company_id'] = $id['CompanyId'];*/
                 $_SESSION['userName'] = $email;
+                $_SESSION['password'] = $password;
+
                 header("location:../manager_operations/manager_edit_companyprofile.php");
             }
         }
@@ -113,7 +115,7 @@ if(isset($_POST['register']) && $_POST['register']){
                                         <small class="help-block text-danger"><?php if(isset($email_error)){ echo $email_error;} ?></small>
                                     </fieldset>
                                     <fieldset class="form-group position-relative has-icon-left">
-                                        <input type="password" class="form-control form-control-lg input-lg" id="user-password" name="user_password"
+                                        <input type="password" class="form-control form-control-lg input-lg" id="user-password" name="password"
                                                placeholder="Enter Password">
                                         <div class="form-control-position">
                                             <i class="icon-key3"></i>
@@ -121,7 +123,7 @@ if(isset($_POST['register']) && $_POST['register']){
                                         <small class="help-block text-danger"><?php if(isset($password_error)){ echo $password_error;} ?></small>
                                     </fieldset>
                                     <fieldset class="form-group position-relative has-icon-left">
-                                        <input type="password" class="form-control form-control-lg input-lg" id="user-password" name="user_repeat_password"
+                                        <input type="password" class="form-control form-control-lg input-lg" id="user-password" name="repeat_password"
                                                placeholder="Repeat Password">
                                         <div class="form-control-position">
                                             <i class="icon-key3"></i>
