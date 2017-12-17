@@ -1,9 +1,9 @@
 <?php
- /*
-  * Description: Database Connectivity
-  * Created by: Zhongjie (for Phase 1)
-  * Modified by: Vaishnavi  (for Phase 2 - making it as a DB class)
- */
+/*
+ * Description: Database Connectivity
+ * Created by: Zhongjie (for Phase 1)
+ * Modified by: Vaishnavi  (for Phase 2 - making it as a DB class)
+*/
 class DB
 {
     /*
@@ -44,5 +44,7 @@ class DB
         }
         return self::$db;
     }
-
+    public static function getDbErrorMessage(){
+        return self::$dbErrorMessage;
+    }
 }
