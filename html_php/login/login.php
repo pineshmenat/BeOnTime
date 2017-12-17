@@ -28,7 +28,7 @@ if (isset($_SESSION['userId'])) {
 
         if (isset($loginUsername) && isset($loginPassword)) {
 
-            $loginAuthenticationSQL = "SELECT UserId, UserName, RoleId FROM usermaster WHERE UserName = :userName AND Password = :password";
+            $loginAuthenticationSQL = "SELECT UserId, UserName, RoleId, CompanyId FROM usermaster WHERE UserName = :userName AND Password = :password";
             $pdpstm = DB::getDBConnection()->prepare($loginAuthenticationSQL);
             $pdpstm->bindValue(':userName', $loginUsername, PDO::PARAM_STR);
             $pdpstm->bindValue(':password', $loginPassword, PDO::PARAM_STR);
@@ -49,10 +49,11 @@ if (isset($_SESSION['userId'])) {
                 $_SESSION['userId'] = $resultSet[0]['UserId'];
                 $_SESSION['userName'] = $resultSet[0]['UserName'];
                 $_SESSION['roleId'] = $resultSet[0]['RoleId'];
+                $_SESSION['companyId'] = $resultSet[0]['CompanyId'];
                 $_SESSION['portraintImg'] = $resultSet[0]['UserId'] . '_' . $resultSet[0]['UserName'] . '.png';
 
                 error_log("_SESSION['userId']: " . $_SESSION['userId'] . " _SESSION['userName']: " . $_SESSION['userName']
-                . " _SESSION['roleId']: " . $_SESSION['roleId'] . " _SESSION['portraintImg']: " . $_SESSION['portraintImg']);
+                    . " _SESSION['roleId']: " . $_SESSION['roleId'] . " _SESSION['portraintImg']: " . $_SESSION['portraintImg']);
 
                 redirectPage($resultSet[0]['RoleId']);
             }
