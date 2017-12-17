@@ -1,6 +1,9 @@
 <?php
+require_once "client-db-operations.php";
 session_start();
-
+$companyName = ClientSideDB::getCompanyName($_SESSION['companyId']);
+$companyLocations = ClientSideDB::getCompanyLocations($_SESSION['companyId']);
+$designations = ClientSideDB::getEmployeeDesignations();
 ?>
 
 <html lang="en" data-textdirection="ltr" class="loading">
@@ -147,7 +150,7 @@ session_start();
                                 <i class="icon-bank font-large-2 white"></i>
                             </div>
                             <div class="p-2 bg-cyan white media-body">
-                                <label id="companyName"><h1>Culinary Group</h1></label>
+                                <label id="companyName"><h1><?=$companyName ?></h1></label>
                             </div>
                         </div>
                     </div>
@@ -156,7 +159,7 @@ session_start();
             <!--/Company Name Row-->
 
             <!--Form 1 with Location Designation StartDate EndDate-->
-            <form method="get" action="">
+            <form id="formDisplayCalendar" method="post" action="client-create-shift.php">
                 <div class="row mt-2 col-md-12">
                     <div class="col-xl-6 col-lg-6 col-xs-12">
                         <div class="card-body">
@@ -167,8 +170,12 @@ session_start();
                                 <div class="form-group p-2 bg-light-green white media-body">
                                     <select class="form-control" id="sel1">
                                         <option>Select Location</option>
-                                        <option>Niagara Falls</option>
-                                        <option>Missisauga Ocean Hall</option>
+                                        <?php
+                                        foreach ($companyLocations as $loc)
+                                        { ?>
+                                            <option value="<?=$loc->getCompanyLocationId() ?>"><?=$loc->getAddress().', '.$loc->getCity().', '.$loc->getPostalCode() ?></option>
+                                            <?php
+                                        } ?>
                                     </select>
                                 </div>
                             </div>
@@ -181,18 +188,22 @@ session_start();
                                     <i class="icon-person font-large-2 white"></i>
                                 </div>
                                 <div class="form-group p-2 bg-amber white media-body">
-                                    <select class="form-control" id="sel1">
+                                    <select class="form-control" id="sel2">
                                         <option>Select Job Designation</option>
-                                        <option>Security Assistant</option>
-                                        <option>Security Senior</option>
+                                        <?php
+                                        foreach ($designations as $d => $dVal)
+                                        { ?>
+                                            <option value="<?=$d ?>"><?=$dVal ?></option>
+                                            <?php
+                                        } ?>
                                     </select>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <!--Start & End Calender-->
 
+                <!--Start & End Calender-->
                 <div class="row mt-2 col-md-12">
                     <div class="col-xl-6 col-lg-6 col-xs-12">
                         <div class="card-body">
@@ -204,7 +215,7 @@ session_start();
                                     <!--<input type="date" id="startDate" name="startDate">-->
                                     <div class="form-group">
                                         <div class='input-group date' id='datetimepicker6'>
-                                            <input type='text' class="form-control"/>
+                                            <input type='text' id="selectedStartDate" name="selectedStartDate" class="form-control"/>
                                             <span class="input-group-addon">
                                                 <!--<span class="glyphicon glyphicon-calendar"></span>-->
                                                 <i class="icon-android-calendar font-size-large black"></i>
@@ -225,7 +236,7 @@ session_start();
                                     <!--<input type="date" id="endDate" name="endDate">-->
                                     <div class="form-group">
                                         <div class='input-group date' id='datetimepicker7'>
-                                            <input type='text' class="form-control"/>
+                                            <input type='text' id="selectedEndDate" name="selectedEndDate" class="form-control"/>
                                             <span class="input-group-addon">
                                                 <!--<span class="glyphicon glyphicon-calendar"></span>-->
                                                 <i class="icon-android-calendar font-size-large black"></i>
@@ -283,58 +294,73 @@ session_start();
                     </div>
                 </div>
             </form>
+            <?php
+            if(isset($_POST['selectedStartDate']) and isset($_POST['selectedEndDate'])) {
+            $sd = date('Y-m-d', strtotime($_POST['selectedStartDate']));
+            $ed = date('Y-m-d', strtotime($_POST['selectedEndDate']));
+            $startDate = new DateTime($sd);
+            $endDate = new DateTime($ed);
+            $difference = $startDate->diff($endDate);
+            //echo $difference->format('%d days');
+
+            $period = new DatePeriod($startDate, new DateInterval('P1D'), $endDate);
+            /*foreach($period as $p){
+                echo $p->format("M d, Y") . "<br>";
+            }*/
+
+            ?>
             <!--/Form 1 with Location Designation StartDate EndDate-->
 
             <!--Form 2 for Calender Time Slider-->
-            <div class="row mt-2 col-md-12">
-                <div class="row">
-                    <div class="col-xl-1 col-lg-1" style="">
-                        <h5>Oct 19</h5>
-                    </div>
-                    <div class="col-xl-9 col-lg-11">
-                        <div class="time-range">
-                            <!--<p>Time Range: <span class="slider-time">9:00 AM</span> - <span class="slider-time2">5:00 PM</span></p>-->
-                            <div class="sliders_step1">
-                                <div class="slider-range"></div>
+            <form id="formCreateShifts" method="post" action="client-db-operations.php">
+                <div class="row mt-2 col-md-12">
+                    <?php
+                    foreach ($period as $p) {
+                        ?>
+                        <div class="row mt-1">
+                            <div class="col-xl-1 col-lg-1" style="">
+                                <h5><?= $p->format("M d, Y") ?></h5>
+                                <input type="hidden" id="shiftsDateAndTime<?=$p->format("MdY"); ?>" name="shiftsDateAndTime<?=$p->format("MdY"); ?>" value="<?=$p->format("MdY"); ?>"/>
                             </div>
-                        </div>
-                    </div>
-                    <div class="col-xl-2 col-lg-1" style="">
-                        <h5><span class="slider-time">9:00 AM</span> - <span class="slider-time2">5:00 PM</span></h5>
-                    </div>
-                </div>
-                <div class="row mt-1">
-                    <div class="col-xl-1 col-lg-1" style="">
-                        <h5>Oct 21</h5>
-                    </div>
-                    <div class="col-xl-9 col-lg-11">
-                        <div class="time-range">
-                            <!--<p>Time Range: <span class="slider-time">9:00 AM</span> - <span class="slider-time2">5:00 PM</span></p>-->
-                            <div class="sliders_step1">
-                                <div class="slider-range"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xl-2 col-lg-1" style="">
-                        <h5><span class="slider-time">9:00 AM</span> - <span class="slider-time2">5:00 PM</span></h5>
-                    </div>
-                </div>
-                <div class="row mt-2">
-                    <div class="col-xl-12 col-lg-6 col-xs-12">
-                        <div class="card-body">
-                            <div class="media">
-                                <div class="col-xl-2 col-lg-6 col-xs-12"></div>
-                                <div class="col-xl-8 col-lg-6 col-xs-12"
-                                     class="p-2 text-xs-center bg-accent-2 media-left media-middle">
-                                    <input style='border-radius: 0 !important;'
-                                           type="submit" class="btn btn-success btn-lg btn-block" value="Submit">
+                            <div class="col-xl-9 col-lg-11">
+                                <div id="time-range" class="time-range-css">
+                                    <div class="sliders_step1">
+                                        <div id="slider-range<?=$p->format("MdY") ?>" class="slider-range-css"></div>
+                                    </div>
                                 </div>
-                                <div class="col-xl-2 col-lg-6 col-xs-12"></div>
+                            </div>
+                            <div id="show-time-range-selected<?=$p->format("MdY") ?>" class="col-xl-2 col-lg-1"
+                                 style=""></div>
+                        </div>
+<!--<input type="hidden" name="shiftsStartArray" id="shiftsStartArray" value="fds"/>-->
+<!--<input type="hidden" name="shiftsEndArray" id="shiftsEndArray" value="dfs"/>-->
+                        <?php
+                    }
+                    ?>
+
+                    <div class="row mt-2">
+                        <div class="col-xl-12 col-lg-6 col-xs-12">
+                            <div class="card-body">
+                                <div class="media">
+                                    <div class="col-xl-2 col-lg-6 col-xs-12"></div>
+                                    <div class="col-xl-8 col-lg-6 col-xs-12"
+                                         class="p-2 text-xs-center bg-accent-2 media-left media-middle">
+                                        <!--<input style='border-radius: 0 !important;'
+                                               type="submit" class="btn btn-success btn-lg btn-block" value="Submit">-->
+                                        <input style='border-radius: 0 !important;'
+                                               id="btnSubmit" name="btnSubmit"
+                                               type="button" class="btn btn-success btn-lg btn-block" value="Submit">
+                                    </div>
+                                    <div class="col-xl-2 col-lg-6 col-xs-12"></div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
+                <?php
+                }
+                ?>
+            </form>
             <!--/Form 2 for Calender Time Slider-->
         </div>
     </div>
@@ -400,6 +426,66 @@ session_start();
             $('#datetimepicker6').data("DateTimePicker").maxDate(e.date);
         });
     });
+    /*$("#formDisplayCalendar").submit(function( event ) {
+     var selectedStartDate = $("#selectedStartDate").val();
+     var selectedEndDate = $("#selectedEndDate").val();
+     alert(selectedStartDate +" "+ selectedEndDate);
+     });*/
+
+    $("#btnSubmit").on('click',function()
+    {
+        var startTimesArr = [];
+        var endTimesArr = [];
+        var shiftsDateArray = []
+        $('h6[id^="startSlider"]').each(function () {
+            startTimesArr.push($("#"+this.id).text());
+        });
+        $('h6[id^="endSlider"]').each(function () {
+            endTimesArr.push($("#"+this.id).text());
+        });
+        $('input[id^="shiftsDateAndTime"]').each(function () {
+            shiftsDateArray.push($("#"+this.id).val());
+        });
+        var companyId = <?=$_SESSION['companyId'] ?>;
+        var companyLocationId = $('#sel1').val();
+        var employeeDesignationId = $('#sel2').val();
+
+//        alert(employeeDesignationId);
+//        var dataString = 'startArr='+startArr+'&endArr='+endArr+'&x=132';
+//        var dataString = 'x=132';
+        /*$.ajax({
+            type : "POST",
+            url : "process-shifts.php",
+            data : {'x':'121'},
+            success : function () {
+                alert("success");
+                window.location = 'process-shifts.php';
+            },
+            error : function () {
+                alert("err");
+            }
+        });*/
+
+        $.post("process-shifts.php", //Required URL of the page on server
+            {   // Data Sending With Request To Server
+                'shiftsDateArray':shiftsDateArray,
+                'startTimesArr':startTimesArr,
+                'endTimesArr':endTimesArr,
+                'companyId':companyId,
+                'companyLocationId':companyLocationId,
+                'employeeDesignationId':employeeDesignationId,
+            },
+            function(response,status){  // Required Callback Function
+                alert("*----Received Data----*\n\nResponse : " + response+"\n\nStatus : " + status);//"response"  receives - whatever written in echo of above PHP script.
+                //window.location = 'process-shifts.php';
+            }
+        );
+
+//        $('#shiftsStartArray').val(JSON.stringify(startArr));
+//        $('#shiftsEndArray').attr("value","QQQ");
+//        $('#formCreateShifts').submit();
+    });
+
 </script>
 <!--/START & END CALENDAR JS-->
 
