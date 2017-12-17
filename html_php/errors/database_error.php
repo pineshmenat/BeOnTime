@@ -1,3 +1,6 @@
+<?php
+require_once "../model/db_config.php";
+?>
 <!DOCTYPE html>
 <html>
 
@@ -13,7 +16,7 @@
 <div class="container-fluid">
     <h1>Database Error</h1>
     <p>There was an error connecting to the database.</p>
-    <p>Error message: <?php echo "<b>" . $error_message . "</b>"; ?></p>
+    <p>Error message: <?php echo "<b>" . DB::getDbErrorMessage() . "</b>"; ?></p>
 </div>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
