@@ -27,7 +27,7 @@ class Validate
             return "no characters except alphabetic allowed";
         }
         else {
-            return "ok";
+            return "";
         }
     }
 
@@ -39,7 +39,7 @@ class Validate
             return "no characters except alphabetic allowed";
         }
         else{
-            return "ok";
+            return "";
         }
     }
 
@@ -51,10 +51,21 @@ class Validate
             return "no characters except alphanumeric allowed";
         }
         else{
-            return "ok";
+            return "";
         }
     }
 
+    public static function validateCompanyName($name){
+        if(empty($name)){
+            return "company name cannot be empty";
+        }
+        else if(ctype_alpha($name)){
+            return "no characters except alphanumeric allowed";
+        }
+        else{
+            return "";
+        }
+    }
 
     public static function validateEmail($email){
         if(empty($email)){
@@ -76,7 +87,7 @@ class Validate
             return "invalid phone number";
         }
         else{
-            return "ok";
+            return "";
         }
     }
 
@@ -84,23 +95,23 @@ class Validate
         if(empty($zipCode)){
             return "zip code cannot be left empty";
         }
-        else if(!preg_match("[a-zA-Z0-9][a-zA-Z0-9][a-zA-Z0-9][a-zA-Z0-9][a-zA-Z0-9][a-zA-Z0-9]",$zipCode)){
+        else if(!preg_match("/[a-zA-Z0-9][a-zA-Z0-9][a-zA-Z0-9]\s*[a-zA-Z0-9][a-zA-Z0-9][a-zA-Z0-9]/",$zipCode)){
             return "invalid zip code";
         }
         else{
-            return "ok";
+            return "";
         }
     }
 
     public static function validateCity($city){
-        if(empty(city)){
+        if(empty($city)){
             return "City field cannot be empty";
         }
         else if(!ctype_alpha($city)){
             return "City name invalid";
         }
         else{
-            return "ok";
+            return "";
         }
     }
 
@@ -112,7 +123,7 @@ class Validate
             return "Province name invalid";
         }
         else{
-            return "ok";
+            return "";
         }
     }
 
@@ -120,11 +131,11 @@ class Validate
         if(empty($street)){
             return "Street field cannot be empty";
         }
-        else if(!ctype_alpha($street)){
+        else if(!preg_match("/[a-zA-Z]/",$street)){
             return "Street name invalid";
         }
         else{
-            return "ok";
+            return "";
         }
     }
 
@@ -136,7 +147,7 @@ class Validate
             return "house number invalid";
         }
         else{
-            return "ok";
+            return "";
         }
     }
 
@@ -146,6 +157,30 @@ class Validate
         }
         elseif(strcmp($password,$repeatPassword) != 0){
             return "does not match confirmation";
+        }
+        else{
+            return "";
+        }
+    }
+
+    public static function validateURL($url){
+        if(empty($url)){
+            return "can't be blank";
+        }
+        else if(!filter_var($url,FILTER_VALIDATE_URL)){
+            return "invalid url";
+        }
+        else{
+            return "";
+        }
+}
+
+    public static function validateCountry($country){
+        if(empty($country)){
+            return "can't be blank";
+        }
+        else if(!ctype_alpha($country)){
+            return "invalid name";
         }
         else{
             return "";

@@ -1,8 +1,8 @@
 <?php
 session_start();
 
-if (!isset($_SESSION['userId'])) {
-    header("location: ../login/login.html");
+if (!isset($_SESSION['userName'])) {
+    header("location: ../login/login.php");
 }
 ?>
 <!DOCTYPE html>
@@ -77,9 +77,6 @@ if (!isset($_SESSION['userId'])) {
 
                     <li class="dropdown dropdown-user nav-item">
                         <a href="#" data-toggle="dropdown" class="dropdown-toggle nav-link dropdown-user-link">
-                            <span class="avatar avatar-online">
-                                <img src="../../assets/images/portrait_img/<?= $_SESSION['portraintImg']; ?>" alt="portraitImg"><i></i>
-                            </span>
                             <span class="user-name"><?= $_SESSION['userName']; ?></span>
                         </a>
                         <div class="dropdown-menu dropdown-menu-right">

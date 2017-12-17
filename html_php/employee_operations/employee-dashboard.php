@@ -1,9 +1,15 @@
 <?php
 session_start();
-include 'calendar.php';
-``?>
+include 'employeeCalendar.php';
+
+if(isset($_POST['status']) && isset($_POST['shift_id'])) {
+    EmployeeCalendar::_updateShiftStatus($_POST['status'],$_POST['shift_id']);
+}
+
+?>
 
 <html lang="en" data-textdirection="ltr" class="loading">
+<!-- Initialize Bootstrap functionality -->
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -41,7 +47,7 @@ include 'calendar.php';
     <link rel="stylesheet" type="text/css" href="../../app-assets/css/core/colors/palette-gradient.css">
     <!-- END Page Level CSS-->
 
-    <link rel="stylesheet" type="text/css" href="../../assets/css/pinesh_style/pinesh-style.css.css">
+    <link rel="stylesheet" type="text/css" href="../../assets/css/pinesh_style/pinesh-style.css">
     <!--Start & End Calendar-->
     <link rel="stylesheet" type="text/css" href="../../assets/css/datetimepicker/bootstrap-datetimepicker.css">
     <!--/Start & End Calendar-->
@@ -152,7 +158,9 @@ include 'calendar.php';
             <!--/Company Name Row-->
 
             <div class="row mt-2 col-md-12">
-                    <?php $calendar = new Calendar(); echo $calendar->show();?>
+                    <?php $calendar = new EmployeeCalendar($_SESSION['userId']); echo $calendar->show();
+                    //echo var_dump($calendar->_getShiftsOfCurrentMonth($_SESSION['userId']));
+                    ?>
                 </div>
 
             <!--/Form 1 with Location Designation StartDate EndDate-->

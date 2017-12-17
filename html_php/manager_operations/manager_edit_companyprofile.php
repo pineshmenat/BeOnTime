@@ -1,35 +1,43 @@
 <?php
-include "../db_config.php";
+include "../model/CompanyDB.php";
+include "../model/Company.php";
+include "../model/Validate.php";
 session_start();
 $error_name="";
+$error_email="";
+$error_url="";
+$error_street_number="";
+$error_route="";
+$error_locality="";
+$error_state="";
+$error_postal_code="";
+$error_country="";
 if(isset($_POST['save_changes']) && $_POST['save_changes']){
     $name = $_POST['company_name'];
+    $email = $_POST['email'];
+    $_SESSION['userName'] = $email;
     $url = $_POST['company_url'];
-    $id = $_POST['company_id'];
+    $password = $_POST['password'];
     $street_number = $_POST['street_number'];
     $street_name = $_POST['route'];
     $city = $_POST['locality'];
     $state = $_POST['administrative_area_level_1'];
     $postal_code = $_POST['postal_code'];
     $country = $_POST['country'];
-    $insertcompanydataSQL = 'UPDATE managermaster SET CompanyName = :name,CompanyURL = :url, 
-                             CompanyStreetNumber = :street_number, CompanyStreetName = :street_name,
-                             CompanyCity = :city, CompanyState = :state, CompanyPostal = :postal_code,
-                             CompanyCountry = :country
-                             WHERE CompanyID = :id';
-    $pdpstm = $dbConnection->prepare($insertcompanydataSQL);
-    $pdpstm->bindValue(':name',$name);
-    $pdpstm->bindValue(':url',$url);
-    $pdpstm->bindValue(':street_number',$street_number);
-    $pdpstm->bindValue(':street_name',$street_name);
-    $pdpstm->bindValue(':city',$city);
-    $pdpstm->bindValue(':state',$state);
-    $pdpstm->bindValue(':postal_code',$postal_code);
-    $pdpstm->bindValue(':country',$country);
-    $pdpstm->bindValue(':id',$id);
-    $pdpstm->execute();
-    $pdpstm->closeCursor();
-    header("location:manager_create_employee.php");
+    $error_name = Validate::validateCompanyName($name);
+    $error_email = Validate::validateEmail($email);
+    $error_url = Validate::validateURL($url);
+    $error_street_number = Validate::validateHouseNumber($street_number);
+    $error_route = Validate::validateStreet($street_name);
+    $error_locality = Validate::validateCity($city);
+    $error_state = Validate::validateProvince($state);
+    $error_postal_code = Validate::validateZipCode($postal_code);
+    $error_country = Validate::validateCountry($country);
+    if($error_name == "" && $error_email == "" && $error_url == "" && $error_street_number == "" &&
+       $error_route == "" && $error_locality == "" && $error_postal_code == "" && $error_country == "") {
+        CompanyDB::addCompany(new Company($name, $email, $url, $password, $street_number, $street_name, $city, $state, $postal_code, $country));
+        header("location:manager_create_employee.php");
+    }
 }
 
 if(!isset($_SESSION['userName'])) {
@@ -108,13 +116,10 @@ if(!isset($_SESSION['userName'])) {
 
                     <li class="dropdown dropdown-user nav-item">
                         <a href="#" data-toggle="dropdown" class="dropdown-toggle nav-link dropdown-user-link">
-                            <span class="avatar avatar-online">
-                                <img src="../../assets/images/portrait_img/<?= $_SESSION['portraintImg']; ?>" alt="portraitImg"><i></i>
-                            </span>
                             <span class="user-name"><?= $_SESSION['userName']; ?></span>
                         </a>
                         <div class="dropdown-menu dropdown-menu-right">
-                            <a href="#" class="dropdown-item"><i class="icon-head"></i> Edit Profile</a>
+                            <a href="manager_edit_companyprofile.php" class="dropdown-item"><i class="icon-head"></i> Edit Profile</a>
                             <a href="#" class="dropdown-item"><i class="icon-mail6"></i> My Inbox</a>
                             <a href="#" class="dropdown-item"><i class="icon-clipboard2"></i> Task</a>
                             <a href="#" class="dropdown-item"><i class="icon-calendar5"></i> Calender</a>
@@ -165,9 +170,6 @@ if(!isset($_SESSION['userName'])) {
                     <li>
                         <a href="manager_manage_employee.php" data-i18n="nav.page_layouts.2_columns" class="menu-item">Manage Employee</a>
                     </li>
-                    <li class="active">
-                        <a href="manager_edit_companyprofile.php" data-i18n="nav.page_layouts.2_columns" class="menu-item">Edit Company's Profile</a>
-                    </li>
                     <li>
                         <a href="manager_view_companyprofile.php" data-i18n="nav.page_layouts.2_columns" class="menu-item">View Company's Profile</a>
                     </li>
@@ -194,7 +196,7 @@ if(!isset($_SESSION['userName'])) {
         <div class="content-body">
             <form class="form" id="company_signup" method="post" action="">
                 <h1>Basic Information</h1>
-                <input type="hidden" value="<?php  echo $_SESSION['company_id']; ?>" name="company_id">
+                <input type="hidden" value="<?php  echo $_SESSION['password']; ?>" name="password">
                 <div class="form-group row">
                     <label for="company_name" class="col-sm-3 col-lg-1 label-control">Company Name: </label>
                     <div class="col-sm-9 col-lg-10">
@@ -208,12 +210,18 @@ if(!isset($_SESSION['userName'])) {
                     <label for="company_url" class="col-sm-3 col-lg-1 label-control">Company website: </label>
                     <div class="col-sm-9 col-lg-10">
                         <input class="form-control-sm col-sm-6" type="text" value="" id="company_url" name="company_url">
+                        <div class="col-sm-10 nopadding">
+                            <small class="help-block text-danger"><?php echo $error_url;?></small>
+                        </div>
                     </div>
                 </div>
                 <div class="form-group row">
                     <label for="email" class="col-sm-3 col-lg-1 label-control">Email: </label>
                     <div class="col-sm-9 col-lg-10">
                         <input class="form-control-sm col-sm-6" type="text" value="<?php echo $_SESSION['userName'];?>" id="email" name="email">
+                        <div class="col-sm-10 nopadding">
+                            <small class="help-block text-danger"><?php echo $error_email;?></small>
+                        </div>
                     </div>
                 </div>
                 <div class="form-group row">
@@ -226,28 +234,44 @@ if(!isset($_SESSION['userName'])) {
                     <div class="col-sm-9 col-lg-10">
                         <input class="form-control-sm col-sm-1" type="text" value="" id="street_number" name="street_number" disabled>
                         <input class="form-control-sm col-sm-5" type="text" value="" id="route" name="route" disabled>
+                        <div class="col-sm-10 nopadding">
+                            <small class="help-block text-danger"><?php echo $error_street_number;?></small>
+                            <small class="help-block text-danger"><?php echo $error_route;?></small>
+                        </div>
                     </div>
                 </div>
                 <div class="form-group row">
                     <label for="locality" class="col-sm-3 col-lg-1 label-control">City</label>
                     <div class="col-sm-9 col-lg-10">
                         <input class="form-control-sm col-sm-6" type="text" value="" id="locality" name="locality" disabled>
+                        <div class="col-sm-10 nopadding">
+                            <small class="help-block text-danger"><?php echo $error_locality;?></small>
+                        </div>
                     </div>
                 </div>
                 <div class="form-group row">
                     <label for="administrative_area_level_1" class="col-sm-3 col-lg-1 label-control">State: </label>
                     <div class="col-sm-9 col-lg-2">
                         <input class="form-control-sm col-sm-12" type="text" value="" id="administrative_area_level_1" name="administrative_area_level_1" disabled>
+                        <div class="col-sm-10 nopadding">
+                            <small class="help-block text-danger"><?php echo $error_state;?></small>
+                        </div>
                     </div>
                     <label for="postal_code" class="col-sm-3 col-lg-1 label-control">ZipCode: </label>
                     <div class="col-sm-9 col-lg-2">
                         <input class="form-control-sm col-sm-13" type="text" value="" id="postal_code" name="postal_code" disabled>
+                        <div class="col-sm-10 nopadding">
+                            <small class="help-block text-danger"><?php echo $error_postal_code;?></small>
+                        </div>
                     </div>
                 </div>
                 <div class="form-group row">
                     <label for="country" class="col-sm-3 col-lg-1 label-control">Country</label>
                     <div class="col-sm-9 col-lg-10">
                         <input class="form-control-sm col-sm-6" type="text" value="" id="country" name="country" disabled>
+                        <div class="col-sm-10 nopadding">
+                            <small class="help-block text-danger"><?php echo $error_country;?></small>
+                        </div>
                     </div>
                 </div>
                 <div class="form-group row">

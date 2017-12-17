@@ -117,7 +117,7 @@ if(!isset($_SESSION['userName'])) {
                             <span class="user-name"><?= $_SESSION['userName']; ?></span>
                         </a>
                         <div class="dropdown-menu dropdown-menu-right">
-                            <a href="#" class="dropdown-item"><i class="icon-head"></i> Edit Profile</a>
+                            <a href="manager_edit_companyprofile.php" class="dropdown-item"><i class="icon-head"></i> Edit Profile</a>
                             <a href="#" class="dropdown-item"><i class="icon-mail6"></i> My Inbox</a>
                             <a href="#" class="dropdown-item"><i class="icon-clipboard2"></i> Task</a>
                             <a href="#" class="dropdown-item"><i class="icon-calendar5"></i> Calender</a>
@@ -167,9 +167,6 @@ if(!isset($_SESSION['userName'])) {
                     </li>
                     <li>
                         <a href="manager_manage_employee.php" data-i18n="nav.page_layouts.2_columns" class="menu-item">Manage Employee</a>
-                    </li>
-                    <li>
-                        <a href="manager_edit_companyprofile.php" data-i18n="nav.page_layouts.2_columns" class="menu-item">Edit Company's Profile</a>
                     </li>
                     <li class="active">
                         <a href="manager_view_companyprofile.php" data-i18n="nav.page_layouts.2_columns" class="menu-item">View Company's Profile</a>
