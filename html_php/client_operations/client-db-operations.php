@@ -1,5 +1,5 @@
 <?php
-require_once "../db_config.php";
+require_once "../model/db_config.php";
 require_once "../model/CompanyLocation.php";
 /**
  * Created by PhpStorm.
