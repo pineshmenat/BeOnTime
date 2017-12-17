@@ -1,7 +1,8 @@
-.time-range p {
+.time-range-css p {
     font-family:"Arial", sans-serif;
     font-size:14px;
     color:#333;
+    width: 100%;
 }
 .ui-slider-horizontal {
     height: 8px;
@@ -97,11 +98,8 @@
     outline:none;
 }
 
-.slider-range {
+.slider-range-css {
     width: 90%;
     margin: 0 auto;
     height: 15px;
-}
-.time-range {
-    width: 100%;
 }
