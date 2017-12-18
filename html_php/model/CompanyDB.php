@@ -6,7 +6,7 @@
  * Time: 11:29
  */
 
-require ('db_config.php');
+//require ('db_config.php');
 Class CompanyDB{
  public static function addCompany($company){
      $db = DB::getDBConnection();

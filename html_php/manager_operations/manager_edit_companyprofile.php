@@ -1,7 +1,9 @@
 <?php
+require_once "../model/db_config.php";
 include "../model/CompanyDB.php";
 include "../model/Company.php";
 include "../model/Validate.php";
+include "../model/RoleDB.php";
 require '../../app-assets/twilio-php-master/Twilio/autoload.php';
 use Twilio\Rest\Client;
 session_start();
@@ -49,6 +51,8 @@ if(isset($_POST['save_changes']) && $_POST['save_changes']){
         if($error_name == "" && $error_email == "" && $error_url == "" && $error_street_number == "" &&
             $error_route == "" && $error_locality == "" && $error_postal_code == "" && $error_country == "" && $error_phone == "") {
             $_SESSION['companyId'] = CompanyDB::addCompany(new Company($name, $email, $url, $password, $street_number, $street_name, $city, $state, $postal_code, $country,$phone));
+            $_SESSION['roleID'] = RoleDB::getRoleID('Manager');
+            $_SESSION['password'] = $password;
             $_SESSION['phone'] = $phone;
             $client->messages->create($phone,
                     array(

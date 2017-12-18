@@ -1,15 +1,18 @@
 <?php
 include "../model/CompanyDB.php";
 include "../model/Company.php";
+include "../model/User.php";
+include "../model/UserDB.php";
 include "../model/Validate.php";
 session_start();
 $error="";
+
 if(isset($_POST['verify']) && $_POST['verify'] && isset($_POST['company_id'])){
     if(strcmp($_POST['company_id'],$_SESSION['companyId']) != 0){
         $error = "Wrong company ID. Input correct ID";
     }
     if($error == "") {
-
+        UserDB::addUser(new User($_SESSION['roleID'],$_SESSION['companyId'],$_SESSION['userName'],$_SESSION['password']));
         header("location:manager_create_employee.php");
     }
 }
