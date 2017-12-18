@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.7.17, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 5.7.20, for Linux (x86_64)
 --
--- Host: localhost    Database: beontime
+-- Host: localhost    Database: b16_20802573_beontime
 -- ------------------------------------------------------
--- Server version	5.7.19-log
+-- Server version	5.7.20-0ubuntu0.17.10.1
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -81,6 +81,30 @@ INSERT INTO `companymaster` VALUES (1001,'Bell','bell@beontime.com','www.bell.ca
 UNLOCK TABLES;
 
 --
+-- Table structure for table `dummytable`
+--
+
+DROP TABLE IF EXISTS `dummytable`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `dummytable` (
+  `Latitude` varchar(45) NOT NULL,
+  `Longitude` varchar(45) NOT NULL,
+  `City` varchar(25) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `dummytable`
+--
+
+LOCK TABLES `dummytable` WRITE;
+/*!40000 ALTER TABLE `dummytable` DISABLE KEYS */;
+INSERT INTO `dummytable` VALUES ('45.6017','-73.6673','Montreal'),('43.647992','-79.370907','Toronto'),('43.667333','-79.399429','Toronto'),('45.6117','-73.6773','Montreal');
+/*!40000 ALTER TABLE `dummytable` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `employeedesignationmaster`
 --
 
@@ -94,7 +118,7 @@ CREATE TABLE `employeedesignationmaster` (
   `ModDateTime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `ModifiedBy` int(11) NOT NULL,
   PRIMARY KEY (`empDesignationId`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -165,7 +189,7 @@ CREATE TABLE `shiftmaster` (
   CONSTRAINT `FK_shiftmaster_CompanyId` FOREIGN KEY (`CompanyId`) REFERENCES `companymaster` (`CompanyId`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `FK_shiftmaster_CompanyLocationId` FOREIGN KEY (`CompanyLocationId`) REFERENCES `companylocationmaster` (`CompanyLocationId`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `FK_shiftmaster_empDesignationId` FOREIGN KEY (`empDesignationId`) REFERENCES `employeedesignationmaster` (`empDesignationId`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=500004 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=500006 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -174,7 +198,7 @@ CREATE TABLE `shiftmaster` (
 
 LOCK TABLES `shiftmaster` WRITE;
 /*!40000 ALTER TABLE `shiftmaster` DISABLE KEYS */;
-INSERT INTO `shiftmaster` VALUES (500001,1,10001,10005,1001,10001,'2017-11-18 09:00:00','2017-11-18 14:00:00','2017-12-06 00:16:51','2017-12-06 00:16:51','N',NULL),(500002,2,10001,10007,1002,10003,'2017-11-20 09:00:00','2017-11-20 14:00:00','2017-12-06 00:16:51','2017-12-06 00:16:51','N',NULL),(500003,3,10001,10007,1001,10002,'2017-11-21 07:00:00','2017-11-21 12:00:00','2017-12-06 00:16:51','2017-12-06 00:16:51','N',NULL);
+INSERT INTO `shiftmaster` VALUES (500001,1,10001,10005,1001,10001,'2017-11-18 09:00:00','2017-11-18 14:00:00','2017-12-06 00:16:51','2017-12-06 00:16:51','N',NULL),(500002,2,10001,10007,1002,10003,'2017-11-20 09:00:00','2017-11-20 14:00:00','2017-12-06 00:16:51','2017-12-06 00:16:51','N',NULL),(500003,3,10001,10007,1001,10002,'2017-11-21 07:00:00','2017-11-21 12:00:00','2017-12-06 00:16:51','2017-12-06 00:16:51','N',NULL),(500004,1,10001,10007,1001,10001,'2017-12-16 17:03:00','2017-12-16 22:00:00','2017-11-20 09:00:00','2017-11-20 09:00:00','N',NULL),(500005,1,10001,10007,1001,10001,'2017-12-16 17:19:00','2017-12-16 22:00:00','2017-11-20 09:00:00','2017-11-20 09:00:00','N',NULL);
 /*!40000 ALTER TABLE `shiftmaster` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -237,4 +261,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-12-10  2:38:03
+-- Dump completed on 2017-12-17 23:12:42

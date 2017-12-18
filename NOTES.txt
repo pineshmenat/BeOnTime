@@ -6,29 +6,42 @@ Task distribution:
 (1) Managers create company account
 (2) Managers manage employee account
 (3) Employees sign-up
+(4) Project integration (In Phase 2)
+(5) Signup for new company.Restrict the user from entering duplicate username during sign up.  (In Phase 2)
+(6) Company profile form completion, form validation with proper error messages if any. (In Phase 2)
+(7) Send companyID to the entered phone number during sign up via SMS to the user. (In Phase 2)
+(8) Verify the  the entered companyID with the that of actual. (In Phase 2)
+(9) Inserted datas in to database for company sign up. (In Phase 2)
+(10) Extracted data from database for the shifts requested by client. (In Phase 2)
+(11) Option for user to edit profile after extracting the data. (In Phase 2)
 
 2. Pinesh
 (1) Employees view/reject/confirm shift
 (2)* Employees view payment.
 (3) DB design and development
+(4) Employee dashboard which displays calendar with shifts from DB (In Phase 2)
+(5) Project integration (In Phase 2)
 * optional task
 
 3. Vaishnavi
 (1) Clients create shift
 (2) Clients view shfit
 (3) Project integration
+(4) Extracting data from database for client create shift UI, dynamic jQuery slider creation for shift days (In Phase 2)
+(5) And new shift creation into Db from Client page. (In Phase 2)
+(6) Project integration (In Phase 2)
 
 4. Anubhav
 (1) Manager check the positions of employee (Google Maps API)
-(2)* Manager view the working hours of employee (Google Charts API)
+(2) Manager view the working hours of employee
 (3) Login (forget password, save password, social account login)
-* optional task
+(4) Extracting data from database for tracking location of each employee. (In Phase 2)
 
 5. Zhongjie
 (1) Managers manage shift
-(2) Managers assign shift to employees
+(2) Managers assign shift to employees (In Phase 2)
 (3) Employees check their current Geo position
-(4) Project integration
+(4) Project integration (In Phase 1)
 (5) Basic login
 
 ============================================================
@@ -36,57 +49,91 @@ Task completed:
 
 1. 5 DB tables have been created.
 mysql> show tables;
++---------------------------------+
+| Tables_in_b16_20802573_beontime |
++---------------------------------+
+| companylocationmaster           | <-- Created by Zhongjie in Phase 1
+| companymaster                   | <-- Created by Dhruvin in Phase 1
+| dummytable                      | <-- Created by Anubhav in Phase 2
+| employeedesignationmaster       | <-- Created by Vaishnavi & Pinesh in Phase 2
+| rolemaster                      | <-- Created by Pinesh in Phase 1
+| shiftmaster                     | <-- Created by Pinesh in Phase 1, modified by Zhongjie in Phase 2
+| usermaster                      | <-- Created by Pinesh in Phase 1, modified by Zhongjie in Phase 2
++---------------------------------+
+7 rows in set (0.00 sec)
 
-employeemaster
-managermaster
-companylocationmaster
-companymaster
-rolemaster
-shiftmaster
-usermaster
 
 
-
-2. Static pages are done 90%, including CSS, framework testing, adaption to project topic.
+2. Static pages are done 98%, including CSS, framework testing, adaption to project topic.
 
 3. Dhruvin made files:
-./html_php/manager_operations/manager_create_employee.php
-./html_php/manager_operations/manager_edit_companyprofile.php
-./html_php/manager_operations/manager_manage_employee.php
-./html_php/manager_operations/manager_view_companyprofile.php
-./assets/js/dhruvin_js
-and some more.
+./html_php/manager_operations/manager_create_employee.php (Created in Phase 1)
+./html_php/manager_operations/manager_manage_employee.php (Created in Phase 1)
+./html_php/manager_operations/manager_view_companyprofile.php (Created in Phase 1, Improved in Phase 2)
+./html_php/manager_operations/manager_edit_companyprofile.php (Created in Phase 1, Improved in Phase 2)
+./html_php/manager_operations/manager_companyID_verify.php (Created in Phase 2)
+./html_php/model/User.php (Created in Phase 2)
+./html_php/model/UserDB.php (Created in Phase 2)
+./html_php/model/RoleDB.php (Created in Phase 2)
+./html_php/model/Validate.php (Created in Phase 2)
+./html_php/model/CompanyDB.php (Created in Phase 2)
+./assets/js/dhruvin_js (Created in Phase 1)
+and css files.
+
+Notes from Dhruvin (In Phase 2):
+Twilio sms api to send sms through composer and twilio library/sdk. Verify adrress with google addressautocomplete api.
+
 
 4. Vaishnavi made files:
-./html_php/client_operations/client-create-shift.php
-./html_php/client_operations/client-view-edit-shift.php
-../assets/js/startendtimeslider/start-and-end-time-slider.js
-and some more.
+./html_php/client_operations/client-create-shift.php (Created in Phase 1, Improved in Phase 2)
+./html_php/client_operations/client-view-edit-shift.php (Created in Phase 1, Improved in Phase 2)
+./html_php/client_operations/client-db-operations.php (Created in Phase 2)
+./html_php/client_operations/process-shifts.php (Created in Phase 2)
+../assets/js/startendtimeslider/start-and-end-time-slider.js (Created in Phase 1, Improved in Phase 2)
+and css files.
+
+Notes from Vaishnavi (In Phase 2):
+Client UI data for company location addresses, employee designations are retrieved from Db.
+jQuery dynamic slider creation for new shifts and picking up it's start and end times for shift creation.
+All this data is used for db insertion.
 
 5. Pinesh made files:
-./html_php/calendar.php
-and some more.
+./html_php/employee_operations/pay_details.php (Created in Phase 1)
+./html_php/employee_operations/employee-dashboard.php (Created in Phase 1, Improved in Phase 2)
+./html_php/employee_operations/employeeCalendar.php (Created in Phase 1, Improved in Phase 2)
+and css files.
+
+Notes from Pinesh (In Phase 2):
+Retrieving shifts from database based on employee Id and based on the shift status modal will be displayed to either accept or reject and it will be updated in DB instantly.
 
 6. Zhongjie made files:
-./html_php/cookie_operations.php
-./html_php/database_error.php
-./html_php/db_config.php
-./html_php/login.php
-./html_php/logout.php
-./html_php/manager_operations/manager_assign_shift_backend.php
-./html_php/manager_operations/manager_assign_shift_frontend.php
-./html_php/manager_operations/manager_view_shift_frontend.php
-../assets/js/zhongjie_js/date_time_picker.js
-../assets/js/zhongjie_js/manager_assign_shift_frontend.js
-and some more.
+./html_php/cookie_operations.php (Created in Phase 1, Removed in Phase 2)
+./html_php/database_error.php (Created in Phase 1, Improved in Phase 2 by Vaishnavi)
+./html_php/model/db_config.php (Created in Phase 1, Improved in Phase 2 by Vaishnavi)
+./html_php/login/login.php (Created in Phase 1, Improved in Phase 2 by Vaishnavi)
+./html_php/login/logout.php (Created in Phase 1)
+./html_php/manager_operations/manager_assign_shift_backend.php (Created in Phase 1, Improved in Phase 2)
+./html_php/manager_operations/manager_assign_shift_frontend.php (Created in Phase 1, Improved in Phase 2)
+./html_php/manager_operations/manager_view_shift_frontend.php (Created in Phase 1)
+../assets/js/zhongjie_js/date_time_picker.js (Created in Phase 1)
+../assets/js/zhongjie_js/manager_assign_shift_frontend.js (Created in Phase 1, Improved in Phase 2)
+../assets/js/zhongjie_js/custom_modal.js (Created in Phase 2)
+and css files.
+
+Notes from Zhongjie (In Phase 2):
+Continuously improve program structure
+Improve user interaction
+Implement error handling for exception
+SQL query improvement in assign employee feature
 
 7. Anubhav made files:
-./html_php/manager_operations/manager_track_emphours.php
-./html_php/manager_operations/manager_track_employee.php
+./html_php/manager_operations/manager_track_emphours.php (Created in Phase 1)
+./html_php/manager_operations/manager_track_employee.php (Improved in Phase 2)
+./html_php/manager_operations/manager_track_employee_backend.php (Improved in Phase 2)
+and css files.
 
-============================================================
-Task not completed:
+Notes from Anubhav (In Phase 2):
+The database is populated with data of employee's location and city.
+The data is extracted from DB and with the help of Google API, the location of employee is tracked using Javascript.
 
-1. In manager search shift section, mysqli needs to be converted to PDO
-2. Still many PHP functions need to be worked on.
-3. Using Google API to display Geo data has not been stated yet.
+
