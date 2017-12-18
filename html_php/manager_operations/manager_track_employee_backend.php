@@ -7,40 +7,38 @@ if (!isset($_SESSION['userId'])) {
 ?>
 <?php
 
+/**
+ * Created by PhpStorm.
+ * User: Anubhav
+ * Date: 12/14/2017
+ * Time: 6:36 PM
+ */
 
-$errorddl="";
-if(isset($_POST['send']))
+
+$city=$_SESSION['ddlcity'];
+//$city = $_POST['ddlcity'];
+//var_dump(($city));
+include "../model/db_config.php";
+$db=DB::getDBConnection();
+$SQL = "SELECT  * FROM dummytable where City=:city";
+$pdpstm = $db->prepare($SQL);
+$pdpstm->bindValue(':city', $city);
+$pdpstm->execute();
+$pdpstm->setFetchMode(PDO::FETCH_OBJ);
+//    var_dump($pdpstm);
+
+$resultSet = $pdpstm->fetchAll();
+
+foreach($resultSet as $result)
 {
-
-
-        $errorddl="Please select city";
-
-          if(isset($_POST['ddlcity']))
-          {
-              $city = $_POST['ddlcity'];
-              var_dump(($city));
-              $newURL='manager_track_employee_backend.php';
-              $oldURL='manager_track_employee.php';
-              if(empty($city))
-              {
-                  $errorddl="Please select city";
-
-
-              }
-              else
-              {
-                  $_SESSION['ddlcity']=$city;
-                  header('Location: '.$newURL);
-                  die();
-
-
-              }
-          }
-
-
-
-
+    $arr1[]=($result->{'Latitude'});
+    $arr2[]=($result->{'Longitude'});
 }
+
+$lat1=$resultSet[0]->{'Latitude'};
+$long1=$resultSet[0]->{'Longitude'};
+$lat2=($resultSet[1]->{'Latitude'});
+$long2=($resultSet[1]->{'Longitude'});
 
 
 
@@ -49,6 +47,13 @@ if(isset($_POST['send']))
 <!DOCTYPE html>
 <html lang="en" data-textdirection="ltr" class="loading">
 <head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <style>
+        #map {
+            height: 300px;
+            width: 1000px;
+        }
+    </style>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
@@ -199,7 +204,7 @@ if(isset($_POST['send']))
 
 <!-- main content-->
 <div class="app-content content container-fluid">
-    <div class="content-wrapper">
+    <div class="content-wrapper" style="width: 1000%";>
 
         <div class="content-header row"></div>
 
@@ -214,18 +219,74 @@ if(isset($_POST['send']))
                     <div class="col-xl-3 col-lg-3 col-xs-12">
                         <div class="card-body">
                             <div class="media">
-                                <div class="p-1 text-xs-center bg-light-green bg-darken-2 media-left media-middle">
-                                    <i class="icon-android-home font-large-1 white"></i>
-                                </div>
-                                <div class="form-group p-1 bg-light-green white media-body">
-                                    <select class="form-control" name="ddlcity">
-                                        <option disabled selected>Select City</option>
-                                        <option>Toronto</option>
-                                        <option>Montreal</option>
-                                    </select>
 
-                                </div>
-                                <span id="state"  style='color:red;'><?php echo $errorddl;?></span>
+                                <div id="map"></div>
+                                <script>
+
+                                    function initMap() {
+                                        if(<?php echo $city; ?>='Toronto')
+                                        {
+                                            var uluru = {lat: 43.6532, lng: -79.3832};
+                                            var map = new google.maps.Map(document.getElementById('map'), {
+                                                zoom: 6,
+                                                center: uluru
+                                            });
+
+
+                                            var latLng = new google.maps.LatLng(<?php echo $lat1?>,<?php echo $long1?>);
+                                            var marker = new google.maps.Marker({
+                                                position: latLng,
+                                                map: map
+                                            });
+                                            var latLng1 = new google.maps.LatLng(<?php echo $lat2?>,<?php echo $long2?>);
+                                            var marker = new google.maps.Marker({
+                                                position: latLng1,
+                                                map: map
+                                            });
+
+
+
+                                        }
+                                        else
+                                        {
+                                            alert('<?php echo $city; ?>');
+                                            var uluru = {lat: 45.5017, lng: -73.5673};
+                                            var map = new google.maps.Map(document.getElementById('map'), {
+                                                zoom: 12,
+                                                center: uluru
+                                            });
+
+
+
+
+
+
+
+                                            var latLng = new google.maps.LatLng(<?php echo $lat1?>,<?php echo $long1?>);
+                                            var marker = new google.maps.Marker({
+                                                position: latLng,
+                                                map: map
+                                            });
+                                            var latLng1 = new google.maps.LatLng(<?php echo $lat2?>,<?php echo $long2?>);
+                                            var marker = new google.maps.Marker({
+                                                position: latLng1,
+                                                map: map
+                                            });
+                                        }
+
+
+
+
+                                    }
+
+                                </script>
+
+
+
+                                <script async defer
+                                        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBTd7zK0XohiaBH0OzHJ-sqpQl1XtRZpik&callback=initMap">
+                                </script>
+
                             </div>
                         </div>
                     </div>
@@ -242,9 +303,7 @@ if(isset($_POST['send']))
 
                 <!--                search shift button-->
                 <div class="row mt-1 col-md-12">
-                    <div class="col-xl-1 col-lg-1 col-xs-12" align="center">
-                        <button type="submit" name="send" formmethod="post" class="btn btn-success btn-lg font-weight-bold">Track Employee</button>
-                    </div>
+
 
                     <div class="col-xl-11 col-lg-11 col-xs-12">
                     </div>
