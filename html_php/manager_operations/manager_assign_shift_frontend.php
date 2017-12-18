@@ -44,12 +44,16 @@ if (!isset($_SESSION['userId'])) {
     <link rel="stylesheet" type="text/css" href="../../app-assets/css/core/menu/menu-types/vertical-overlay-menu.css">
     <link rel="stylesheet" type="text/css" href="../../app-assets/css/core/colors/palette-gradient.css">
     <!-- END Page Level CSS-->
-    <!-- BEGIN Custom CSS-->
-    <link rel="stylesheet" type="text/css" href="../../assets/css/zhongjie_style/zhongjie_style.css">
-    <!-- END Custom CSS-->
     <!--Start & End Calendar-->
     <link rel="stylesheet" type="text/css" href="../../assets/css/datetimepicker/bootstrap-datetimepicker.css">
     <!--/Start & End Calendar-->
+    <!-- BEGIN Custom CSS-->
+    <link rel="stylesheet" type="text/css" href="../../assets/css/zhongjie_style/zhongjie_style.css">
+    <!-- END Custom CSS-->
+
+<style>
+
+</style>
 </head>
 <body data-open="click" data-menu="vertical-menu" data-col="2-columns" class="vertical-layout vertical-menu 2-columns  fixed-navbar">
 
@@ -138,9 +142,6 @@ if (!isset($_SESSION['userId'])) {
                     </li>
                     <li>
                         <a href="manager_manage_employee.php" data-i18n="nav.page_layouts.2_columns" class="menu-item">Manage Employee</a>
-                    </li>
-                    <li>
-                        <a href="manager_edit_companyprofile.php" data-i18n="nav.page_layouts.2_columns" class="menu-item">Edit Company's Profile</a>
                     </li>
                     <li>
                         <a href="manager_view_companyprofile.php" data-i18n="nav.page_layouts.2_columns" class="menu-item">View Company's Profile</a>
@@ -248,11 +249,14 @@ if (!isset($_SESSION['userId'])) {
 
                 <!--                search shift button-->
                 <div class="row mt-1 col-md-12">
-                    <div class="col-xl-1 col-lg-1 col-xs-12" align="center">
+                    <div class="col-xl-2 col-lg-2 col-xs-12" align="center">
                         <button id="btnSearchShift" type="button" formmethod="post" class="btn btn-success btn-lg font-weight-bold">Search Shift</button>
                     </div>
 
-                    <div class="col-xl-11 col-lg-11 col-xs-12">
+                    <div class="col-xl-2 col-lg-2 col-xs-12">
+                        <button id="btnAssignEmployee" type="button" formmethod="post" class="btn btn-success btn-lg font-weight-bold" data-toggle="modal"
+                                data-target="#select_employee">Assign Employee
+                        </button>
                     </div>
                 </div>
 
@@ -267,17 +271,6 @@ if (!isset($_SESSION['userId'])) {
             <!--                error display-->
             <div id="errorDisplayForAssignShift" class="row mt-1 col-md-12"></div>
 
-            <!--            button under the shift search result-->
-            <div class="row mt-1 col-md-12">
-                <div class="col-xl-1 col-lg-1 col-xs-12" align="center">
-                    <button id="btnAssignEmployee" type="button" formmethod="post" class="btn btn-success btn-lg font-weight-bold" data-toggle="modal"
-                            data-target="#select_employee">Assign Employee
-                    </button>
-                </div>
-
-                <div class="col-xl-11 col-lg-11 col-xs-12">
-                </div>
-            </div>
 
             <!--            To make a space line-->
             <div class="row mt-1 col-md-12"></div>
@@ -286,7 +279,7 @@ if (!isset($_SESSION['userId'])) {
     </div>
 
     <!--   Form in modal. When clicking "Assign Employee" button, this modal will pop up -->
-    <div class="modal fade" id="selectEmployee" tabindex="-1" role="dialog" aria-labelledby="largeModal" aria-hidden="true">
+    <div class="modal modal-wide fade" id="selectEmployee"  tabindex="-1" role="dialog" aria-labelledby="largeModal" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
 
@@ -298,7 +291,7 @@ if (!isset($_SESSION['userId'])) {
 
                 <!--                body of modal-->
                 <div class="modal-body">
-                    <div class="container">
+                    <div class="container-fluid">
 
                         <form method="post" action="">
                             <div class="row mt-0 col-md-12">
@@ -346,8 +339,10 @@ if (!isset($_SESSION['userId'])) {
 
                             <!--                            search employee button-->
                             <div class="row mt-1 col-md-12">
+                                <div id="selectedShiftTimeInfo"></div>
                                 <div class="col-xl-2 col-lg-2 col-xs-12" align="center">
-                                    <button id="btnSearchEmployee" type="button" formmethod="post" class="btn btn-success font-weight-bold">Search Employee
+
+                                    <button id="btnSearchEmployee" type="button" formmethod="post" class="btn btn-success font-weight-bold">Search Available Employee
                                     </button>
                                 </div>
                             </div>
@@ -420,6 +415,8 @@ if (!isset($_SESSION['userId'])) {
 <!--Zhongjie JS-->
 <script src="../../assets/js/zhongjie_js/date_time_picker.js" type="text/javascript"></script>
 <script src="../../assets/js/zhongjie_js/manager_assign_shift_frontend.js" type="text/javascript"></script>
+<script src="../../assets/js/zhongjie_js/custom_modal.js" type="text/javascript"></script>
 <!--/Zhongjie JS-->
+
 </body>
 </html>

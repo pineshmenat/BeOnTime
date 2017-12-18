@@ -2,7 +2,7 @@
 //
 // By Zhongjie
 //
-include "../db_config.php";
+include "../model/db_config.php";
 
 $dbConnection = DB::getDBConnection();
 $ajaxCallReturn;
@@ -166,12 +166,12 @@ function searchShifts($dbConnection, $companyId, $companyLocationId, $startDateF
         // NOTE: Line (shiftmaster.CompanyLocationId = '$companyLocationId' OR '$companyLocationId' = '') means even if $companyLocationId is "",
         // sql query will get all locations from DB.
         $selectShiftSQL =
-            "SELECT shiftmaster.ShiftId, u1.UserName AssignedBy, u2.Username AssignedTo, companymaster.CompanyName, companylocationmaster.Address, shiftmaster.StartTime, shiftmaster.EndTime
+            "SELECT shiftmaster.ShiftId, usermaster.UserName AssignedBy, companymaster.CompanyName, companylocationmaster.Address, employeedesignationmaster.empDesignationName, shiftmaster.StartTime, shiftmaster.EndTime
                   FROM shiftmaster 
-                      JOIN usermaster u1 ON (u1.UserId = shiftmaster.AssignedBy) 
-                      JOIN usermaster u2 ON (u2.UserId = shiftmaster.AssignedTo) 
+                      JOIN usermaster ON (usermaster.UserId = shiftmaster.AssignedBy) 
                       JOIN companymaster ON (companymaster.CompanyId = shiftmaster.CompanyId) 
                       JOIN companylocationmaster ON (companylocationmaster.CompanyLocationId = shiftmaster.CompanyLocationId) 
+                      JOIN employeedesignationmaster ON (employeedesignationmaster.empDesignationId = shiftmaster.empDesignationId) 
                   WHERE shiftmaster.CompanyId = :companyId 
                       AND (shiftmaster.CompanyLocationId = :companyLocationId OR :companyLocationId = '') 
                       AND (StartTime >= CONCAT(:startDateFormatted, ' ', :startTimeFormatted)) 
@@ -222,25 +222,27 @@ function searchEmployees($dbConnection, $cityName, $employeeId, $firstName, $las
 
     if (isset($cityName) && isset($employeeId) && isset($firstName) && isset($lastName) && isset($desiredDaySelection)) {
         error_log("cityName: " . $cityName . " employeeId: " . $employeeId . " firstName: " . $firstName . " lastName: " . $lastName);
-        error_log("desiredDaySelection: " . $desiredDaySelection);
+//        error_log("desiredDaySelection: " . $desiredDaySelection);
 
 //        $desiredDay = convertDesiredDayFromStringToBit($desiredDaySelection);
+        $desiredDaySelection_b = "b'" . $desiredDaySelection . "'";
+        error_log("desiredDaySelection_b: " . $desiredDaySelection_b);
 
         // NOTE: RoleId=12 indicates Employee role.
+        // For desiredDaySelection field, no success if use php bindValue() method. Maybe the statement is too complicated.
         $selectEmployeesSQL =
             "SELECT UserId, UserName, Address, DesiredDay 
               FROM usermaster 
               WHERE RoleId = 12 
                   AND City = :cityName 
-                  AND (DesiredDay = :desiredDaySelection OR :desiredDaySelection = '') 
                   AND (UserId = :employeeId OR :employeeId = '') 
                   AND (FirstName = :firstName OR :firstName = '') 
-                  AND (LastName = :lastName OR :lastName = '')";
+                  AND (LastName = :lastName OR :lastName = '') 
+                  AND lpad(bin(lpad(bin(DesiredDay & " . $desiredDaySelection_b . "), 7, '0') & " . $desiredDaySelection_b . "), 7, '0') = '" . $desiredDaySelection . "'";
 
-//        error_log("******select_employees_sql: " . $select_employees_sql);
+        error_log("******select_employees_sql: " . $selectEmployeesSQL);
         $pdpstm = $dbConnection->prepare($selectEmployeesSQL);
-        $pdpstm->bindValue(':cityName', $cityName , PDO::PARAM_STR);
-        $pdpstm->bindValue(':desiredDaySelection', $desiredDaySelection , PDO::PARAM_STR);
+        $pdpstm->bindValue(':cityName', $cityName, PDO::PARAM_STR);
         $pdpstm->bindValue(':employeeId', $employeeId , PDO::PARAM_STR);
         $pdpstm->bindValue(':firstName', $firstName , PDO::PARAM_STR);
         $pdpstm->bindValue(':lastName', $lastName , PDO::PARAM_STR);

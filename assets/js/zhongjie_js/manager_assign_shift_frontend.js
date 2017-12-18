@@ -1,6 +1,7 @@
 const backendURL = "./manager_assign_shift_backend.php";
 const startTimeFormatted = "00:00:00", endTimeFormatted = "23:59:59";
-var shifts, selectedShiftId;
+var shifts, selectedShiftId, selectedShiftStartTime, selectedShiftEndTime, selectedShiftDay;
+var shiftRowselected = false;
 
 // When page get loaded properly, issue backend an AJAX call to get company list.
 // Fill out dropdown selection with returned values.
@@ -103,9 +104,11 @@ $("#btnSearchShift").click(function () {
 //
 $("#btnAssignEmployee").click(function () {
 
-    if (selectedShiftId == null) {
-
+    if (selectedShiftStartTime != null && selectedShiftEndTime != null && selectedShiftDay != null) {
+        // $("#selectedShiftTimeInfo").html("<p>ppppppp</p>");
+        $("#selectedShiftTimeInfo").html("<p>Selected shift will start from <b>" + selectedShiftStartTime + "</b> (<b>" + selectedShiftDay + "</b>), end at <b>" + selectedShiftEndTime + "</b></p>");
     }
+
     // Clear error display, employee display and form.
     // The effect of loadAllCities() method is like reset selection.
     $("#employeeDisplay").empty();
@@ -161,7 +164,17 @@ $(document).on("click", "#shiftDisplay tbody tr", function (e) {
     // Set global values
     selectedShiftId = $(this).attr('value');
     // console.log("selectedShiftId: " + selectedShiftId);
+    selectedShiftStartTime = $(this).find("td.shiftStartTime").text();
+    selectedShiftEndTime = $(this).find("td.shiftEndTime").text();
+    // console.log("selectedShiftStartTime: " + selectedShiftStartTime + " selectedShiftEndTime: " + selectedShiftEndTime);
 
+    var d = new Date(selectedShiftStartTime);
+    selectedShiftDay = convertDayNumberToDayString(d.getDay());
+
+    // console.log("d: " + d);
+    // console.log("Year: " + d.getFullYear() + " Month: " + (d.getMonth() + 1) + " Time: " + d.getHours() + " Day: " + d.getDay());
+
+    shiftRowselected = true;
     // For METHOD1: If use method1, below 3 lines need to be uncommented.
 //        selectedProductName = $(this).find("td:eq(1)").text();
 //        selectedProductType = $(this).find("td:eq(2)").text();
@@ -175,6 +188,29 @@ $(document).on("click", "#shiftDisplay tbody tr", function (e) {
 //         }
 //     });
 //        console.log("selectedProductName: " + selectedProductName + " selectedProductType: " + selectedProductType + " selectedProductPrice: " + selectedProductPrice);
+});
+
+$(document).on("mouseover", "#shiftDisplay tbody tr", function (e) {
+    if (!shiftRowselected) {
+        // Clear all the background color
+        $("#shiftDisplay tbody tr").css("background-color", "#f3f3f3");
+        // Set the background color of clicked row to grey
+        $(this).css("background-color", "#c2c2c2");
+    }
+
+
+});
+
+$(document).on("mouseout", "#shiftDisplay tbody tr", function (e) {
+
+    if (!shiftRowselected) {
+        // Clear all the background color
+        $("#shiftDisplay tbody tr").css("background-color", "#f3f3f3");
+    }
+
+    // Set the background color of clicked row to grey
+    // $(this).css("background-color", "#c2c2c2");
+
 });
 
 $("#btnSearchEmployee").click(function () {
@@ -199,7 +235,7 @@ $("#btnSearchEmployee").click(function () {
     // If no desired day is selected, give desiredDaySelectionInBit an empty string.
     // Otherwise it won't be good for sql query if it is 0000000
     var desiredDaySelectionInBit = convertDesiredDayFromStringToBit(desiredDaySelectionInString);
-    desiredDaySelectionInBit = desiredDaySelectionInBit == '0000000' ? "" : desiredDaySelectionInBit;
+    // desiredDaySelectionInBit = (desiredDaySelectionInBit == '0000000') ? "" : desiredDaySelectionInBit;
     // console.log("desiredDaySelectionInBit: " + desiredDaySelectionInBit);
 
 
@@ -398,9 +434,9 @@ function displayShifts() {
     shiftsTable += "<thead><tr>";
     shiftsTable += "<th>Shift Id</th>";
     shiftsTable += "<th>Assigned By</th>";
-    shiftsTable += "<th>Assigned To</th>";
-    shiftsTable += "<th>Company Name</th>";
-    shiftsTable += "<th>Company Location</th>";
+    shiftsTable += "<th>Company</th>";
+    shiftsTable += "<th>Working Place</th>";
+    shiftsTable += "<th>Required Level</th>";
     shiftsTable += "<th>Start Time</th>";
     shiftsTable += "<th>End Time</th>";
     shiftsTable += "</tr></thead>";
@@ -411,11 +447,11 @@ function displayShifts() {
         shiftsTable += "<tr value=" + value.ShiftId + ">";
         shiftsTable += "<td>" + value.ShiftId + "</td>";
         shiftsTable += "<td>" + value.AssignedBy + "</td>";
-        shiftsTable += "<td>" + value.AssignedTo + "</td>";
         shiftsTable += "<td>" + value.CompanyName + "</td>";
         shiftsTable += "<td>" + value.Address + "</td>";
-        shiftsTable += "<td>" + value.StartTime + "</td>";
-        shiftsTable += "<td>" + value.EndTime + "</td>";
+        shiftsTable += "<td>" + value.empDesignationName + "</td>";
+        shiftsTable += "<td class='shiftStartTime'>" + value.StartTime + "</td>";
+        shiftsTable += "<td class='shiftEndTime'>" + value.EndTime + "</td>";
         shiftsTable += "<tr>";
     });
 
@@ -457,7 +493,7 @@ function displayEmployees(employees) {
         EmployeesTable += "<td class='col-sm-1'>" + value.UserId + "</td>";
         EmployeesTable += "<td class='col-sm-3'>" + value.UserName + "</td>";
         EmployeesTable += "<td class='col-sm-4'>" + value.Address + "</td>";
-        EmployeesTable += "<td class='col-sm-3'>" + value.DesiredDay + "</td>";
+        EmployeesTable += "<td class='col-sm-3'>" + convertDesiredDayFromBitToString(value.DesiredDay) + "</td>";
         EmployeesTable += "<tr>";
     });
 
@@ -469,12 +505,11 @@ function displayEmployees(employees) {
     $("#employeeDisplay tbody tr").css("cursor", "pointer");
 }
 
-function convertDesiredDayFromStringToBit(desiredDaySelection) {
-
+function convertDesiredDayFromStringToBit(desiredDayInString) {
 
     // Initalize string as all bits are set to 0
     var desiredDay = '0000000';
-    $.each(desiredDaySelection, function (key, value) {
+    $.each(desiredDayInString, function (key, value) {
         // console.log(key + " " + value);
 
         switch (value) {
@@ -512,5 +547,85 @@ function convertDesiredDayFromStringToBit(desiredDaySelection) {
         // console.log(desiredDay);
     });
 
-     return desiredDay;
+    return desiredDay;
+}
+
+function convertDesiredDayFromBitToString(desiredDayInBit) {
+
+    var desiredDay = [];
+    // console.log(desiredDayInBit);
+    for (var i = 0; i < desiredDayInBit.length; i++) {
+
+        if (desiredDayInBit.charAt(i) == 1) {
+
+            switch (i) {
+                case 0: {
+                    desiredDay.push('Mon');
+                    break;
+                }
+                case 1: {
+                    desiredDay.push('Tue');
+                    break;
+                }
+                case 2: {
+                    desiredDay.push('Wed');
+                    break;
+                }
+                case 3: {
+                    desiredDay.push('Thur');
+                    break;
+                }
+                case 4: {
+                    desiredDay.push('Fri');
+                    break;
+                }
+                case 5: {
+                    desiredDay.push('Sat');
+                    break;
+                }
+                case 6: {
+                    desiredDay.push('Sun');
+                    break;
+                }
+            }
+
+        }
+    }
+
+
+    return desiredDay.join(", ");
+}
+
+function convertDayNumberToDayString(dayNumber) {
+
+    switch (dayNumber) {
+        case 0: {
+            return "Sunday";
+            break;
+        }
+        case 1: {
+            return "Monday";
+            break;
+        }
+        case 2: {
+            return "Tuesday";
+            break;
+        }
+        case 3: {
+            return "Wednesday";
+            break;
+        }
+        case 4: {
+            return "Thursday";
+            break;
+        }
+        case 5: {
+            return "Friday";
+            break;
+        }
+        case 6: {
+            return "Saturday";
+            break;
+        }
+    }
 }
