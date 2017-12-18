@@ -12,8 +12,9 @@ class Company
     private $name;
     private $email, $url,$passowrd;
     private $streetNumber,$streetName,$city,$province,$postalCode,$country;
+    private $phone;
 
-    public function __construct($name,$email,$url,$password,$streetNumber,$streetName,$city,$province,$postalCode,$country)
+    public function __construct($name,$email,$url,$password,$streetNumber,$streetName,$city,$province,$postalCode,$country,$phone)
     {
         $this->setName($name);
         $this->setEmail($email);
@@ -25,6 +26,7 @@ class Company
         $this->setProvince($province);
         $this->setPostalCode($postalCode);
         $this->setCountry($country);
+        $this->setPhone($phone);
     }
 
     public function setId($id){
@@ -113,6 +115,22 @@ class Company
 
     public function getCountry(){
        return $this->country;
+    }
+
+    /**
+     * @param mixed $phone
+     */
+    public function setPhone($phone)
+    {
+        $this->phone = $phone;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPhone()
+    {
+        return $this->phone;
     }
 }
 

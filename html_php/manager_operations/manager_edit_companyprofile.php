@@ -2,7 +2,12 @@
 include "../model/CompanyDB.php";
 include "../model/Company.php";
 include "../model/Validate.php";
+require '../../app-assets/twilio-php-master/Twilio/autoload.php';
+use Twilio\Rest\Client;
 session_start();
+$sid = 'AC11257e267244b209cd12098edf1c148a';
+$token = '44d9ee7f5785dbb087c057419201578c';
+$client = new Client($sid, $token);
 $error_name="";
 $error_email="";
 $error_url="";
@@ -12,31 +17,50 @@ $error_locality="";
 $error_state="";
 $error_postal_code="";
 $error_country="";
+$error_phone="";
+$error="";
 if(isset($_POST['save_changes']) && $_POST['save_changes']){
-    $name = $_POST['company_name'];
-    $email = $_POST['email'];
-    $_SESSION['userName'] = $email;
-    $url = $_POST['company_url'];
-    $password = $_POST['password'];
-    $street_number = $_POST['street_number'];
-    $street_name = $_POST['route'];
-    $city = $_POST['locality'];
-    $state = $_POST['administrative_area_level_1'];
-    $postal_code = $_POST['postal_code'];
-    $country = $_POST['country'];
-    $error_name = Validate::validateCompanyName($name);
-    $error_email = Validate::validateEmail($email);
-    $error_url = Validate::validateURL($url);
-    $error_street_number = Validate::validateHouseNumber($street_number);
-    $error_route = Validate::validateStreet($street_name);
-    $error_locality = Validate::validateCity($city);
-    $error_state = Validate::validateProvince($state);
-    $error_postal_code = Validate::validateZipCode($postal_code);
-    $error_country = Validate::validateCountry($country);
-    if($error_name == "" && $error_email == "" && $error_url == "" && $error_street_number == "" &&
-       $error_route == "" && $error_locality == "" && $error_postal_code == "" && $error_country == "") {
-        CompanyDB::addCompany(new Company($name, $email, $url, $password, $street_number, $street_name, $city, $state, $postal_code, $country));
-        header("location:manager_create_employee.php");
+
+    if(isset($_POST['company_name']) && isset($_POST['email'])
+        && isset($_POST['company_url']) && isset($_POST['phone']) && isset($_POST['postal_code'])
+        && isset($_POST['country'])){
+        $name = $_POST['company_name'];
+        $email = $_POST['email'];
+        $_SESSION['userName'] = $email;
+        $url = $_POST['company_url'];
+        $phone = $_POST['phone'];
+        $password = $_POST['password'];
+        $street_number = $_POST['street_number'];
+        $street_name = $_POST['route'];
+        $city = $_POST['locality'];
+        $state = $_POST['administrative_area_level_1'];
+        $postal_code = $_POST['postal_code'];
+        $country = $_POST['country'];
+        $error_name = Validate::validateCompanyName($name);
+        $error_email = Validate::validateEmail($email);
+        $error_url = Validate::validateURL($url);
+        $error_phone = Validate::validatePhoneNumber($phone);
+        $error_street_number = Validate::validateHouseNumber($street_number);
+        $error_route = Validate::validateStreet($street_name);
+        $error_locality = Validate::validateCity($city);
+        $error_state = Validate::validateProvince($state);
+        $error_postal_code = Validate::validateZipCode($postal_code);
+        $error_country = Validate::validateCountry($country);
+        if($error_name == "" && $error_email == "" && $error_url == "" && $error_street_number == "" &&
+            $error_route == "" && $error_locality == "" && $error_postal_code == "" && $error_country == "" && $error_phone == "") {
+            $_SESSION['companyId'] = CompanyDB::addCompany(new Company($name, $email, $url, $password, $street_number, $street_name, $city, $state, $postal_code, $country,$phone));
+            $_SESSION['phone'] = $phone;
+            $client->messages->create($phone,
+                    array(
+                        'from' => '+12893014089',
+                        'body' => "Your companyID is ".$_SESSION['companyId']
+                    )
+                );
+            header("location:manager_companyID_verify.php");
+        }
+    }
+    else{
+        $error = "Complete all the required fields";
     }
 }
 
@@ -200,6 +224,9 @@ if(!isset($_SESSION['userName'])) {
                 <div class="form-group row">
                     <label for="company_name" class="col-sm-3 col-lg-1 label-control">Company Name: </label>
                     <div class="col-sm-9 col-lg-10">
+                        <div class="col-sm-10 nopadding">
+                            <small class="help-block text-danger"><?php echo $error;?></small>
+                        </div>
                         <input class="form-control-sm col-sm-6" type="text" value="" id="company_name" name="company_name"><br/>
                         <div class="col-sm-10 nopadding">
                             <small class="help-block text-danger"><?php echo $error_name;?></small>
@@ -212,6 +239,15 @@ if(!isset($_SESSION['userName'])) {
                         <input class="form-control-sm col-sm-6" type="text" value="" id="company_url" name="company_url">
                         <div class="col-sm-10 nopadding">
                             <small class="help-block text-danger"><?php echo $error_url;?></small>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="phone" class="col-sm-3 col-lg-1 label-control">Phone: </label>
+                    <div class="col-sm-9 col-lg-10">
+                        <input class="form-control-sm col-sm-6" type="text" value="" id="phone" name="phone">
+                        <div class="col-sm-10 nopadding">
+                            <small class="help-block text-danger"><?php echo $error_phone;?></small>
                         </div>
                     </div>
                 </div>

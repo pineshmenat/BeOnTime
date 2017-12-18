@@ -21,10 +21,11 @@ Class CompanyDB{
      $province = $company->getProvince();
      $postalCode = $company->getPostalCode();
      $country = $company->getCountry();
+     $phone = $company->getPhone();
 
      $query = 'INSERT INTO companymaster(CompanyName,CompanyEmail,CompanyURL,CompanyPassword,
-               CompanyStreetNumber,CompanyStreetName,CompanyCity,CompanyState,CompanyPostal,CompanyCountry) 
-               VALUES(:name,:email,:url,:password,:streetNumber,:streetName,:city,:province,:postalCode,:country)';
+               CompanyStreetNumber,CompanyStreetName,CompanyCity,CompanyState,CompanyPostal,CompanyCountry,CompanyPhone) 
+               VALUES(:name,:email,:url,:password,:streetNumber,:streetName,:city,:province,:postalCode,:country,:phone)';
 
      $statement = $db->prepare($query);
      $statement->bindValue(':name',$name);
@@ -37,8 +38,12 @@ Class CompanyDB{
      $statement->bindValue(':province',$province);
      $statement->bindValue(':postalCode',$postalCode);
      $statement->bindValue(':country',$country);
+     $statement->bindValue(':phone',$phone);
      $statement->execute();
+     $lastid = $db->lastInsertId();
      $statement->closeCursor();
+
+     return $lastid;
  }
 }
 ?>

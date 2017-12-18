@@ -83,7 +83,7 @@ class Validate
         if(empty($phoneNumber)){
             return "phone number cannot be empty";
         }
-        else if(!preg_match("[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]",$phoneNumber)){
+        else if(!preg_match("/[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]/",$phoneNumber)){
             return "invalid phone number";
         }
         else{

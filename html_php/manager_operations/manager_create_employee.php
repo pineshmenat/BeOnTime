@@ -160,7 +160,7 @@ if (!isset($_SESSION['userName'])) {
         <div class="content-body">
             <h1>Employee Signup</h1>
             <form class="form" id="company_signup" method="post" action="">
-                <input type="hidden" value="<?php  echo $_SESSION['company_id']; ?>" name="company_id">
+                <input type="hidden" value="<?php  echo $_SESSION['companyId']; ?>" name="company_id">
                 <div class="form-group row">
                     <label for="company_name" class="col-sm-3 col-lg-1 label-control">Name: </label>
                     <div class="col-sm-9 col-lg-10">
