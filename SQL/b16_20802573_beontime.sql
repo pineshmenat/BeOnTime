@@ -43,7 +43,7 @@ CREATE TABLE `companylocationmaster` (
 
 LOCK TABLES `companylocationmaster` WRITE;
 /*!40000 ALTER TABLE `companylocationmaster` DISABLE KEYS */;
-INSERT INTO `companylocationmaster` VALUES (10001,1001,'205 Humber College Blvd','Etobicoke','Ontario','M9W5L7',44.11111111,-79.22222222),(10002,1001,'206 Humber College Blvd','Etobicoke','Ontario','M9W5L7',45.11111111,-78.22222222),(10003,1002,'207 Humber College Blvd','Etobicoke','Ontario','M9W5L7',46.33333333,-78.55555555),(10004,1003,'208 Humber College Blvd','Etobicoke','Ontario','M9W5L7',43.11111111,-72.22222222);
+INSERT INTO `companylocationmaster` VALUES (10001,1001,'205 Humber College Blvd','Etobicoke','Ontario','M9W5L7',43.72889340,-79.60761770),(10002,1001,'206 Humber College Blvd','Etobicoke','Ontario','M9W5L7',45.11111111,-78.22222222),(10003,1002,'207 Humber College Blvd','Etobicoke','Ontario','M9W5L7',46.33333333,-78.55555555),(10004,1003,'208 Humber College Blvd','Etobicoke','Ontario','M9W5L7',43.11111111,-72.22222222);
 /*!40000 ALTER TABLE `companylocationmaster` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -174,6 +174,8 @@ CREATE TABLE `shiftmaster` (
   `CompanyLocationId` int(11) NOT NULL,
   `StartTime` datetime NOT NULL,
   `EndTime` datetime NOT NULL,
+  `ActualWorkingStartTime` datetime DEFAULT NULL,
+  `ActualWorkingEndTime` datetime DEFAULT NULL,
   `EntryDateTime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `ModDateTime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `ShiftStatus` varchar(1) NOT NULL,
@@ -189,7 +191,7 @@ CREATE TABLE `shiftmaster` (
   CONSTRAINT `FK_shiftmaster_CompanyId` FOREIGN KEY (`CompanyId`) REFERENCES `companymaster` (`CompanyId`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `FK_shiftmaster_CompanyLocationId` FOREIGN KEY (`CompanyLocationId`) REFERENCES `companylocationmaster` (`CompanyLocationId`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `FK_shiftmaster_empDesignationId` FOREIGN KEY (`empDesignationId`) REFERENCES `employeedesignationmaster` (`empDesignationId`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=500006 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=500007 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -198,7 +200,7 @@ CREATE TABLE `shiftmaster` (
 
 LOCK TABLES `shiftmaster` WRITE;
 /*!40000 ALTER TABLE `shiftmaster` DISABLE KEYS */;
-INSERT INTO `shiftmaster` VALUES (500001,1,10001,10005,1001,10001,'2017-11-18 09:00:00','2017-11-18 14:00:00','2017-12-06 00:16:51','2017-12-06 00:16:51','N',NULL),(500002,2,10001,10007,1002,10003,'2017-11-20 09:00:00','2017-11-20 14:00:00','2017-12-06 00:16:51','2017-12-06 00:16:51','N',NULL),(500003,3,10001,10007,1001,10002,'2017-11-21 07:00:00','2017-11-21 12:00:00','2017-12-06 00:16:51','2017-12-06 00:16:51','N',NULL),(500004,1,10001,10007,1001,10001,'2017-12-16 17:03:00','2017-12-16 22:00:00','2017-11-20 09:00:00','2017-11-20 09:00:00','N',NULL),(500005,1,10001,10007,1001,10001,'2017-12-16 17:19:00','2017-12-16 22:00:00','2017-11-20 09:00:00','2017-11-20 09:00:00','N',NULL);
+INSERT INTO `shiftmaster` VALUES (500001,1,10001,10005,1001,10001,'2017-11-18 09:00:00','2017-11-18 14:00:00',NULL,NULL,'2017-12-06 00:16:51','2017-12-06 00:16:51','N',NULL),(500002,2,10001,10007,1002,10003,'2017-11-20 09:00:00','2017-11-20 14:00:00',NULL,NULL,'2017-12-06 00:16:51','2017-12-06 00:16:51','N',NULL),(500003,3,10001,10007,1001,10002,'2017-11-21 07:00:00','2017-11-21 12:00:00',NULL,NULL,'2017-12-06 00:16:51','2017-12-06 00:16:51','N',NULL),(500004,1,10001,10007,1001,10001,'2017-12-16 17:03:00','2017-12-16 22:00:00',NULL,NULL,'2017-11-20 09:00:00','2017-11-20 09:00:00','N',NULL),(500005,1,10001,10007,1001,10001,'2017-12-16 17:19:00','2017-12-16 22:00:00',NULL,NULL,'2017-11-20 09:00:00','2017-11-20 09:00:00','N',NULL),(500006,1,10001,10007,1001,10001,'2017-12-23 13:39:00','2017-12-24 02:00:00','2017-12-23 23:05:07','2017-12-23 23:05:27','2017-11-20 09:00:00','2017-11-20 09:00:00','D',NULL);
 /*!40000 ALTER TABLE `shiftmaster` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -239,7 +241,7 @@ CREATE TABLE `usermaster` (
   CONSTRAINT `FK_usermaster_CompanyId` FOREIGN KEY (`CompanyId`) REFERENCES `companymaster` (`CompanyId`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `FK_usermaster_RoleId` FOREIGN KEY (`RoleId`) REFERENCES `rolemaster` (`RoleId`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `FK_usermaster_empDesignationId` FOREIGN KEY (`empDesignationId`) REFERENCES `employeedesignationmaster` (`empDesignationId`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=10012 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=10014 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -248,7 +250,7 @@ CREATE TABLE `usermaster` (
 
 LOCK TABLES `usermaster` WRITE;
 /*!40000 ALTER TABLE `usermaster` DISABLE KEYS */;
-INSERT INTO `usermaster` VALUES (10001,10,1001,0,'fzhongjie','123','2018-01-01 00:00:00',0,'Zhongjie','Fan','\0',0,'fzhongjie@msn.com',123456789,'205 Humber College Blvd','Toronto','Ontario','M9W5L7',NULL,'2017-12-06 18:59:32','2017-12-06 18:59:32','CURRENT_TIMESTAMP'),(10002,10,1001,0,'pineshmenat','123','2018-01-01 00:00:00',0,'Pinesh','Menat','\0',0,'pineshmenat@gmail.com',123456789,'205 Humber College Blvd','Toronto','Ontario','M9W5L7',NULL,'2017-12-06 18:59:32','2017-12-06 18:59:32','CURRENT_TIMESTAMP'),(10003,10,1001,0,'manager1','123','2018-01-01 00:00:00',0,'f1','l1','\0',0,'fzhongjie@msn.com',123456789,'205 Humber College Blvd','Toronto','Ontario','M9W5L7',NULL,'2017-12-06 18:59:32','2017-12-06 18:59:32','CURRENT_TIMESTAMP'),(10004,11,1001,0,'vaishnavi','123','2018-01-01 00:00:00',0,'f2','l2','\0',0,'fzhongjie@msn.com',123456789,'205 Humber College Blvd','Toronto','Ontario','M9W5L7',NULL,'2017-12-07 21:54:14','2017-12-07 21:54:14','CURRENT_TIMESTAMP'),(10005,12,1001,2,'employee1','123','2018-01-01 00:00:00',0,'f3','l3','\0',0,'fzhongjie@msn.com',123456789,'205 Humber College Blvd','Toronto','Ontario','M9W5L7','0000011','2017-12-06 18:59:32','2017-12-06 18:59:32','CURRENT_TIMESTAMP'),(10006,11,1002,0,'client2','123','2018-01-01 00:00:00',0,'f4','l4','\0',0,'fzhongjie@msn.com',123456789,'205 Humber College Blvd','Toronto','Ontario','M9W5L7',NULL,'2017-12-06 18:59:33','2017-12-06 18:59:33','CURRENT_TIMESTAMP'),(10007,12,1002,3,'employee2','123','2018-01-01 00:00:00',0,'f5','l5','\0',0,'fzhongjie@msn.com',123456789,'205 Humber College Blvd','Toronto','Ontario','M9W5L7','1111111','2017-12-06 18:59:33','2017-12-06 18:59:33','CURRENT_TIMESTAMP'),(10008,12,1003,1,'employee3','123','2019-01-01 00:00:00',0,'f6','l6','\0',0,'fzhongjie@msn.com',123456789,'240 McLeod St','Ottawa','Ontario','K2P2R1','0000011','2017-12-06 18:59:33','2017-12-06 18:59:33','CURRENT_TIMESTAMP'),(10009,12,1001,2,'employee4','123','2019-01-01 00:00:00',0,'f7','l7','\0',0,'fzhongjie@msn.com',123456789,'4555 Erie Ave','Niagara Fall','Ontario','L2E7G9','1000010','2017-12-06 18:59:33','2017-12-06 18:59:33','CURRENT_TIMESTAMP'),(10010,12,1003,3,'employee5','123','2019-01-01 00:00:00',0,'f8','l8','\0',0,'fzhongjie@msn.com',123456789,'88 Bronte College Ct','Mississauga','Ontario','L5B1M9','1100010','2017-12-06 18:59:33','2017-12-06 18:59:33','CURRENT_TIMESTAMP'),(10011,12,1002,1,'employee6','123','2019-01-01 00:00:00',0,'f9','l9','\0',0,'fzhongjie@msn.com',123456789,'680 Rexdale Blvd','Toronto','Ontario','M9W6T4','1000001','2017-12-06 18:59:33','2017-12-06 18:59:33','CURRENT_TIMESTAMP');
+INSERT INTO `usermaster` VALUES (10001,10,1001,0,'fzhongjie','123','2018-01-01 00:00:00',0,'Zhongjie','Fan','\0',0,'fzhongjie@msn.com',123456789,'205 Humber College Blvd','Toronto','Ontario','M9W5L7',NULL,'2017-12-06 18:59:32','2017-12-06 18:59:32','CURRENT_TIMESTAMP'),(10002,10,1001,0,'pineshmenat','123','2018-01-01 00:00:00',0,'Pinesh','Menat','\0',0,'pineshmenat@gmail.com',123456789,'205 Humber College Blvd','Toronto','Ontario','M9W5L7',NULL,'2017-12-06 18:59:32','2017-12-06 18:59:32','CURRENT_TIMESTAMP'),(10003,10,1001,0,'manager1','123','2018-01-01 00:00:00',0,'f1','l1','\0',0,'fzhongjie@msn.com',123456789,'205 Humber College Blvd','Toronto','Ontario','M9W5L7',NULL,'2017-12-06 18:59:32','2017-12-06 18:59:32','CURRENT_TIMESTAMP'),(10004,11,1001,0,'vaishnavi','123','2018-01-01 00:00:00',0,'f2','l2','\0',0,'fzhongjie@msn.com',123456789,'205 Humber College Blvd','Toronto','Ontario','M9W5L7',NULL,'2017-12-07 21:54:14','2017-12-07 21:54:14','CURRENT_TIMESTAMP'),(10005,12,1001,2,'employee1','123','2018-01-01 00:00:00',0,'f3','l3','\0',0,'fzhongjie@msn.com',123456789,'205 Humber College Blvd','Toronto','Ontario','M9W5L7','0000011','2017-12-06 18:59:32','2017-12-06 18:59:32','CURRENT_TIMESTAMP'),(10006,11,1002,0,'client2','123','2018-01-01 00:00:00',0,'f4','l4','\0',0,'fzhongjie@msn.com',123456789,'205 Humber College Blvd','Toronto','Ontario','M9W5L7',NULL,'2017-12-06 18:59:33','2017-12-06 18:59:33','CURRENT_TIMESTAMP'),(10007,12,1002,3,'employee2','123','2018-01-01 00:00:00',0,'f5','l5','\0',0,'fzhongjie@msn.com',123456789,'205 Humber College Blvd','Toronto','Ontario','M9W5L7','1111111','2017-12-06 18:59:33','2017-12-06 18:59:33','CURRENT_TIMESTAMP'),(10008,12,1003,1,'employee3','123','2019-01-01 00:00:00',0,'f6','l6','\0',0,'fzhongjie@msn.com',123456789,'240 McLeod St','Ottawa','Ontario','K2P2R1','0000011','2017-12-06 18:59:33','2017-12-06 18:59:33','CURRENT_TIMESTAMP'),(10009,12,1001,2,'employee4','123','2019-01-01 00:00:00',0,'f7','l7','\0',0,'fzhongjie@msn.com',123456789,'4555 Erie Ave','Niagara Fall','Ontario','L2E7G9','1000010','2017-12-06 18:59:33','2017-12-06 18:59:33','CURRENT_TIMESTAMP'),(10010,12,1003,3,'employee5','123','2019-01-01 00:00:00',0,'f8','l8','\0',0,'fzhongjie@msn.com',123456789,'88 Bronte College Ct','Mississauga','Ontario','L5B1M9','1100010','2017-12-06 18:59:33','2017-12-06 18:59:33','CURRENT_TIMESTAMP'),(10011,12,1002,1,'employee6','123','2019-01-01 00:00:00',0,'f9','l9','\0',0,'fzhongjie@msn.com',123456789,'680 Rexdale Blvd','Toronto','Ontario','M9W6T4','1000001','2017-12-06 18:59:33','2017-12-06 18:59:33','CURRENT_TIMESTAMP'),(10013,10,1001,2,'jsmith','123','2018-01-01 00:00:00',0,'Jason','Smith','\0',0,'jsmith@mail.com',123456789,'205 Humber College Blvd','Toronto','Ontario','M9W5L7',NULL,'2017-12-22 22:15:31','2017-12-22 22:15:31','CURRENT_TIMESTAMP');
 /*!40000 ALTER TABLE `usermaster` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -261,4 +263,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-12-17 23:12:42
+-- Dump completed on 2017-12-30 14:03:35
