@@ -114,7 +114,7 @@ DROP TABLE IF EXISTS `employeedesignationmaster`;
 CREATE TABLE `employeedesignationmaster` (
   `empDesignationId` tinyint(4) NOT NULL AUTO_INCREMENT,
   `empDesignationName` varchar(45) NOT NULL,
-  `payPerHour` decimal(3,2) NOT NULL,
+  `payPerHour` decimal(10,2) NOT NULL,
   `EntryDateTime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `ModDateTime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `ModifiedBy` int(11) NOT NULL,
