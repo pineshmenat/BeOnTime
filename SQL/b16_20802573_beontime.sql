@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: sql210.byetcluster.com
--- Generation Time: Jan 03, 2018 at 04:32 PM
+-- Generation Time: Jan 03, 2018 at 04:42 PM
 -- Server version: 5.6.35-81.0
 -- PHP Version: 5.3.3
 
@@ -159,7 +159,7 @@ CREATE TABLE IF NOT EXISTS `shiftmaster` (
   `ShiftId` int(11) NOT NULL AUTO_INCREMENT,
   `empDesignationId` tinyint(4) NOT NULL,
   `AssignedBy` int(11) NOT NULL,
-  `AssignedTo` int(11) NOT NULL,
+  `AssignedTo` int(11) DEFAULT NULL,
   `CompanyId` int(11) NOT NULL,
   `CompanyLocationId` int(11) NOT NULL,
   `StartTime` datetime NOT NULL,
