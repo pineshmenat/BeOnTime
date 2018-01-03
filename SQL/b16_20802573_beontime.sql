@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: sql210.byetcluster.com
--- Generation Time: Jan 03, 2018 at 04:42 PM
+-- Generation Time: Jan 03, 2018 at 04:51 PM
 -- Server version: 5.6.35-81.0
 -- PHP Version: 5.3.3
 
@@ -33,8 +33,8 @@ CREATE TABLE IF NOT EXISTS `companylocationmaster` (
   `City` varchar(20) NOT NULL,
   `Province` varchar(45) NOT NULL,
   `PostalCode` varchar(6) NOT NULL,
-  `Latitude` decimal(10,8) NOT NULL,
-  `Longitude` decimal(10,8) NOT NULL,
+  `Latitude` decimal(11,8) NOT NULL,
+  `Longitude` decimal(11,8) NOT NULL,
   PRIMARY KEY (`CompanyLocationId`),
   KEY `FK_companylocationmaster_CompanyId_idx` (`CompanyId`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=10005 ;
