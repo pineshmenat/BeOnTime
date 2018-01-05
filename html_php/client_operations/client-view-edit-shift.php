@@ -1,5 +1,10 @@
 <?php
+require_once "client-db-operations.php";
 session_start();
+$companyName = ClientSideDB::getCompanyName($_SESSION['companyId']);
+$companyLocations = ClientSideDB::getCompanyLocations($_SESSION['companyId']);
+$designations = ClientSideDB::getEmployeeDesignations();
+$shiftstatus = array('N'=>'New Shift','A'=>'Accepted','R'=>'Rejected','D'=>'Done');
 ?>
 
 <html lang="en" data-textdirection="ltr" class="loading">
@@ -177,7 +182,7 @@ session_start();
                                 <i class="icon-bank font-large-2 white"></i>
                             </div>
                             <div class="p-2 bg-cyan white media-body">
-                                <label id="companyName"><h1>View Culinary Group</h1></label>
+                                <label id="companyName"><h1><?=$companyName ?></h1></label>
                             </div>
                         </div>
                     </div>
@@ -186,7 +191,7 @@ session_start();
             <!--/Company Name Row-->
 
             <!--Form 1 with Location Designation StartDate EndDate-->
-            <form method="get" action="">
+            <form method="post" action="">
                 <div class="row mt-2 col-md-12">
                     <div class="col-xl-6 col-lg-6 col-xs-12">
                         <div class="card-body">
@@ -195,10 +200,16 @@ session_start();
                                     <i class="icon-android-locate font-large-2 white"></i>
                                 </div>
                                 <div class="form-group p-2 bg-light-green white media-body">
-                                    <select class="form-control" id="sel1">
-                                        <option>Select Location</option>
-                                        <option>Niagara Falls</option>
-                                        <option>Missisauga Ocean Hall</option>
+                                    <select class="form-control" id="sel1" name="companyLocation">
+                                        <option value="">Select Location</option>
+                                        <?php
+                                        foreach ($companyLocations as $loc)
+                                        { ?>
+                                            <option
+                                                <?php if(isset($_POST['companyLocation']) && $_POST['companyLocation'] == $loc->getCompanyLocationId()){echo 'selected';}?>
+                                                    value="<?=$loc->getCompanyLocationId() ?>"><?=$loc->getAddress().', '.$loc->getCity().', '.$loc->getPostalCode() ?></option>
+                                            <?php
+                                        } ?>
                                     </select>
                                 </div>
                             </div>
@@ -211,10 +222,16 @@ session_start();
                                     <i class="icon-person font-large-2 white"></i>
                                 </div>
                                 <div class="form-group p-2 bg-amber white media-body">
-                                    <select class="form-control" id="sel1">
-                                        <option>Select Job Designation</option>
-                                        <option>Security Assistant</option>
-                                        <option>Security Senior</option>
+                                    <select class="form-control" id="sel2" name="jobDesignation">
+                                        <option value="">Select Job Designation</option>
+                                        <?php
+                                        foreach ($designations as $d => $dVal)
+                                        { ?>
+                                            <option
+                                                    <?php if(isset($_POST['jobDesignation']) && $_POST['jobDesignation'] == $d){echo 'selected';}?>
+                                                    value="<?=$d ?>"><?=$dVal ?></option>
+                                            <?php
+                                        } ?>
                                     </select>
                                 </div>
                             </div>
@@ -231,12 +248,12 @@ session_start();
                                     <i class="icon-android-calendar font-large-2 white"></i>
                                 </div>
                                 <div style="overflow: visible" class="p-2 bg-grey white media-body">
-                                    <!--<input type="date" id="startDate" name="startDate">-->
                                     <div class="form-group">
                                         <div class='input-group date' id='datetimepicker6'>
-                                            <input type='text' class="form-control"/>
+                                            <input type='text' id="selectedStartDate" name="selectedStartDate"
+                                                   value="<?php if(isset($_POST['selectedStartDate'])){echo $_POST['selectedStartDate'];}?>"
+                                                   class="form-control"/>
                                             <span class="input-group-addon">
-                                                <!--<span class="glyphicon glyphicon-calendar"></span>-->
                                                 <i class="icon-android-calendar font-size-large black"></i>
                                             </span>
                                         </div>
@@ -252,12 +269,12 @@ session_start();
                                     <i class="icon-android-calendar font-large-2 white"></i>
                                 </div>
                                 <div style="overflow: visible" class="p-2 bg-grey white media-body">
-                                    <!--<input type="date" id="endDate" name="endDate">-->
                                     <div class="form-group">
                                         <div class='input-group date' id='datetimepicker7'>
-                                            <input type='text' class="form-control"/>
+                                            <input type='text' id="selectedEndDate" name="selectedEndDate"
+                                                   value="<?php if(isset($_POST['selectedEndDate'])){echo $_POST['selectedEndDate'];}?>"
+                                                   class="form-control"/>
                                             <span class="input-group-addon">
-                                                <!--<span class="glyphicon glyphicon-calendar"></span>-->
                                                 <i class="icon-android-calendar font-size-large black"></i>
                                             </span>
                                         </div>
@@ -267,46 +284,18 @@ session_start();
                         </div>
                     </div>
                 </div>
-
-                <!--<div class="row mt-2 col-md-12">
-                    <div class="col-xl-6 col-lg-6 col-xs-12">
-                        <div class="card-body">
-                            <div class="media">
-                                <div class="p-2 text-xs-center bg-grey bg-darken-2 media-left media-middle">
-                                    <i class="icon-android-calendar font-large-2 white"></i>
-                                </div>
-                                <div class="p-2 bg-grey white media-body">
-                                    <input type="date" id="startDate" name="startDate">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xl-6 col-lg-6 col-xs-12">
-                        <div class="card-body">
-                            <div class="media">
-                                <div class="p-2 text-xs-center bg-grey bg-darken-2 media-left media-middle">
-                                    <i class="icon-android-calendar font-large-2 white"></i>
-                                </div>
-                                <div class="p-2 bg-grey white media-body">
-                                    <input type="date" id="endDate" name="endDate">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>-->
                 <!--/Start & End Calender-->
                 <div class="row mt-2 col-md-12">
                     <div class="row">
                         <div class="col-xl-12 col-lg-6 col-xs-12">
                             <div class="card-body">
                                 <div class="media">
-                                    <!--<div class="col-xl-0 col-lg-6 col-xs-12"></div>-->
                                     <div class="col-xl-12 col-lg-6 col-xs-12"
                                          class="p-2 text-xs-center bg-accent-2 media-left media-middle">
                                         <input style='border-radius: 0 !important; '
-                                               type="submit" class="btn btn-info btn-lg btn-block" value="Display Shifts">
+                                               id="btnSubmit" name="btnSubmit" type="submit"
+                                               class="btn btn-info btn-lg btn-block" value="Display Shifts">
                                     </div>
-                                    <!--<div class="col-xl-0 col-lg-6 col-xs-12"></div>-->
                                 </div>
                             </div>
                         </div>
@@ -316,171 +305,151 @@ session_start();
             <!--/Form 1 with Location Designation StartDate EndDate-->
 
             <!--Form 2 View Shift Details Table-->
-            <form method="get" action="">
+            <form id="formShiftsEdit" method="post" action="">
+            <?php
+            if(isset($_POST['btnSubmit'])) {
+                $shifts = ClientSideDB::getAllShifts($_SESSION['companyId'], $_POST['companyLocation'], $_POST['jobDesignation'], $_POST['selectedStartDate'], $_POST['selectedEndDate']);
+                ?>
                 <div class="row mt-2 col-md-12">
                     <div class="col-xl-12 col-lg-12 col-xs-12">
                         <table class="table table-striped table-hover table-responsive">
                             <thead class="thead-inverse">
-                            <tr>
-                                <th></th>
-                                <th style="padding-right: 5em;">Date</th>
-                                <th style="padding-right: 9em;">Timing</th>
-                                <th>Location</th>
-                                <th>Designation</th>
-                                <th>Status</th>
-                                <th>Payment Per Hr</th>
-                                <th>Employee Name</th>
-                                <th style="padding-right: 6.5em;">Rating</th>
-                                <th>Comment</th>
-                            </tr>
+                                <tr>
+                                    <th style="padding-right: 5.3em;">Date</th>
+                                    <th style="padding-right: 7em;">Timing</th>
+                                    <th style="padding-right: 13em;">Location</th>
+                                    <th style="padding-right: 4em;">Status</th>
+                                    <th style="padding-right: 8em;"></th>
+                                </tr>
                             </thead>
                             <tbody>
-                            <tr>
-                                <th scope="row">
-                                    <input type="checkbox">
-                                </th>
-                                <td>31 Oct 2016</td>
-                                <td>10:00 AM - 10:00 PM</td>
-                                <td>Sunny, Etobicoke</td>
-                                <td>Asst Security</td>
-                                <td>Confirmed</td>
-                                <td>$13</td>
-                                <td>Mr. X</td>
-                                <td>
-                                    <!-- Rating Stars Box -->
-                                    <div class='rating-stars text-center'>
-                                        <ul id='stars'>
-                                            <li class='star' title='Poor' data-value='1'>
-                                                <i class='fa fa-star fa-fw'></i>
-                                            </li>
-                                            <li class='star' title='Fair' data-value='2'>
-                                                <i class='fa fa-star fa-fw'></i>
-                                            </li>
-                                            <li class='star' title='Good' data-value='3'>
-                                                <i class='fa fa-star fa-fw'></i>
-                                            </li>
-                                            <li class='star' title='Excellent' data-value='4'>
-                                                <i class='fa fa-star fa-fw'></i>
-                                            </li>
-                                            <li class='star' title='WOW!!!' data-value='5'>
-                                                <i class='fa fa-star fa-fw'></i>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </td>
-                                <td>
-                                    <!--<textarea class="ckeditor" id="row1_editor" cols="50" rows="5"></textarea>-->
-                                    <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">
-                                        Comment
-                                    </button>
-                                    <div class="modal fade" id="myModal" role="dialog">
-                                        <div class="modal-dialog modal-lg">
+                            <?php
+                            foreach ($shifts as $shift) {
+                                ?>
+                                <tr>
+                                    <td><?=date('d M Y', strtotime($shift->getStartTime())) ?></td>
+                                    <td><?=date('g:i A', strtotime($shift->getStartTime())).'-'.date('g:i A', strtotime($shift->getEndTime())) ?></td>
+                                    <td><?=$shift->getShiftAddress().', '.$shift->getShiftCity().', '.$shift->getShiftPostalCode() ?></td>
+                                    <td><?=$shiftstatus[$shift->getShiftStatus()] ?></td>
+                                    <td>
+                                        <button type="button" class="btn btn-sm" data-toggle="modal" title="Edit Shift"
+                                                shift-id="<?=$shift->getShiftId() ?>"
+                                                designation="<?=$shift->getEmpDesignationName() ?>"
+                                                pay-per-hour="<?=$shift->getPayPerhour() ?>"
+                                                emp-first-name="<?=$shift->getFirstname() ?>"
+                                                emp-last-name="<?=$shift->getLastName() ?>"
+                                                data-target="#myModal">
+                                            <img src="../../assets/images/icons8-edit-50.png" width="30px">
+                                        </button>
+                                        <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" title="Delete Shift"
+                                            <?php if($shift->getShiftStatus() == 'D') echo "disabled";?>
+                                                shift-id="<?=$shift->getShiftId() ?>"
+                                                data-target="#deleteModal">
+                                            <img src="../../assets/images/icons8-delete-50.png" width="30px">
+                                        </button>
 
-                                            <!-- Modal content-->
-                                            <div class="vertical-alignment-helper">
-                                                <div class="modal-dialog vertical-align-center">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header">
-                                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                                            <h4 class="modal-title">Comments</h4>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            <textarea class="ckeditor" id="row_editor" cols="3" rows="1"></textarea>
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            <button type="button" class="btn btn-default" data-dismiss="modal">Close
-                                                            </button>
-                                                            <button type="button" class="btn btn-primary">Save changes</button>
+                                        <div class="modal fade" id="myModal" role="dialog">
+                                            <div class="modal-dialog modal-lg">
+                                                <!-- Modal content-->
+                                                <div class="vertical-alignment-helper">
+                                                    <div class="modal-dialog vertical-align-center">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <button type="button" class="close"
+                                                                        data-dismiss="modal">
+                                                                    &times;
+                                                                </button>
+                                                                <h4 class="modal-title">Edit</h4>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <label><b>Designation:</b></label>&nbsp;<label id="designation"></label><br/>
+                                                                <label><b>Payment Per Hour:</b></label>&nbsp;<label
+                                                                        id="payPerHour"></label><br/>
+                                                                <label><b>Employee Name:</b></label>&nbsp;<label id="empName"></label><br/>
+                                                                <!-- Rating Stars Box -->
+                                                                <label><b>Would you like to rate the
+                                                                        employee?</b></label>
+                                                                <div class='rating-stars text-center'>
+                                                                    <ul id='stars'>
+                                                                        <li class='star' title='Poor' data-value='1'>
+                                                                            <i class='fa fa-star fa-fw'></i>
+                                                                        </li>
+                                                                        <li class='star' title='Fair' data-value='2'>
+                                                                            <i class='fa fa-star fa-fw'></i>
+                                                                        </li>
+                                                                        <li class='star' title='Good' data-value='3'>
+                                                                            <i class='fa fa-star fa-fw'></i>
+                                                                        </li>
+                                                                        <li class='star' title='Excellent' data-value='4'>
+                                                                            <i class='fa fa-star fa-fw'></i>
+                                                                        </li>
+                                                                        <li class='star' title='WOW!!!' data-value='5'>
+                                                                            <i class='fa fa-star fa-fw'></i>
+                                                                        </li>
+                                                                    </ul>
+                                                                </div>
+                                                                <!--/ Rating Stars Box -->
+                                                                <label><b>Did the employee perform well? Please provide your review!</b></label>
+                                                                <textarea class="ckeditor" id="row1_editor" cols="3" rows="1"></textarea>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                                                <button id="btnSaveModalData" name="btnSaveModalData" type="submit" class="btn btn-primary">Save Changes</button>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
+                                                <!--/ Modal content-->
                                             </div>
-                                            <!--/ Modal content-->
                                         </div>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th scope="row">
-                                    <input type="checkbox">
-                                </th>
-                                <td>30 Oct 2016</td>
-                                <td>9:00 AM - 4:00 PM</td>
-                                <td>Sunny, Etobicoke</td>
-                                <td>Asst Security</td>
-                                <td>Confirmed</td>
-                                <td>$13</td>
-                                <td>Mr. X</td>
-                                <td>
-                                    <!-- Rating Stars Box -->
-                                    <div class='rating-stars text-center'>
-                                        <ul id='stars'>
-                                            <li class='star' title='Poor' data-value='1'>
-                                                <i class='fa fa-star fa-fw'></i>
-                                            </li>
-                                            <li class='star' title='Fair' data-value='2'>
-                                                <i class='fa fa-star fa-fw'></i>
-                                            </li>
-                                            <li class='star' title='Good' data-value='3'>
-                                                <i class='fa fa-star fa-fw'></i>
-                                            </li>
-                                            <li class='star' title='Excellent' data-value='4'>
-                                                <i class='fa fa-star fa-fw'></i>
-                                            </li>
-                                            <li class='star' title='WOW!!!' data-value='5'>
-                                                <i class='fa fa-star fa-fw'></i>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </td>
-                                <td>
-                                    <!--<textarea class="ckeditor" id="row2_editor" cols="3" rows="1"></textarea>-->
-                                    <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">
-                                        Comment
-                                    </button>
-                                    <div class="modal fade" id="myModal" role="dialog">
-                                        <div class="modal-dialog modal-lg">
-
-                                            <!-- Modal content-->
-                                            <div class="vertical-alignment-helper">
-                                                <div class="modal-dialog vertical-align-center">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header">
-                                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                                            <h4 class="modal-title">Comments</h4>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            <textarea class="ckeditor" id="row2_editor" cols="3" rows="1"></textarea>
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            <button type="button" class="btn btn-default" data-dismiss="modal">Close
-                                                            </button>
-                                                            <button type="button" class="btn btn-primary">Save changes</button>
+                                        <div class="modal fade" id="deleteModal" role="dialog">
+                                            <div class="modal-dialog modal-lg">
+                                                <!-- Modal content-->
+                                                <div class="vertical-alignment-helper">
+                                                    <div class="modal-dialog vertical-align-center">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <button type="button" class="close"
+                                                                        data-dismiss="modal">
+                                                                    &times;
+                                                                </button>
+                                                                <h4 class="modal-title">Are you sure you want to delete this shift?</h4>
+                                                                <label id="shiftId"></label>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <button id="btnYesDelete" name="btnYesDelete" type="submit" class="btn btn-default">Yes</button>
+                                                                <button type="button" class="btn btn-primary" data-dismiss="modal">No</button>
+                                                            </div>
+                                                            <div class="modal-footer"></div>
                                                         </div>
                                                     </div>
                                                 </div>
+                                                <!--/ Modal content-->
                                             </div>
-                                            <!--/ Modal content-->
                                         </div>
-                                    </div>
-                                </td>
-                            </tr>
+                                    </td>
+                                </tr>
+                                <?php
+                            }
+                            ?>
                             </tbody>
                         </table>
                     </div>
                 </div>
-                <div class="row mt-2 col-md-12">
-                    <div class="col-xl-6 col-lg-12 col-xs-12">
-                        <input style='border-radius: 0 !important; '
-                               type="submit" class="btn btn-info btn-lg btn-block" value="Modify">
-                    </div>
-                    <div class="col-xl-6 col-lg-12 col-xs-12">
-                        <input style='border-radius: 0 !important; '
-                               type="submit" class="btn btn-danger btn-lg btn-block" value="Delete">
-                    </div>
-                </div>
+                <?php
+            }
+            ?>
             </form>
             <!--/Form 2 View Shift Details Table-->
+
+            <?php
+            if(isset($_POST['btnSaveModalData'])){
+                ClientSideDB::updateClientRatingAndReviewForShift($_POST['shiftId'], $_POST['rating'], $_POST['ckEditorData']);
+            }
+            if(isset($_POST['btnYesDelete'])){
+                ClientSideDB::deleteShift($_POST['shiftId']);
+            }
+            ?>
         </div>
     </div>
 </div>
@@ -516,7 +485,6 @@ session_start();
 <!-- BEGIN PAGE LEVEL JS-->
 <!-- END PAGE LEVEL JS-->
 
-
 <!--Vaishnavi START-->
 <!--<script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>-->
 <script src='http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js'></script><!--for SLIDER-->
@@ -545,6 +513,62 @@ session_start();
             $('#datetimepicker6').data("DateTimePicker").maxDate(e.date);
         });
     });
+
+    //to display record specific data in modal
+    var shiftId;
+    $('#myModal').on('show.bs.modal', function (e) {
+        // get information to update quickly to modal view as loading begins
+        var opener=e.relatedTarget;//this holds the element who called the modal
+        shiftId=$(opener).attr('shift-id');
+        var designation=$(opener).attr('designation');
+        var payPerHour=$(opener).attr('pay-per-hour');
+        var empFirstName=$(opener).attr('emp-first-name');
+        var empLastName=$(opener).attr('emp-last-name');
+
+        $('#designation').text(designation);
+        $('#payPerHour').text(payPerHour);
+        $('#empName').text(empFirstName+' '+empLastName);
+    });
+    $('#myModal').on('hidden.bs.modal', function () {
+        //Clearing Star Rating data
+        $('#stars li').each(function (i) {
+            $(this).removeClass('selected');
+            rating = 0;
+        });
+        //Clearing CKEditor data
+        CKEDITOR.instances['row1_editor'].setData('');
+    });
+
+    //for Star Ratings value
+    var rating = 0;
+    $('li').click(function () {
+        rating = $(this).data('value');
+    });
+
+    $("#btnSaveModalData").on('click',function(){
+        //var ckEditorData = CKEDITOR.instances['row1_editor'].getData();                       //getData() gets it with html tags as well
+        var ckEditorData = CKEDITOR.instances['row1_editor'].document.getBody().getText();      //document.getBody().getText() gets it with only plain text
+        alert("ckeditor data: "+ckEditorData+ " RATING: "+rating+" shiftId "+shiftId);
+
+        $('#formShiftsEdit').append('<input type="hidden" name="ckEditorData" value='+ckEditorData+' />');
+        $('#formShiftsEdit').append('<input type="hidden" name="rating" value='+rating+' />');
+        $('#formShiftsEdit').append('<input type="hidden" name="shiftId" value='+shiftId+' />');
+
+    });
+
+    //for delete shift modal
+    $('#deleteModal').on('show.bs.modal', function (e) {
+        var opener=e.relatedTarget;
+        shiftId=$(opener).attr('shift-id');
+        $('#shiftId').text(shiftId);
+    });
+    $('#deleteModal').on('hidden.bs.modal', function () {
+        shiftId = null;
+    });
+    $("#btnYesDelete").on('click',function(){
+        $('#formShiftsEdit').append('<input type="hidden" name="shiftId" value='+shiftId+' />');
+
+    });
 </script>
 <!--/START & END CALENDAR JS-->
 <!--Star Rating JS-->
@@ -554,8 +578,7 @@ session_start();
 <!--CKEditor JS-->
 <script src="../../assets/ckeditor/ckeditor.js" type="text/javascript"></script>
 <script>
-    CKEDITOR.replace('row1_editor');
-    CKEDITOR.replace('row2_editor');
+    CKEDITOR.replace('row1_editor',{height:150});
 </script>
 <!--/CKEditor JS-->
 </body>
