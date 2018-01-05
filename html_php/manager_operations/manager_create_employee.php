@@ -251,7 +251,10 @@ if (!isset($_SESSION['userName'])) {
 <script src="../../app-assets/js/core/app.js" type="text/javascript"></script>
 <!-- END ROBUST JS-->
 <!-- BEGIN PAGE LEVEL JS-->
-
+<script src="../../app-assets/js/scripts/pages/dashboard-lite.js" type="text/javascript"></script>
+<script src="../../assets/js/dhruvin_js/address_autocomplete.js" type="text/javascript"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCFlizZVKgKqJxlylxGg74orpJaWC5Z_sU&libraries=places&callback=initAutocomplete"
+        async defer></script>
 <!-- END PAGE LEVEL JS-->
 </body>
 </html>
