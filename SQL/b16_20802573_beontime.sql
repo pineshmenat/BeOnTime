@@ -110,20 +110,18 @@ INSERT INTO `dummytable` (`Latitude`, `Longitude`, `City`) VALUES
 CREATE TABLE IF NOT EXISTS `employeedesignationmaster` (
   `empDesignationId` tinyint(4) NOT NULL AUTO_INCREMENT,
   `empDesignationName` varchar(45) NOT NULL,
+  `payPerHour` decimal(10,2) NOT NULL,
   `EntryDateTime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `ModDateTime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `ModifiedBy` int(11) NOT NULL,
   PRIMARY KEY (`empDesignationId`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `employeedesignationmaster`
 --
 
-INSERT INTO `employeedesignationmaster` (`empDesignationId`, `empDesignationName`, `EntryDateTime`, `ModDateTime`, `ModifiedBy`) VALUES
-(1, 'Expert', '2017-12-06 00:14:34', '2017-12-06 00:14:34', 10001),
-(2, 'Intermediate', '2017-12-06 00:14:34', '2017-12-06 00:14:34', 10001),
-(3, 'Junior', '2017-12-06 00:14:34', '2017-12-06 00:14:34', 10001);
+INSERT INTO `employeedesignationmaster` VALUES (1,'Expert', 25.00,'2017-12-06 00:14:34','2017-12-06 00:14:34',10001),(2,'Intermediate', 20.00,'2017-12-06 00:14:34','2017-12-06 00:14:34',10001),(3,'Junior', 14.05, '2017-12-06 00:14:34','2017-12-06 00:14:34',10001);
 
 -- --------------------------------------------------------
 
@@ -158,7 +156,7 @@ INSERT INTO `rolemaster` (`RoleId`, `RoleName`, `EntryDateTime`, `ModDateTime`, 
 CREATE TABLE IF NOT EXISTS `shiftmaster` (
   `ShiftId` int(11) NOT NULL AUTO_INCREMENT,
   `empDesignationId` tinyint(4) NOT NULL,
-  `AssignedBy` int(11) NOT NULL,
+  `AssignedBy` int(11) DEFAULT NULL,
   `AssignedTo` int(11) DEFAULT NULL,
   `CompanyId` int(11) NOT NULL,
   `CompanyLocationId` int(11) NOT NULL,
@@ -177,6 +175,8 @@ CREATE TABLE IF NOT EXISTS `shiftmaster` (
   `LogOutLat` decimal(11,8) DEFAULT NULL,
   `LogOutLong` decimal(11,8) DEFAULT NULL,
   `City` varchar(50) DEFAULT NULL,
+  `StarRating` tinyint(4) DEFAULT NULL,
+  `ClientReview` text DEFAULT NULL,
   PRIMARY KEY (`ShiftId`),
   KEY `FK_shiftmaster_empDesignation_Idx` (`empDesignationId`),
   KEY `FK_shiftmaster_AssignedBy_idx` (`AssignedBy`),
@@ -189,12 +189,12 @@ CREATE TABLE IF NOT EXISTS `shiftmaster` (
 -- Dumping data for table `shiftmaster`
 --
 
-INSERT INTO `shiftmaster` (`ShiftId`, `empDesignationId`, `AssignedBy`, `AssignedTo`, `CompanyId`, `CompanyLocationId`, `StartTime`, `EndTime`, `ActualWorkingStartTime`, `ActualWorkingEndTime`, `EntryDateTime`, `ModDateTime`, `ShiftStatus`, `SpecialNote`, `CurrentLat`, `CurrentLong`, `LogInLat`, `LogInLong`, `LogOutLat`, `LogOutLong`, `City`) VALUES
-(500001, 1, 10001, 10005, 1001, 10001, '2017-11-18 09:00:00', '2017-11-18 14:00:00', NULL, NULL, '2017-12-06 00:16:51', '2017-12-06 00:16:51', 'N', NULL, '43.65389990', '-79.38113870', NULL, NULL, NULL, NULL, 'Toronto'),
-(500002, 2, 10001, 10007, 1002, 10003, '2017-11-20 09:00:00', '2017-11-20 14:00:00', NULL, NULL, '2017-12-06 00:16:51', '2017-12-06 00:16:51', 'A', NULL, '43.64662060', '-79.38857800', NULL, NULL, NULL, NULL, 'Toronto'),
-(500003, 3, 10001, 10007, 1001, 10002, '2017-11-21 07:00:00', '2017-11-21 12:00:00', NULL, NULL, '2017-12-06 00:16:51', '2017-12-06 00:16:51', 'R', NULL, '43.63562720', '-79.41721870', NULL, NULL, NULL, NULL, NULL),
-(500004, 1, 10001, 10007, 1001, 10001, '2017-12-16 17:03:00', '2017-12-16 22:00:00', NULL, NULL, '2017-11-20 09:00:00', '2017-11-20 09:00:00', 'A', NULL, '43.64097800', '-79.35685930', NULL, NULL, NULL, NULL, NULL),
-(500006, 1, 10001, 10007, 1001, 10001, '2018-01-01 22:40:00', '2018-01-01 23:50:00', '2018-01-01 23:01:44', '2018-01-01 23:05:01', '2017-11-20 09:00:00', '2017-11-20 09:00:00', 'R', NULL, '43.63039040', '-79.65433450', NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `shiftmaster` (`ShiftId`, `empDesignationId`, `AssignedBy`, `AssignedTo`, `CompanyId`, `CompanyLocationId`, `StartTime`, `EndTime`, `ActualWorkingStartTime`, `ActualWorkingEndTime`, `EntryDateTime`, `ModDateTime`, `ShiftStatus`, `SpecialNote`, `CurrentLat`, `CurrentLong`, `LogInLat`, `LogInLong`, `LogOutLat`, `LogOutLong`, `City`, `StarRating`,`ClientReview`) VALUES
+(500001, 1, 10001, 10005, 1001, 10001, '2017-11-18 09:00:00', '2017-11-18 14:00:00', NULL, NULL, '2017-12-06 00:16:51', '2017-12-06 00:16:51', 'N', NULL, '43.65389990', '-79.38113870', NULL, NULL, NULL, NULL, 'Toronto', NULL, NULL),
+(500002, 2, 10001, 10007, 1002, 10003, '2017-11-20 09:00:00', '2017-11-20 14:00:00', NULL, NULL, '2017-12-06 00:16:51', '2017-12-06 00:16:51', 'A', NULL, '43.64662060', '-79.38857800', NULL, NULL, NULL, NULL, 'Toronto', NULL, NULL),
+(500003, 3, 10001, 10007, 1001, 10002, '2017-11-21 07:00:00', '2017-11-21 12:00:00', NULL, NULL, '2017-12-06 00:16:51', '2017-12-06 00:16:51', 'R', NULL, '43.63562720', '-79.41721870', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(500004, 1, 10001, 10007, 1001, 10001, '2017-12-16 17:03:00', '2017-12-16 22:00:00', NULL, NULL, '2017-11-20 09:00:00', '2017-11-20 09:00:00', 'A', NULL, '43.64097800', '-79.35685930', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(500006, 1, 10001, 10007, 1001, 10001, '2018-01-01 22:40:00', '2018-01-01 23:50:00', '2018-01-01 23:01:44', '2018-01-01 23:05:01', '2017-11-20 09:00:00', '2017-11-20 09:00:00', 'R', NULL, '43.63039040', '-79.65433450', NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
