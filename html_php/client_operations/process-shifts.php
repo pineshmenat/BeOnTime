@@ -34,4 +34,4 @@ for ($i=0; $i<count($shiftsDateArray); $i++){
     ClientSideDB::insertShifts($employeeDesignationId, $companyId, $companyLocationId, $dateStartTime, $dateEndTime);
 }
 
-echo 'New Shifts created.';
+echo 'New Shift(s) created.';
