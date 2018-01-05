@@ -168,12 +168,14 @@ $designations = ClientSideDB::getEmployeeDesignations();
                                     <i class="icon-android-locate font-large-2 white"></i>
                                 </div>
                                 <div class="form-group p-2 bg-light-green white media-body">
-                                    <select class="form-control" id="sel1">
-                                        <option>Select Location</option>
+                                    <select class="form-control" id="sel1" name="companyLocation" required>
+                                        <option value="">Select Location</option>
                                         <?php
                                         foreach ($companyLocations as $loc)
                                         { ?>
-                                            <option value="<?=$loc->getCompanyLocationId() ?>"><?=$loc->getAddress().', '.$loc->getCity().', '.$loc->getPostalCode() ?></option>
+                                            <option
+                                                    <?php if(isset($_POST['companyLocation']) && $_POST['companyLocation'] == $loc->getCompanyLocationId()){echo 'selected';}?>
+                                                    value="<?=$loc->getCompanyLocationId() ?>"><?=$loc->getAddress().', '.$loc->getCity().', '.$loc->getPostalCode() ?></option>
                                             <?php
                                         } ?>
                                     </select>
@@ -188,12 +190,14 @@ $designations = ClientSideDB::getEmployeeDesignations();
                                     <i class="icon-person font-large-2 white"></i>
                                 </div>
                                 <div class="form-group p-2 bg-amber white media-body">
-                                    <select class="form-control" id="sel2">
-                                        <option>Select Job Designation</option>
+                                    <select class="form-control" id="sel2" name="jobDesignation" required>
+                                        <option value="">Select Job Designation</option>
                                         <?php
                                         foreach ($designations as $d => $dVal)
                                         { ?>
-                                            <option value="<?=$d ?>"><?=$dVal ?></option>
+                                            <option
+                                                    <?php if(isset($_POST['jobDesignation']) && $_POST['jobDesignation'] == $d){echo 'selected';}?>
+                                                    value="<?=$d ?>"><?=$dVal ?></option>
                                             <?php
                                         } ?>
                                     </select>
@@ -212,12 +216,12 @@ $designations = ClientSideDB::getEmployeeDesignations();
                                     <i class="icon-android-calendar font-large-2 white"></i>
                                 </div>
                                 <div style="overflow: visible" class="p-2 bg-grey white media-body">
-                                    <!--<input type="date" id="startDate" name="startDate">-->
                                     <div class="form-group">
                                         <div class='input-group date' id='datetimepicker6'>
-                                            <input type='text' id="selectedStartDate" name="selectedStartDate" class="form-control"/>
+                                            <input type='text' id="selectedStartDate" name="selectedStartDate" required
+                                                   value="<?php if(isset($_POST['selectedStartDate'])){echo $_POST['selectedStartDate'];}?>"
+                                                   class="form-control"/>
                                             <span class="input-group-addon">
-                                                <!--<span class="glyphicon glyphicon-calendar"></span>-->
                                                 <i class="icon-android-calendar font-size-large black"></i>
                                             </span>
                                         </div>
@@ -233,12 +237,12 @@ $designations = ClientSideDB::getEmployeeDesignations();
                                     <i class="icon-android-calendar font-large-2 white"></i>
                                 </div>
                                 <div style="overflow: visible" class="p-2 bg-grey white media-body">
-                                    <!--<input type="date" id="endDate" name="endDate">-->
                                     <div class="form-group">
                                         <div class='input-group date' id='datetimepicker7'>
-                                            <input type='text' id="selectedEndDate" name="selectedEndDate" class="form-control"/>
+                                            <input type='text' id="selectedEndDate" name="selectedEndDate" required
+                                                   value="<?php if(isset($_POST['selectedEndDate'])){echo $_POST['selectedEndDate'];}?>"
+                                                   class="form-control"/>
                                             <span class="input-group-addon">
-                                                <!--<span class="glyphicon glyphicon-calendar"></span>-->
                                                 <i class="icon-android-calendar font-size-large black"></i>
                                             </span>
                                         </div>
@@ -248,46 +252,17 @@ $designations = ClientSideDB::getEmployeeDesignations();
                         </div>
                     </div>
                 </div>
-
-                <!--<div class="row mt-2 col-md-12">
-                    <div class="col-xl-6 col-lg-6 col-xs-12">
-                        <div class="card-body">
-                            <div class="media">
-                                <div class="p-2 text-xs-center bg-grey bg-darken-2 media-left media-middle">
-                                    <i class="icon-android-calendar font-large-2 white"></i>
-                                </div>
-                                <div class="p-2 bg-grey white media-body">
-                                    <input type="date" id="startDate" name="startDate">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xl-6 col-lg-6 col-xs-12">
-                        <div class="card-body">
-                            <div class="media">
-                                <div class="p-2 text-xs-center bg-grey bg-darken-2 media-left media-middle">
-                                    <i class="icon-android-calendar font-large-2 white"></i>
-                                </div>
-                                <div class="p-2 bg-grey white media-body">
-                                    <input type="date" id="endDate" name="endDate">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>-->
                 <!--/Start & End Calender-->
                 <div class="row mt-2 col-md-12">
                     <div class="row">
                         <div class="col-xl-12 col-lg-6 col-xs-12">
                             <div class="card-body">
                                 <div class="media">
-                                    <!--<div class="col-xl-0 col-lg-6 col-xs-12"></div>-->
                                     <div class="col-xl-12 col-lg-6 col-xs-12"
                                          class="p-2 text-xs-center bg-accent-2 media-left media-middle">
                                         <input style='border-radius: 0 !important; '
                                                type="submit" class="btn btn-info btn-lg btn-block" value="Display Calendar">
                                     </div>
-                                    <!--<div class="col-xl-0 col-lg-6 col-xs-12"></div>-->
                                 </div>
                             </div>
                         </div>
@@ -295,7 +270,11 @@ $designations = ClientSideDB::getEmployeeDesignations();
                 </div>
             </form>
             <?php
-            if(isset($_POST['selectedStartDate']) and isset($_POST['selectedEndDate'])) {
+            if(isset($_POST['selectedStartDate']) and !empty($_POST['selectedStartDate'])
+                    and isset($_POST['selectedEndDate'])  and !empty($_POST['selectedEndDate'])
+                    and isset($_POST['companyLocation'])  and !empty($_POST['companyLocation'])
+                    and isset($_POST['jobDesignation'])  and !empty($_POST['jobDesignation'])
+            ) {
             $sd = date('Y-m-d', strtotime($_POST['selectedStartDate']));
             $ed = date('Y-m-d', strtotime($_POST['selectedEndDate']));
             $startDate = new DateTime($sd);
@@ -312,7 +291,7 @@ $designations = ClientSideDB::getEmployeeDesignations();
             <!--/Form 1 with Location Designation StartDate EndDate-->
 
             <!--Form 2 for Calender Time Slider-->
-            <form id="formCreateShifts" method="post" action="client-db-operations.php">
+            <form id="formCreateShifts" method="post" action="">
                 <div class="row mt-2 col-md-12">
                     <?php
                     foreach ($period as $p) {
@@ -476,8 +455,9 @@ $designations = ClientSideDB::getEmployeeDesignations();
                 'employeeDesignationId':employeeDesignationId,
             },
             function(response,status){  // Required Callback Function
-                alert("*----Received Data----*\n\nResponse : " + response+"\n\nStatus : " + status);//"response"  receives - whatever written in echo of above PHP script.
-                //window.location = 'process-shifts.php';
+                //alert("*----Received Data----*\n\nResponse : " + response+"\n\nStatus : " + status);//"response"  receives - whatever written in echo of above PHP script.
+                alert(response);
+                window.location = 'client-create-shift.php';
             }
         );
 
