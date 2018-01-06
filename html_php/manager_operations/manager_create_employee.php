@@ -4,6 +4,11 @@ session_start();
 if (!isset($_SESSION['userName'])) {
     header("location: ../login/login.php");
 }
+else{
+    if($_POST['modify']){
+        echo $_POST['employeeId'];
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en" data-textdirection="ltr" class="loading">

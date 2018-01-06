@@ -1,10 +1,33 @@
 <?php
 session_start();
+require "../model/CompanyDB.php";
+$errorDisplayMessage="";
 if(!isset($_SESSION['userName'])) {
     header("location:../login/login.php");
 }
+else{
+    $companyId = $_SESSION['companyId'];
+    $ids = CompanyDB::getAllEmployeeID($companyId);
+    $provinces = CompanyDB::getAllProvince($companyId);
+    $cities = CompanyDB::getAllCities($companyId);
+    if(isset($_POST['search'])){
+        $employeeId = $_POST['employeeID'];
+        $province = $_POST['province'];
+        $city = $_POST['city'];
+        $firstname = $_POST['firstname'];
+        $lastname = $_POST['lastname'];
+        if($employeeId != "0" || $province || "0" || $city != "0" || !empty($firstname) || !empty($lastname)) {
+            $employeerecords = CompanyDB::getSelectedEmployee($companyId, $employeeId, $province, $city, $firstname, $lastname);
+           /* foreach ($employeerecords as $employeerecord){
+                echo $employeerecord['UserId'];
+            }*/
+        }
+        else{
+            $errorDisplayMessage = "Alteast one field should be selected";
+        }
+    }
 
-
+}
 ?>
 <!DOCTYPE html>
 <html lang="en" data-textdirection="ltr" class="loading">
@@ -155,17 +178,92 @@ if(!isset($_SESSION['userName'])) {
 <!-- / main menu-->
 <div class="app-content content container-fluid">
     <div class="content-wrapper">
-        <div class="content-header row">
-            <div class="row">
-                <div class="col-xl-8 col-lg-12">
-                    <img src="../../assets/images/logo.png" alt="beontime_logo" width="639" height="165">
-                </div>
-            </div>
-        </div>
-        <div class="content-body">
-            <h1>Employee manage</h1>
+        <div class="content-header row"></div>
+            <div class="content-body">
+                <form action="" method="post">
+                    <div class="row mt-2 ml-2 col-md-12">
+                        <div class="col-xl-2 col-lg-3 col-xs-12">
+                            <div class="card-body">
+                            <select class="form-control" name="employeeID">
+                                <option value="0">Select ID</option>
+                                <?php foreach ($ids as $id): ?>
+                                <option value="<?php echo $id['UserId'] ?>" <?php if(isset($_POST['employeeID'])){echo $_POST['employeeID'] == $id['UserId'] ? ' selected="selected"' : '' ;} ?> ><?php echo $id['UserId']; ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                        </div>
+                        <div class="col-xl-2 col-lg-3 col-xs-12">
+                            <select class="form-control" name="province">
+                                <option value="0">Select Province</option>
+                                <?php foreach ($provinces as $province): ?>
+                                    <option value="<?php echo $province['Province'] ?>" <?php if(isset($_POST['province'])){echo $_POST['province'] == $province['Province'] ? ' selected="selected"' : '' ;} ?> ><?php echo $province['Province'];?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                        <div class="col-xl-2 col-lg-3 col-xs-12">
+                            <select class="form-control" name="city">
+                                <option value="0">Select City</option>
+                                <?php foreach ($cities as $city): ?>
+                                    <option value="<?php echo $city['City'] ?>" <?php if(isset($_POST['city'])){echo $_POST['city'] == $city['City'] ? ' selected="selected"' : '' ;} ?> ><?php echo $city['City'];?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                        <div class="col-xl-2 col-lg-3 col-xs-12">
+                            <input class="form-control" name="firstname" id="firstname" placeholder="First Name" value="<?php if(isset($_POST['firstname'])){echo $_POST['firstname'];}?>"/>
+                        </div>
+                        <div class="col-xl-2 col-lg-3 col-xs-12">
+                            <input class="form-control" name="lastname" id="lastname" placeholder="Last Name" value="<?php if(isset($_POST['lastname'])){echo $_POST['lastname'];}?>"/>
+                        </div>
+                    </div>
+                    <div class="row mt-1 ml-3 col-md-12 help-block text-danger"><span><?php echo $errorDisplayMessage; ?></span></div>
+                    <div class="row mt-1 col-md-12 ml-3">
+                        <input class="btn btn-success btn-lg font-weight-bold" type="submit" name="search" id="search" value="Search"/>
+                    </div>
+                </form>
         </div>
     </div>
+    <div class="row mt-1 col-md-12"></div>
+    <?php if(empty($employeerecords)){ ?>
+        <p class="row mt-1 ml-3 col-md-12 help-block text-danger"><span>No records found!</span></p>
+    <?php }else{ ?>
+    <div class="table-responsive">
+        <form action="manager_create_employee.php" method="post">
+        <table class="table table-condensed">
+            <thead>
+                <tr>
+                    <th>Employee ID</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>City</th>
+                    <th>Province</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($employeerecords as $employeerecord): ?>
+                <tr>
+                    <td><input type="radio" name="employeeId" value="<?php echo $employeerecord['UserId'] ?>" name="employeeId"><?php echo $employeerecord['UserId'] ?></td>
+                    <td><?php echo $employeerecord['FirstName'] ?></td>
+                    <td><?php echo $employeerecord['LastName'] ?></td>
+                    <td><?php echo $employeerecord['City'] ?></td>
+                    <td><?php echo $employeerecord['Province'] ?></td>
+                    <td><?php echo "Status"; ?></td>
+                </tr>
+                <?php endforeach;?>
+            </tbody>
+        </table>
+            <div class="row mt-1 col-md-12">
+                <div align="center" class="col-xl-2 col-lg-2 col-xs-12">
+                    <input class="btn btn-success btn-lg font-weight-bold" value="Modify" id="modify" type="submit" name="modify"/>
+                </div>
+                <div class="col-xl-2 col-lg-2 col-xs-12">
+                    <input class="btn btn-success btn-lg font-weight-bold" id="enable/disable" value="Enable/Disable" type="submit" name="enable/disable"/>
+                </div>
+            </div>
+        </form>
+    </div>
+    <?php } ?>
+    <div class="row mt-1 col-md-12"></div>
 </div>
 <!-- ////////////////////////////////////////////////////////////////////////////-->
 
