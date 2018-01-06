@@ -125,25 +125,25 @@ if (!isset($_SESSION['userId'])) {
                         <a href="manager_assign_shift_frontend.php" data-i18n="nav.page_layouts.1_column" class="menu-item">Assign Shift</a>
                     </li>
                     <li class="active">
-                        <a href="manager_view_shift_frontend.php" data-i18n="nav.page_layouts.2_columns" class="menu-item">View Shift</a>
+                        <a href="manager_view_shift_frontend.php" data-i18n="nav.page_layouts.1_column" class="menu-item">View Shift</a>
                     </li>
                     <li>
-                        <a href="manager_track_emphours.php" data-i18n="nav.page_layouts.2_columns" class="menu-item">Track Emp's Workhour</a>
+                        <a href="manager_track_emphours.php" data-i18n="nav.page_layouts.1_column" class="menu-item">Track Emp's Workhour</a>
                     </li>
                     <li>
-                        <a href="manager_track_employee.php" data-i18n="nav.page_layouts.2_columns" class="menu-item">Track Emp's Position</a>
+                        <a href="manager_track_employee.php" data-i18n="nav.page_layouts.1_column" class="menu-item">Track Emp's Position</a>
                     </li>
                     <li>
-                        <a href="manager_create_employee.php" data-i18n="nav.page_layouts.2_columns" class="menu-item">Create Employee</a>
+                        <a href="manager_create_employee.php" data-i18n="nav.page_layouts.1_column" class="menu-item">Create Employee</a>
                     </li>
                     <li>
-                        <a href="manager_manage_employee.php" data-i18n="nav.page_layouts.2_columns" class="menu-item">Manage Employee</a>
+                        <a href="manager_manage_employee.php" data-i18n="nav.page_layouts.1_column" class="menu-item">Manage Employee</a>
                     </li>
                     <li>
-                        <a href="manager_edit_companyprofile.php" data-i18n="nav.page_layouts.2_columns" class="menu-item">Edit Company's Profile</a>
+                        <a href="manager_edit_companyprofile.php" data-i18n="nav.page_layouts.1_column" class="menu-item">Edit Company's Profile</a>
                     </li>
                     <li>
-                        <a href="manager_view_companyprofile.php" data-i18n="nav.page_layouts.2_columns" class="menu-item">View Company's Profile</a>
+                        <a href="manager_view_companyprofile.php" data-i18n="nav.page_layouts.1_column" class="menu-item">View Company's Profile</a>
                     </li>
                 </ul>
             </li>
@@ -177,10 +177,8 @@ if (!isset($_SESSION['userId'])) {
                                     <i class="icon-android-home font-large-1 white"></i>
                                 </div>
                                 <div class="form-group p-1 bg-light-green white media-body">
-                                    <select class="form-control">
-                                        <option disabled selected>Select Company</option>
-                                        <option>Company_A</option>
-                                        <option>Company_B</option>
+                                    <select id="companySelection" class="form-control">
+                                        <option value="" selected>Select Company</option>
                                     </select>
                                 </div>
                             </div>
@@ -195,13 +193,8 @@ if (!isset($_SESSION['userId'])) {
                                     <i class="icon-android-locate font-large-1 white"></i>
                                 </div>
                                 <div class="form-group p-1 bg-green white media-body">
-                                    <select class="form-control">
+                                    <select id="companyLocationSelection" class="form-control">
                                         <option disabled selected>Select Location</option>
-                                        <option>Company_Location_A</option>
-                                        <option>Company_Location_B</option>
-                                        <option>Company_Location_C</option>
-                                        <option>Company_Location_D</option>
-                                        <option>Company_Location_E</option>
                                     </select>
                                 </div>
                             </div>
@@ -217,7 +210,7 @@ if (!isset($_SESSION['userId'])) {
                                 </div>
                                 <div style="overflow: visible" class="form-group p-1 bg-blue white media-body">
                                     <!--<input type="date" id="startDate" name="startDate">-->
-                                    <div class='input-group date' id='start_date_time_picker'>
+                                    <div class='input-group date' id='startDateTimePicker'>
                                         <input type='text' class="form-control" placeholder="Start Date"/>
                                         <span class="input-group-addon">
                                                 <i class="icon-android-calendar font-size-large black"></i>
@@ -237,7 +230,7 @@ if (!isset($_SESSION['userId'])) {
                                 </div>
                                 <div style="overflow: visible" class="form-group p-1 bg-blue-grey white media-body">
                                     <!--<input type="date" id="endDate" name="endDate">-->
-                                    <div class='input-group date' id='end_date_time_picker'>
+                                    <div class='input-group date' id='endDateTimePicker'>
                                         <input type='text' class="form-control" placeholder="End Date"/>
                                         <span class="input-group-addon">
                                                 <i class="icon-android-calendar font-size-large black"></i>
@@ -249,47 +242,45 @@ if (!isset($_SESSION['userId'])) {
                     </div>
                 </div>
 
+                <!--                error display-->
+                <div id="errorDisplayInBasePage_1" class="row mt-1 col-md-12"></div>
+
                 <!--                search shift button-->
                 <div class="row mt-1 col-md-12">
-                    <div class="col-xl-1 col-lg-1 col-xs-12" align="center">
-                        <button type="button" formmethod="post" class="btn btn-success btn-lg font-weight-bold">Search Shift</button>
+                    <div class="col-xl-2 col-lg-2 col-xs-12" align="center">
+                        <button type="button" id="btnSearchShift" formmethod="post" class="btn btn-block btn-success font-weight-bold">Search Shift</button>
                     </div>
 
                     <div class="col-xl-11 col-lg-11 col-xs-12">
                     </div>
                 </div>
 
+                <!--                error display-->
+                <div id="errorDisplayInBasePage_2" class="row mt-1 col-md-12"></div>
+
             </form>
 
             <!--            For make a space line-->
             <div class="row mt-1 col-md-12"></div>
 
+
             <!--            Display search result here-->
-            <div id="shift_display" class="table-responsive">
+            <div id="shiftDisplay" class="table-responsive">
 
             </div>
 
-            <!--            3 buttons-->
+            <!--            2 buttons-->
             <div class="row mt-1 col-md-12">
-
-                <!--                Unassign Employee button-->
-                <div class="col-xl-3 col-lg-3 col-xs-3" align="center">
-                    <button type="button" formmethod="post" class="btn btn-block btn-danger font-weight-bold" data-toggle="modal"
-                            data-target="#unassign_employee">Unassign Employee
-                    </button>
-                </div>
 
                 <!--                Cancel Shift button-->
                 <div class="col-xl-2 col-lg-2 col-xs-2">
-                    <button type="button" formmethod="post" class="btn btn-block btn-danger font-weight-bold" data-toggle="modal"
-                            data-target="#cancel_shift">Cancel Shift
+                    <button type="button" id="btnCancelShift" formmethod="post" class="btn btn-block btn-danger font-weight-bold" disabled>Cancel Shift
                     </button>
                 </div>
 
                 <!--                Activate Shift button-->
                 <div class="col-xl-2 col-lg-2 col-xs-2">
-                    <button type="button" formmethod="post" class="btn btn-block btn-success font-weight-bold" data-toggle="modal"
-                            data-target="#activate_shift">Activate Shift
+                    <button type="button" id="btnActivateShift" formmethod="post" class="btn btn-block btn-success font-weight-bold" disabled>Activate Shift
                     </button>
                 </div>
 
@@ -303,92 +294,22 @@ if (!isset($_SESSION['userId'])) {
         </div>
     </div>
 
-    <!--   modal for clicking "unassign_employee" button-->
-    <div class="modal fade" id="unassign_employee" tabindex="-1" role="dialog" aria-labelledby="largeModal" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
+    <!-- Modal for operation result display-->
+    <div id="operationResultDisplay" class="modal fade" id="myModal" role="dialog">
+        <div class="modal-dialog">
             <div class="modal-content">
-
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h4 class="modal-title" id="myModalLabel">Selected Shift(s)</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Info</h4>
                 </div>
-
-                <div class="modal-body">
-                    <div class="container">
-
-                    </div>
-
-                </div>
+                <div id="operationResultInfo" class="modal-body"></div>
                 <div class="modal-footer">
-                    <div class="col-xs-7"></div>
-                    <div class="col-xs-3">
-                        <button type="button" class="btn btn-block btn-success font-weight-bold">Unassign</button>
-                    </div>
-                    <div class="col-xs-2">
-                        <button type="button" class="btn btn-block btn-default" data-dismiss="modal">Close</button>
-                    </div>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!--   modal for clicking "cancel_shift" button-->
-    <div class="modal fade" id="cancel_shift" tabindex="-1" role="dialog" aria-labelledby="largeModal" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h4 class="modal-title" id="myModalLabel">Cancel Shift(s)</h4>
-                </div>
-
-                <div class="modal-body">
-                    <div class="container">
-
-                    </div>
-
-                </div>
-                <div class="modal-footer">
-                    <div class="col-xs-7"></div>
-                    <div class="col-xs-3">
-                        <button type="button" class="btn btn-block btn-success font-weight-bold">Cancel Shift</button>
-                    </div>
-                    <div class="col-xs-2">
-                        <button type="button" class="btn btn-block btn-default" data-dismiss="modal">Close</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!--   modal for clicking "activate_shift" button-->
-    <div class="modal fade" id="activate_shift" tabindex="-1" role="dialog" aria-labelledby="largeModal" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h4 class="modal-title" id="myModalLabel">Activate Shift(s)</h4>
-                </div>
-
-                <div class="modal-body">
-                    <div class="container">
-
-                    </div>
-
-                </div>
-                <div class="modal-footer">
-                    <div class="col-xs-7"></div>
-                    <div class="col-xs-3">
-                        <button type="button" class="btn btn-block btn-success font-weight-bold">Activate Shift</button>
-                    </div>
-                    <div class="col-xs-2">
-                        <button type="button" class="btn btn-block btn-default" data-dismiss="modal">Close</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 
 </div>
 <!-- / main content-->
@@ -429,8 +350,9 @@ if (!isset($_SESSION['userId'])) {
 <script src="../../assets/js/datetimepicker/transition.js" type="text/javascript"></script>
 <script src="../../assets/js/datetimepicker/collapse.js" type="text/javascript"></script>
 <!--/START & END CALENDAR JS-->
-
+<!--Zhongjie JS-->
 <script src="../../assets/js/zhongjie_js/date_time_picker.js" type="text/javascript"></script>
-
+<script src="../../assets/js/zhongjie_js/manager_view_shift_frontend.js" type="text/javascript"></script>
+<!--/Zhongjie JS-->
 </body>
 </html>

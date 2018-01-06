@@ -1,7 +1,10 @@
 const backendURL = "./manager_assign_shift_backend.php";
 const startTimeFormatted = "00:00:00", endTimeFormatted = "23:59:59";
-var shifts, selectedShiftId, selectedShiftStartTime, selectedShiftEndTime, selectedShiftDay;
+var shifts, selectedShiftId, selectedShiftStartTime, selectedShiftEndTime, selectedShiftDay, selectedAssignedTo;
 var shiftRowselected = false;
+var selectedEmployeeId;
+var employeeRowselected = false;
+var managerId;
 
 // When page get loaded properly, issue backend an AJAX call to get company list.
 // Fill out dropdown selection with returned values.
@@ -9,10 +12,13 @@ var shiftRowselected = false;
 $(document).ready(function () {
 
     loadAllCompanys();
+
+    managerId = $('#sessionUserId').data('value');
+    // console.log("managerId: " + managerId);
 });
 
 // Company selection changes
-// run following code to get company locations.
+// run following code to get all locations of selected company.
 //
 $("#companySelection").change(function () {
 
@@ -37,6 +43,7 @@ $("#btnSearchShift").click(function () {
     // STEP 1:
     // Always clears div at first. Sometimes if users don't select any fields, the div should be display nothing.
     $("#shiftDisplay").empty();
+    $("#errorDisplayInBasePage_1").empty();
 
     var errorDisplayMessage = "";
     var companyId = "";
@@ -76,17 +83,17 @@ $("#btnSearchShift").click(function () {
     // REQUIRED: companyId, startDate and endDate
     // OPTIONAL: companyLocationId
     if (jQuery.isEmptyObject(companyId)) {
-        errorDisplayMessage += "<span>Company field is required.</span><br/>";
+        errorDisplayMessage += "<span class='text-danger'>Company field is required.</span><br/>";
     }
     if (jQuery.isEmptyObject(startDateObject)) {
-        errorDisplayMessage += "<span>Start date field is required.</span><br/>";
+        errorDisplayMessage += "<span class='text-danger'>Start date field is required.</span><br/>";
     }
     if (jQuery.isEmptyObject(endDateObject)) {
-        errorDisplayMessage += "<span>End date field is required.</span><br/>";
+        errorDisplayMessage += "<span class='text-danger'>End date field is required.</span><br/>";
     }
 //        console.log(errorDisplayMessage);
 
-    $("#errorDisplayForShiftSearch").html(errorDisplayMessage);
+    $("#errorDisplayInBasePage_1").html(errorDisplayMessage);
 
     // STEP 4:
     // If all required fields are selected and not empty, retrieve data from db, otherwise do nothing.
@@ -98,53 +105,37 @@ $("#btnSearchShift").click(function () {
 
         loadShifts(companyId, companyLocationId, startDateFormatted, startTimeFormatted, endDateFormatted, endTimeFormatted);
     }
+
+    // Reset status, so that mouseover and mouseout event can work properly
+    shiftRowselected = false;
 });
 
 // Assign employee button click
 //
-$("#btnAssignEmployee").click(function () {
+$("#btnShowAssignEmployeeModal").click(function () {
 
-    if (selectedShiftStartTime != null && selectedShiftEndTime != null && selectedShiftDay != null) {
-        // $("#selectedShiftTimeInfo").html("<p>ppppppp</p>");
-        $("#selectedShiftTimeInfo").html("<p>Selected shift will start from <b>" + selectedShiftStartTime + "</b> (<b>" + selectedShiftDay + "</b>), end at <b>" + selectedShiftEndTime + "</b></p>");
-    }
+    $("#errorDisplayInBasePage_2").empty();
 
-    // Clear error display, employee display and form.
-    // The effect of loadAllCities() method is like reset selection.
-    $("#employeeDisplay").empty();
-    $("#errorDisplayForEmployeeSearch").empty();
-    loadAllCities();
-    clearFormInModal();
+    // console.log("selectedShiftId: " + (selectedShiftId == null));
+    if (selectedShiftId == null) {
+        $("#errorDisplayInBasePage_2").html("<p class='text-danger font-weight-bold'>Please select a shift</p>");
+    } else {
 
+        if (selectedShiftStartTime != null && selectedShiftEndTime != null && selectedShiftDay != null) {
+            $("#selectedShiftTimeInfo").html("<p>Selected shift will start from <b>" + selectedShiftStartTime + "</b> (<b>" + selectedShiftDay + "</b>), end at <b>" + selectedShiftEndTime + "</b></p>");
 
-    /*    $("#errorDisplay").empty();
+            // Clear error display, employee display and form.
+            // The effect of loadAllCities() method is like reset selection.
+            $("#employeeDisplay").empty();
+            $("#errorDisplayInModal").empty();
+            loadAllCities();
+            cleanFormInModal();
 
-        var rowCount = $("input[name='shiftList']").length;
-        var selectedRowCount = $("input[name='shiftList']:checked").length;
-        // console.log("selectedRowCount: " + selectedRowCount);
-        // console.log("rowCount: " + rowCount);
-
-        // Assigning employee works only when table has shift row(s) selected
-        if(rowCount > 1) {
-            if (selectedRowCount >= 1) {
-
-                var shiftIdList = [];
-                $.each($("input[name='shiftList']:checked"), function(){
-                    shiftIdList.push($(this).val());
-                });
-
-                $("#selectEmployee").modal('show');
-
-                console.log("Selected shifts: " + shiftIdList.join(", "));
-            } else {
-                $("#errorDisplay").html("<p>Please select at least 1 shift.</p>");
-            }
+            $("#selectEmployee").modal('show');
         } else {
-            $("#errorDisplay").html("<p>Please get shift at first.</p>");
-        }*/
-
-
-    $("#selectEmployee").modal('show');
+            $("#errorDisplayInBasePage_2").html("<p class='text-danger font-weight-bold'>Error. No valid selectedShiftStartTime, or selectedShiftEndTime, or selectedShiftDay</p>");
+        }
+    }
 
 });
 
@@ -164,6 +155,7 @@ $(document).on("click", "#shiftDisplay tbody tr", function (e) {
     // Set global values
     selectedShiftId = $(this).attr('value');
     // console.log("selectedShiftId: " + selectedShiftId);
+    selectedAssignedTo = $(this).find("td.assignedTo").text();
     selectedShiftStartTime = $(this).find("td.shiftStartTime").text();
     selectedShiftEndTime = $(this).find("td.shiftEndTime").text();
     // console.log("selectedShiftStartTime: " + selectedShiftStartTime + " selectedShiftEndTime: " + selectedShiftEndTime);
@@ -217,7 +209,7 @@ $("#btnSearchEmployee").click(function () {
 
     // STEP 1:
     // Always clears div at first. Sometimes if users don't select any fields, the div should be display nothing.
-    $("#errorDisplayForEmployeeSearch").empty();
+    $("#errorDisplayInModal").empty();
 
     var errorDisplayMessage = "";
 
@@ -244,17 +236,19 @@ $("#btnSearchEmployee").click(function () {
     // REQUIRED: cityName
     // OPTIONAL: employeeId, firstName, LastName and employee desired day
     if (jQuery.isEmptyObject(cityName)) {
-        errorDisplayMessage += "<p>City field is required.</p>";
+        errorDisplayMessage += "<p class='text-danger font-weight-bold'>City field is required.</p>";
     }
 //        console.log(errorDisplayMessage);
 
-    $("#errorDisplayForEmployeeSearch").html(errorDisplayMessage);
+    $("#errorDisplayInModal").html(errorDisplayMessage);
 
     // STEP 4:
     // If all required fields are selected and not empty, retrieve data from db, otherwise do nothing.
     if (!jQuery.isEmptyObject(cityName)) {
         loadEmployees(cityName, employeeId, firstName, lastName, desiredDaySelectionInBit);
     }
+
+
 });
 
 // selectAllDesiredDays checkbox check
@@ -267,6 +261,74 @@ $("#selectAllDesiredDays").change(function () {
         $("input[name='employeeDesiredDay']").prop('checked', false);
     }
 });
+
+$(document).on("click", "#employeeDisplay tbody tr", function (e) {
+
+    // Clear all the background color
+    $("#employeeDisplay tbody tr").css("background-color", "#fff");
+    // Set the background color of clicked row to grey
+    $(this).css("background-color", "#c2c2c2");
+
+    selectedEmployeeId = $(this).attr('value');
+    // console.log("selectedEmployeeId: " + selectedEmployeeId);
+
+    employeeRowselected = true;
+});
+
+$(document).on("mouseover", "#employeeDisplay tbody tr", function (e) {
+    if (!employeeRowselected) {
+        // Clear all the background color
+        $("#employeeDisplay tbody tr").css("background-color", "#fff");
+        // Set the background color of clicked row to grey
+        $(this).css("background-color", "#c2c2c2");
+    }
+
+
+});
+
+$(document).on("mouseout", "#employeeDisplay tbody tr", function (e) {
+
+    if (!employeeRowselected) {
+        // Clear all the background color
+        $("#employeeDisplay tbody tr").css("background-color", "#fff");
+    }
+
+    // Set the background color of clicked row to grey
+    // $(this).css("background-color", "#c2c2c2");
+
+});
+
+$("#btnAssignEmployee").click(function () {
+    // console.log("selectedEmployeeId: " + selectedEmployeeId);
+
+
+    if (selectedEmployeeId == null) {
+
+        $("#errorDisplayInModal").html("<p class='text-danger font-weight-bold'>Please select an employee</p>");
+    } else {
+
+        assignEmployeeToShift();
+
+    }
+});
+
+$("#btnUndoAssignEmployee").click(function () {
+
+    $("#errorDisplayInBasePage_2").empty();
+
+    // console.log("selectedShiftId: " + (selectedShiftId == null));
+    // console.log("selectedAssignedTo: " + selectedAssignedTo);
+
+    if (selectedShiftId == null) {
+        $("#errorDisplayInBasePage_2").html("<p class='text-danger font-weight-bold'>Please select a shift</p>");
+    } else if (selectedAssignedTo == "") {
+        $("#errorDisplayInBasePage_2").html("<p class='text-danger font-weight-bold'>Selected Shift has no employee assigned</p>");
+    } else {
+        undoAssignEmployee();
+    }
+
+});
+
 
 function loadAllCompanys() {
 
@@ -339,6 +401,18 @@ function loadShifts(companyId, companyLocationId, startDateFormatted, startTimeF
             shifts = JSON.parse(this.responseText);
             // console.log("shifts: " + shifts);
             displayShifts();
+
+            // Reset disabled status before any shifts are found
+            $("#btnShowAssignEmployeeModal").attr("disabled", true);
+            $("#btnUndoAssignEmployee").attr("disabled", true);
+            selectedShiftId = null;
+            // console.log("shifts.shifts.length: " + shifts.shifts.length);
+            if (shifts.shifts.length == 0) {
+                $("#errorDisplay").html("<p class='text-danger font-weight-bold'>No shift is found</p>");
+            } else {
+                $("#btnShowAssignEmployeeModal").attr("disabled", false);
+                $("#btnUndoAssignEmployee").attr("disabled", false);
+            }
         }
     }
 
@@ -372,28 +446,44 @@ function loadEmployees(cityName, employeeId, firstName, lastName, desiredDaySele
     var paramFirstName = "firstName=" + firstName;
     var paramLastName = "lastName=" + lastName;
     var paramDesiredDaySelection = "desiredDaySelection=" + desiredDaySelectionInBit;
+    var paramSelectedShiftStartTime = "selectedShiftStartTime=" + selectedShiftStartTime;
+    var paramSelectedShiftEndTime = "selectedShiftEndTime=" + selectedShiftEndTime;
     // console.log("paramCityName: " + paramCityName);
     // console.log("paramDesiredDaySelection: " + paramDesiredDaySelection);
+    console.log(paramOperation + "&" + paramCityName + "&" + paramEmployeeId + "&" + paramFirstName + "&" + paramLastName
+        + "&" + paramDesiredDaySelection + "&" + paramSelectedShiftStartTime + "&" + paramSelectedShiftEndTime);
 
     var xmlhttp = new XMLHttpRequest();
     xmlhttp.open("POST", backendURL, true);
     // Set request header, otherwise AJAX call won't work.
     xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xmlhttp.send(paramOperation + "&" + paramCityName + "&" + paramEmployeeId + "&" + paramFirstName + "&" + paramLastName + "&" + paramDesiredDaySelection);
+    xmlhttp.send(paramOperation + "&" + paramCityName + "&" + paramEmployeeId + "&" + paramFirstName + "&" + paramLastName
+        + "&" + paramDesiredDaySelection + "&" + paramSelectedShiftStartTime + "&" + paramSelectedShiftEndTime);
 
     xmlhttp.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
 
-            console.log(this.responseText);
+            // console.log(this.responseText);
 
             var employees = JSON.parse(this.responseText);
 
-            displayEmployees(employees);
+            displayEmployees(employees, firstName, lastName);
+
+            // Always reset disabled status of btnAssignEmployee
+            $("#btnAssignEmployee").attr("disabled", false);
+            selectedEmployeeId = null;
+            // Check whether employees are found
+            // console.log("employees: " + (employees.employees.length == 0));
+            if (employees.employees.length == 0) {
+                $("#errorDisplayInModal").html("<p class='text-danger font-weight-bold'>No employee is found</p>");
+            } else {
+                $("#btnAssignEmployee").attr("disabled", false);
+            }
         }
     }
 }
 
-function clearFormInModal() {
+function cleanFormInModal() {
     $("#employeeId").val('');
     $("#firstName").val('');
     $("#lastName").val('');
@@ -433,12 +523,13 @@ function displayShifts() {
     var shiftsTable = "<table class=\"table table-condensed\">";
     shiftsTable += "<thead><tr>";
     shiftsTable += "<th>Shift Id</th>";
-    shiftsTable += "<th>Assigned By</th>";
-    shiftsTable += "<th>Company</th>";
+    shiftsTable += "<th>By</th>";
+    shiftsTable += "<th>To</th>";
     shiftsTable += "<th>Working Place</th>";
-    shiftsTable += "<th>Required Level</th>";
+    shiftsTable += "<th>Level</th>";
     shiftsTable += "<th>Start Time</th>";
     shiftsTable += "<th>End Time</th>";
+    shiftsTable += "<th>Status</th>";
     shiftsTable += "</tr></thead>";
     shiftsTable += "<tbody>";
 
@@ -446,12 +537,13 @@ function displayShifts() {
         // console.log(key + " " + value.ShiftId);
         shiftsTable += "<tr value=" + value.ShiftId + ">";
         shiftsTable += "<td>" + value.ShiftId + "</td>";
-        shiftsTable += "<td>" + value.AssignedBy + "</td>";
-        shiftsTable += "<td>" + value.CompanyName + "</td>";
+        shiftsTable += "<td class='assignedBy'>" + ((value.AssignedBy != null) ? value.AssignedBy : "") + "</td>";
+        shiftsTable += "<td class='assignedTo'>" + ((value.AssignedTo != null) ? value.AssignedTo : "") + "</td>";
         shiftsTable += "<td>" + value.Address + "</td>";
         shiftsTable += "<td>" + value.empDesignationName + "</td>";
         shiftsTable += "<td class='shiftStartTime'>" + value.StartTime + "</td>";
         shiftsTable += "<td class='shiftEndTime'>" + value.EndTime + "</td>";
+        shiftsTable += "<td>" + convertShiftStatusFromCharToString(value.ShiftStatus) + "</td>";
         shiftsTable += "<tr>";
     });
 
@@ -476,22 +568,24 @@ function displayAllCities(allCities) {
     $("#citySelection").html(citiesOption);
 }
 
-function displayEmployees(employees) {
+function displayEmployees(employees, firstName, lastName) {
 
     var EmployeesTable = "<table class=\"table table-condensed\">";
     EmployeesTable += "<thead><tr>";
     EmployeesTable += "<th class='col-sm-1'>ID</th>";
-    EmployeesTable += "<th class='col-sm-3'>Name</th>";
+    EmployeesTable += "<th class='col-sm-2'>Fristname</th>";
+    EmployeesTable += "<th class='col-sm-2'>Lastname</th>";
     EmployeesTable += "<th class='col-sm-4'>Home Address</th>";
     EmployeesTable += "<th class='col-sm-3'>Desired Day</th>";
     EmployeesTable += "</tr></thead>";
     EmployeesTable += "<tbody>";
 
     $.each(employees.employees, function (key, value) {
-        // console.log(key + " " + value.ShiftId);
+        // console.log(key + " " + value.UserId);
         EmployeesTable += "<tr value=" + value.UserId + ">";
         EmployeesTable += "<td class='col-sm-1'>" + value.UserId + "</td>";
-        EmployeesTable += "<td class='col-sm-3'>" + value.UserName + "</td>";
+        EmployeesTable += "<td class='col-sm-2'>" + value.FirstName + "</td>";
+        EmployeesTable += "<td class='col-sm-2'>" + value.LastName + "</td>";
         EmployeesTable += "<td class='col-sm-4'>" + value.Address + "</td>";
         EmployeesTable += "<td class='col-sm-3'>" + convertDesiredDayFromBitToString(value.DesiredDay) + "</td>";
         EmployeesTable += "<tr>";
@@ -503,6 +597,81 @@ function displayEmployees(employees) {
 
     // Set cursor to hand shape when mouse hover on a row in the table
     $("#employeeDisplay tbody tr").css("cursor", "pointer");
+}
+
+function assignEmployeeToShift() {
+
+    var paramOperation = "operation=assignEmployeeToShift";
+    var paramSelectedShiftId = "selectedShiftId=" + selectedShiftId;
+    var paramSelectedEmployeeId = "selectedEmployeeId=" + selectedEmployeeId;
+    var paramManagerId = "managerId=" + managerId;
+
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.open("POST", backendURL, true);
+    // Set request header, otherwise AJAX call won't work.
+    xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xmlhttp.send(paramOperation + "&" + paramSelectedShiftId + "&" + paramSelectedEmployeeId + "&" + paramManagerId);
+
+    // console.log(paramOperation + "&" + paramSelectedShiftId + "&" + paramSelectedEmployeeId + "&" + paramManagerId);
+    // console.log("selectedShiftStartTime: " + selectedShiftStartTime + " selectedShiftEndTime: " + selectedShiftEndTime);
+
+    xmlhttp.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+
+            // console.log(this.responseText);
+            var status = JSON.parse(this.responseText);
+            // console.log("status: " + status.status['success']);
+
+            // Close select employee modal
+            $("#selectEmployee").modal('toggle');
+
+            if (status.status['success']) {
+                $("#operationResultInfo").html("<p>Successfully assigned the employee</p>");
+            } else {
+                $("#operationResultInfo").html("<p>Failed to assign the employee</p>");
+            }
+            // display operationResultDisplay modal
+            $("#operationResultDisplay").modal('show');
+
+            // Refresh shift table in the base page
+            $("#btnSearchShift").click();
+
+        }
+    }
+}
+
+function undoAssignEmployee() {
+
+    // console.log("selectedShiftId: " + selectedShiftId);
+
+    var paramOperation = "operation=undoAssignEmployee";
+    var paramSelectedShiftId = "selectedShiftId=" + selectedShiftId;
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.open("POST", backendURL, true);
+    // Set request header, otherwise AJAX call won't work.
+    xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xmlhttp.send(paramOperation + "&" + paramSelectedShiftId);
+
+    xmlhttp.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+
+            // console.log(this.responseText);
+            var status = JSON.parse(this.responseText);
+            // console.log("status: " + status.status['success']);
+
+            if (status.status['success']) {
+                $("#operationResultInfo").html("<p>Employee is removed from selected shift</p>");
+            } else {
+                $("#operationResultInfo").html("<p>Failed to remove employee from selected shift</p>");
+            }
+            // display operationResultDisplay modal
+            $("#operationResultDisplay").modal('show');
+
+            // Refresh shift table in the base page
+            $("#btnSearchShift").click();
+
+        }
+    }
 }
 
 function convertDesiredDayFromStringToBit(desiredDayInString) {
@@ -628,4 +797,37 @@ function convertDayNumberToDayString(dayNumber) {
             break;
         }
     }
+}
+
+function convertShiftStatusFromCharToString(shiftStatusInChar) {
+
+    var shiftStatusInString;
+    // console.log(shiftStatusInChar);
+    switch (shiftStatusInChar) {
+        case 'N': {
+            shiftStatusInString = "New";
+            break;
+        }
+        case 'A': {
+            shiftStatusInString = "Accepted";
+            break;
+        }
+        case 'R': {
+            shiftStatusInString = "Rejected";
+            break;
+        }
+        case 'D': {
+            shiftStatusInString = "Done";
+            break;
+        }
+        case 'C': {
+            shiftStatusInString = "Cancelled";
+            break;
+        }
+        default: {
+            shiftStatusInString = "Unknown";
+            break;
+        }
+    }
+    return shiftStatusInString;
 }

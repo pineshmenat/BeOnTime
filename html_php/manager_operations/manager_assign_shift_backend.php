@@ -2,19 +2,18 @@
 //
 // By Zhongjie
 //
+use PHPMailer\PHPMailer\PHPMailer;
+//use PHPMailer\PHPMailer\Exception;
+use PHPMailer\PHPMailer\OAuth;
+use League\OAuth2\Client\Provider\Google;
+
 include "../model/db_config.php";
+require '../../assets/composer/vendor/autoload.php';
 
 $dbConnection = DB::getDBConnection();
 $ajaxCallReturn;
 
 $operation = $_POST["operation"];
-//$companyId;
-//$companyLocationId;
-//$startDateFormatted;
-//$startTimeFormatted;
-//$endDateFormatted;
-//$endTimeFormatted;
-//$cityName;
 
 // Get value if key exists in $_POST
 //
@@ -42,6 +41,9 @@ if (array_key_exists('cityName', $_POST)) {
 if (array_key_exists('employeeId', $_POST)) {
     $employeeId = $_POST['employeeId'];
 }
+if (array_key_exists('managerId', $_POST)) {
+    $managerId = $_POST['managerId'];
+}
 if (array_key_exists('firstName', $_POST)) {
     $firstName = $_POST['firstName'];
 }
@@ -51,7 +53,18 @@ if (array_key_exists('lastName', $_POST)) {
 if (array_key_exists('desiredDaySelection', $_POST)) {
     $desiredDaySelection = $_POST['desiredDaySelection'];
 }
-
+if (array_key_exists('selectedShiftId', $_POST)) {
+    $selectedShiftId = $_POST['selectedShiftId'];
+}
+if (array_key_exists('selectedEmployeeId', $_POST)) {
+    $selectedEmployeeId = $_POST['selectedEmployeeId'];
+}
+if (array_key_exists('selectedShiftStartTime', $_POST)) {
+    $selectedShiftStartTime = $_POST['selectedShiftStartTime'];
+}
+if (array_key_exists('selectedShiftEndTime', $_POST)) {
+    $selectedShiftEndTime = $_POST['selectedShiftEndTime'];
+}
 
 // Interaction with DB based on different operation keywords
 //
@@ -86,7 +99,19 @@ switch ($operation) {
     }
     case "searchEmployees": {
 
-        $ajaxCallReturn = searchEmployees($dbConnection, $cityName, $employeeId, $firstName, $lastName, $desiredDaySelection);
+        $ajaxCallReturn = searchEmployees($dbConnection, $cityName, $employeeId, $firstName, $lastName, $desiredDaySelection, $selectedShiftStartTime, $selectedShiftEndTime);
+
+        break;
+    }
+    case  "assignEmployeeToShift": {
+
+        $ajaxCallReturn = assignEmployeeToShift($dbConnection, $selectedShiftId, $selectedEmployeeId, $managerId);
+
+        break;
+    }
+    case  "undoAssignEmployee": {
+
+        $ajaxCallReturn = undoAssignEmployee($dbConnection, $selectedShiftId);
 
         break;
     }
@@ -159,16 +184,18 @@ function searchShifts($dbConnection, $companyId, $companyLocationId, $startDateF
     if (isset($companyId) && isset($companyLocationId) && isset($startDateFormatted) && isset($startTimeFormatted)
         && isset($endDateFormatted) && isset($endTimeFormatted)) {
 
-//        error_log("companyId: " . $companyId . " companyLocationId: " . $companyLocationId
-//             . " startDateFormatted: " . $startDateFormatted . " startTimeFormatted: " . $startTimeFormatted
-//             . " endDateFormatted: " . $endDateFormatted . " endTimeFormatted: " . $endTimeFormatted);
+        error_log("companyId: " . $companyId . " companyLocationId: " . $companyLocationId
+             . " startDateFormatted: " . $startDateFormatted . " startTimeFormatted: " . $startTimeFormatted
+             . " endDateFormatted: " . $endDateFormatted . " endTimeFormatted: " . $endTimeFormatted);
 
         // NOTE: Line (shiftmaster.CompanyLocationId = '$companyLocationId' OR '$companyLocationId' = '') means even if $companyLocationId is "",
         // sql query will get all locations from DB.
         $selectShiftSQL =
-            "SELECT shiftmaster.ShiftId, usermaster.UserName AssignedBy, companymaster.CompanyName, companylocationmaster.Address, employeedesignationmaster.empDesignationName, shiftmaster.StartTime, shiftmaster.EndTime
+            "SELECT shiftmaster.ShiftId, u1.UserName AssignedBy, u2.UserName AssignedTo, companylocationmaster.Address, 
+                    employeedesignationmaster.empDesignationName, shiftmaster.StartTime, shiftmaster.EndTime, shiftmaster.ShiftStatus 
                   FROM shiftmaster 
-                      JOIN usermaster ON (usermaster.UserId = shiftmaster.AssignedBy) 
+                      LEFT JOIN usermaster u1 ON (u1.UserId = shiftmaster.AssignedBy) 
+                      LEFT JOIN usermaster u2 ON (u2.UserId = shiftmaster.AssignedTo) 
                       JOIN companymaster ON (companymaster.CompanyId = shiftmaster.CompanyId) 
                       JOIN companylocationmaster ON (companylocationmaster.CompanyLocationId = shiftmaster.CompanyLocationId) 
                       JOIN employeedesignationmaster ON (employeedesignationmaster.empDesignationId = shiftmaster.empDesignationId) 
@@ -176,6 +203,7 @@ function searchShifts($dbConnection, $companyId, $companyLocationId, $startDateF
                       AND (shiftmaster.CompanyLocationId = :companyLocationId OR :companyLocationId = '') 
                       AND (StartTime >= CONCAT(:startDateFormatted, ' ', :startTimeFormatted)) 
                       AND (EndTime <= CONCAT(:endDateFormatted, ' ', :endTimeFormatted)) 
+                      AND (ShiftStatus = 'N' || ShiftStatus = 'R') 
                   ORDER BY shiftmaster.ShiftId";
 
 //        error_log("******selectShiftSQL: " . $selectShiftSQL);
@@ -218,34 +246,43 @@ function searchAllCities($dbConnection) {
     return $ajaxCallReturn;
 }
 
-function searchEmployees($dbConnection, $cityName, $employeeId, $firstName, $lastName, $desiredDaySelection) {
+function searchEmployees($dbConnection, $cityName, $employeeId, $firstName, $lastName, $desiredDaySelection, $selectedShiftStartTime, $selectedShiftEndTime) {
 
     if (isset($cityName) && isset($employeeId) && isset($firstName) && isset($lastName) && isset($desiredDaySelection)) {
-        error_log("cityName: " . $cityName . " employeeId: " . $employeeId . " firstName: " . $firstName . " lastName: " . $lastName);
+//        error_log("cityName: " . $cityName . " employeeId: " . $employeeId . " firstName: " . $firstName . " lastName: " . $lastName);
+//        error_log("desiredDaySelection: " . $desiredDaySelection);
+        error_log("selectedShiftStartTime: " . $selectedShiftStartTime . " selectedShiftEndTime: " . $selectedShiftEndTime);
+
+        $desiredDaySelection = str_replace('0', '_', $desiredDaySelection);
 //        error_log("desiredDaySelection: " . $desiredDaySelection);
 
-//        $desiredDay = convertDesiredDayFromStringToBit($desiredDaySelection);
-        $desiredDaySelection_b = "b'" . $desiredDaySelection . "'";
-        error_log("desiredDaySelection_b: " . $desiredDaySelection_b);
-
         // NOTE: RoleId=12 indicates Employee role.
-        // For desiredDaySelection field, no success if use php bindValue() method. Maybe the statement is too complicated.
+        // NOTE: starttime minus 1 hour and endtime add 1 hour. This is to give time for employee to travel to next work place.
         $selectEmployeesSQL =
-            "SELECT UserId, UserName, Address, DesiredDay 
-              FROM usermaster 
-              WHERE RoleId = 12 
-                  AND City = :cityName 
-                  AND (UserId = :employeeId OR :employeeId = '') 
-                  AND (FirstName = :firstName OR :firstName = '') 
-                  AND (LastName = :lastName OR :lastName = '') 
-                  AND lpad(bin(lpad(bin(DesiredDay & " . $desiredDaySelection_b . "), 7, '0') & " . $desiredDaySelection_b . "), 7, '0') = '" . $desiredDaySelection . "'";
+            "SELECT u.UserId, u.FirstName, u.LastName, u.Address, u.DesiredDay 
+                FROM usermaster u 
+              WHERE u.RoleId = 12 
+                AND u.City = :cityName 
+                AND (u.UserId = :employeeId OR :employeeId = '') 
+                AND (u.FirstName = :firstName OR :firstName = '') 
+                AND (u.LastName = :lastName OR :lastName = '') 
+                AND (u.DesiredDay LIKE :desiredDay) 
+                AND u.UserId NOT IN (SELECT DISTINCT u.UserId 
+                                    FROM usermaster u 
+                                      JOIN shiftmaster s ON (u.UserId = s.AssignedTo) 
+                                    WHERE u.RoleId = 12 
+                                      AND (s.StartTime BETWEEN DATE_ADD(:selectedShiftStartTime, INTERVAL -1 HOUR) AND DATE_ADD(:selectedShiftEndTime, INTERVAL 1 HOUR)) 
+                                      AND (s.EndTime BETWEEN DATE_ADD(:selectedShiftStartTime, INTERVAL -1 HOUR) AND DATE_ADD(:selectedShiftEndTime, INTERVAL 1 HOUR)))";
 
-        error_log("******select_employees_sql: " . $selectEmployeesSQL);
+//        error_log("******select_employees_sql: " . $selectEmployeesSQL);
         $pdpstm = $dbConnection->prepare($selectEmployeesSQL);
         $pdpstm->bindValue(':cityName', $cityName, PDO::PARAM_STR);
-        $pdpstm->bindValue(':employeeId', $employeeId , PDO::PARAM_STR);
-        $pdpstm->bindValue(':firstName', $firstName , PDO::PARAM_STR);
-        $pdpstm->bindValue(':lastName', $lastName , PDO::PARAM_STR);
+        $pdpstm->bindValue(':employeeId', $employeeId, PDO::PARAM_STR);
+        $pdpstm->bindValue(':firstName', $firstName, PDO::PARAM_STR);
+        $pdpstm->bindValue(':lastName', $lastName, PDO::PARAM_STR);
+        $pdpstm->bindValue(':desiredDay', $desiredDaySelection, PDO::PARAM_STR);
+        $pdpstm->bindValue(':selectedShiftStartTime', $selectedShiftStartTime, PDO::PARAM_STR);
+        $pdpstm->bindValue(':selectedShiftEndTime', $selectedShiftEndTime, PDO::PARAM_STR);
         $pdpstm->execute();
         $pdpstm->setFetchMode(PDO::FETCH_OBJ);
 //    var_dump($pdpstm);
@@ -259,106 +296,250 @@ function searchEmployees($dbConnection, $cityName, $employeeId, $firstName, $las
     return $ajaxCallReturn;
 }
 
-function convertDesiredDayFromBitToString($desiredDay) {
+function assignEmployeeToShift($dbConnection, $selectedShiftId, $selectedEmployeeId, $managerId) {
 
-    $desiredDayFormatted = [];
+    $ajaxCallReturn = "";
+    $response = [];
 
-//    error_log("desiredDay: " . $desiredDay);
+    try {
+        if (isset($selectedShiftId) && isset($selectedEmployeeId) && isset($managerId)) {
 
-    // The $desiredDay bit order is Mon, Tue, Wed, Thur, Fri, Sat and Sun
-    for ($i = 0; $i < strlen($desiredDay); $i++) {
+            $assignEmployeeToShiftSQL = "UPDATE shiftmaster 
+                                          SET AssignedBy=:managerId, AssignedTo=:selectedEmployeeId, ShiftStatus='N' 
+                                          WHERE ShiftId=:selectedShiftId";
+            $pdpstm = $dbConnection->prepare($assignEmployeeToShiftSQL);
+            $pdpstm->bindValue(':selectedEmployeeId', $selectedEmployeeId, PDO::PARAM_STR);
+            $pdpstm->bindValue(':selectedShiftId', $selectedShiftId, PDO::PARAM_STR);
+            $pdpstm->bindValue(':managerId', $managerId, PDO::PARAM_STR);
 
-        switch ($i) {
-            case 0: {
-                if ($desiredDay[$i]) {
-                    array_push($desiredDayFormatted, 'Mon');
+            $response['success'] = false;
+
+            if ($pdpstm->execute()) {
+                $response['success'] = true;
+
+                // Get user info
+                $userInfoResponse = getUserInfo($dbConnection, $selectedEmployeeId);
+                $firstName = $userInfoResponse['FirstName'];
+                $lastName = $userInfoResponse['LastName'];
+                $eMail = $userInfoResponse['EMail'];
+
+                // Get shift info
+                $shiftInfoResponse = getShiftInfo($dbConnection, $selectedShiftId);
+                $shiftId = $selectedShiftId;
+                $companyName = $shiftInfoResponse['CompanyName'];
+                $address = $shiftInfoResponse['Address'];
+                $startTime = $shiftInfoResponse['StartTime'];
+                $endTime = $shiftInfoResponse['EndTime'];
+
+//                error_log("firstName: " . $firstName . " lastName: " . $lastName . " eMail: " . $eMail);
+
+                // Specify email subject and body
+                $eMailSubject = '[BeOnTime][Employee] New Shift Notification';
+                $eMailBody = "<html>"
+                    . "Dear " . ucwords($firstName) . ' ' . ucwords($lastName) . ",<br/><br/>"
+                    . "You have a new shift. <br/><br/>"
+                    . "Shift Id: <b>" . $shiftId . "</b><br/>"
+                    . "Company Name: <b>" . $companyName . "</b><br/>"
+                    . "Address: <b>" . $address . "</b><br/>"
+                    . "Shift Start Time: <b>" . $startTime . "</b><br/>"
+                    . "Shift End Time: <b>" . $endTime . "</b><br/><br/>"
+                    . "Regards,<br/>BeOnTime project group"
+                    . "</html>";
+
+                // If email is not null and valid, send notification email
+                if (isset($eMail) && filter_var($eMail, FILTER_VALIDATE_EMAIL)) {
+                    sendNotificationEmail($eMailSubject, $eMailBody, $firstName, $lastName, $eMail);
                 }
-                break;
             }
-            case 1: {
-                if ($desiredDay[$i]) {
-                    array_push($desiredDayFormatted, 'Tue');
-                }
-                break;
-            }
-            case 2: {
-                if ($desiredDay[$i]) {
-                    array_push($desiredDayFormatted, 'Wed');
-                }
-                break;
-            }
-            case 3: {
-                if ($desiredDay[$i]) {
-                    array_push($desiredDayFormatted, 'Thur');
-                }
-                break;
-            }
-            case 4: {
-                if ($desiredDay[$i]) {
-                    array_push($desiredDayFormatted, 'Fri');
-                }
-                break;
-            }
-            case 5: {
-                if ($desiredDay[$i]) {
-                    array_push($desiredDayFormatted, 'Sat');
-                }
-                break;
-            }
-            case 6: {
-                if ($desiredDay[$i]) {
-                    array_push($desiredDayFormatted, 'Sun');
-                }
-                break;
-            }
+
+            $ajaxCallReturn = json_encode(array("status" => $response));
         }
+    } catch (Exception $e) {
+
+        $response['success'] = false;
+        $ajaxCallReturn = json_encode(array("status" => $response));
     }
-    return implode(', ', $desiredDayFormatted);
+    return $ajaxCallReturn;
 }
 
-//function convertDesiredDayFromStringToBit($desiredDaySelection) {
-//
-//    // Initalize string as all bits are set to 0
-//    $desiredDay = '0000000';
-//    $desiredDaySelectionInArray = explode(',', $desiredDaySelection);
-////    var_dump($desiredDaySelectionInArray);
-//    for ($i = 0; $i < sizeof($desiredDaySelectionInArray); $i++) {
-//        switch ($desiredDaySelectionInArray[$i]) {
-//            case 'Mon': {
-//                $bit = 0;
-//                break;
-//            }
-//            case 'Tue': {
-//                $bit = 1;
-//                break;
-//            }
-//            case 'Wed': {
-//                $bit = 2;
-//                break;
-//            }
-//            case 'Thur': {
-//                $bit = 3;
-//                break;
-//            }
-//            case 'Fri': {
-//                $bit = 4;
-//                break;
-//            }
-//            case 'Sat': {
-//                $bit = 5;
-//                break;
-//            }
-//            case 'Sun': {
-//                $bit = 6;
-//                break;
-//            }
-//        }
-//        $desiredDay[$bit] = '1';
-//    }
-//
-////    error_log("desiredDay: " . $desiredDay);
-//    return $desiredDay;
-//}
+function undoAssignEmployee($dbConnection, $selectedShiftId) {
+
+    $ajaxCallReturn = "";
+    $response = [];
+
+//    error_log("selectedShiftId in undoAssignEmployee(): " . $selectedShiftId);
+
+    try {
+        if (isset($selectedShiftId)) {
+
+            // Get shift & employee info BEFORE remove AssignTo for a shift
+            $shiftAndEmployeeInfoResponse = getShiftAndEmployeeInfo($dbConnection, $selectedShiftId);
+//            error_log("shiftInfoResponse: " . print_r($shiftInfoResponse));
+
+            $undoAssignEmployeeSQL = "UPDATE shiftmaster SET AssignedBy=NULL, AssignedTo=NULL WHERE ShiftId=:selectedShiftId";
+            $pdpstm = $dbConnection->prepare($undoAssignEmployeeSQL);
+            $pdpstm->bindValue(':selectedShiftId', $selectedShiftId, PDO::PARAM_STR);
+
+            $response['success'] = false;
+
+            if ($pdpstm->execute()) {
+                $response['success'] = true;
+
+                // If employee removal is successful, send a notification email
+                $shiftId = $selectedShiftId;
+                $companyName = $shiftAndEmployeeInfoResponse['CompanyName'];
+                $address = $shiftAndEmployeeInfoResponse['Address'];
+                $startTime = $shiftAndEmployeeInfoResponse['StartTime'];
+                $endTime = $shiftAndEmployeeInfoResponse['EndTime'];
+                $eMail = $shiftAndEmployeeInfoResponse['EMail'];
+                $firstName = $shiftAndEmployeeInfoResponse['FirstName'];
+                $lastName = $shiftAndEmployeeInfoResponse['LastName'];
+
+                // Specify email subject and body
+                $eMailSubject = '[BeOnTime][Employee] Cancel Shift Notification';
+                $eMailBody = "<html>"
+                    . "Dear " . ucwords($firstName) . ' ' . ucwords($lastName) . ",<br/><br/>"
+                    . "Below shift is cancelled. <br/><br/>"
+                    . "Shift Id: <b>" . $shiftId . "</b><br/>"
+                    . "Company Name: <b>" . $companyName . "</b><br/>"
+                    . "Address: <b>" . $address . "</b><br/>"
+                    . "Shift Start Time: <b>" . $startTime . "</b><br/>"
+                    . "Shift End Time: <b>" . $endTime . "</b><br/><br/>"
+                    . "Regards,<br/>BeOnTime project group"
+                    . "</html>";
+
+                // If email is not null and valid, send notification email
+                if (isset($eMail) && filter_var($eMail, FILTER_VALIDATE_EMAIL)) {
+                    sendNotificationEmail($eMailSubject, $eMailBody, $firstName, $lastName, $eMail);
+                }
+            }
+
+            $ajaxCallReturn = json_encode(array("status" => $response));
+        }
+    } catch (Exception $e) {
+
+        $response['success'] = false;
+        $ajaxCallReturn = json_encode(array("status" => $response));
+    }
+
+    return $ajaxCallReturn;
+}
+
+function getUserInfo($dbConnection, $selectedEmployeeId) {
+
+    $getUserInfoSQL = "SELECT FirstName, LastName, EMail from usermaster WHERE UserId=:selectedEmployeeId";
+    $pdpstm = $dbConnection->prepare($getUserInfoSQL);
+    $pdpstm->bindValue(':selectedEmployeeId', $selectedEmployeeId, PDO::PARAM_STR);
+    $pdpstm->execute();
+    $pdpstm->setFetchMode(PDO::FETCH_OBJ);
+//    var_dump($pdpstm);
+
+    $resultSet = $pdpstm->fetchAll();
+//    error_log("resultSet: " . print_r($resultSet, true));
+//    error_log("FirstName: " . $resultSet[0]->FirstName . " LastName: ". $resultSet[0]->LastName . " EMail: ". $resultSet[0]->EMail);
+    $response['FirstName'] = $resultSet[0]->FirstName;
+    $response['LastName'] = $resultSet[0]->LastName;
+    $response['EMail'] = $resultSet[0]->EMail;
+    return $response;
+}
+
+function getShiftInfo($dbConnection, $selectedShiftId) {
+
+    $getShiftInfoSQL = "SELECT s.ShiftId, c.CompanyName, cl.Address, s.StartTime, s.EndTime 
+                          FROM shiftmaster s 
+                          JOIN companymaster c ON(s.CompanyId = c.CompanyId) 
+                          JOIN companylocationmaster cl ON(s.CompanyLocationId = cl.CompanyLocationId) 
+                          WHERE s.ShiftId=:selectedShiftId";
+    $pdpstm = $dbConnection->prepare($getShiftInfoSQL);
+    $pdpstm->bindValue(':selectedShiftId', $selectedShiftId, PDO::PARAM_STR);
+    $pdpstm->execute();
+    $pdpstm->setFetchMode(PDO::FETCH_OBJ);
+//    var_dump($pdpstm);
+
+    $resultSet = $pdpstm->fetchAll();
+//    error_log("resultSet: " . print_r($resultSet, true));
+//    error_log("FirstName: " . $resultSet[0]->FirstName . " LastName: ". $resultSet[0]->LastName . " EMail: ". $resultSet[0]->EMail);
+    $response['ShiftId'] = $resultSet[0]->ShiftId;
+    $response['CompanyName'] = $resultSet[0]->CompanyName;
+    $response['Address'] = $resultSet[0]->Address;
+    $response['StartTime'] = $resultSet[0]->StartTime;
+    $response['EndTime'] = $resultSet[0]->EndTime;
+
+    return $response;
+}
+
+function getShiftAndEmployeeInfo($dbConnection, $selectedShiftId) {
+
+    error_log("selectedShiftId: " . $selectedShiftId);
+    $getShiftAndEmployeeInfoSQL = "SELECT s.ShiftId, s.AssignedTo, c.CompanyName, cl.Address, s.StartTime, s.EndTime, u.EMail, u.FirstName, u.LastName  
+                          FROM shiftmaster s 
+                          JOIN companymaster c ON(s.CompanyId = c.CompanyId) 
+                          JOIN companylocationmaster cl ON(s.CompanyLocationId = cl.CompanyLocationId) 
+                          JOIN usermaster u ON(s.AssignedTo = u.UserId) 
+                          WHERE s.ShiftId=:selectedShiftId";
+    $pdpstm = $dbConnection->prepare($getShiftAndEmployeeInfoSQL);
+    $pdpstm->bindValue(':selectedShiftId', $selectedShiftId, PDO::PARAM_STR);
+    $pdpstm->execute();
+    $pdpstm->setFetchMode(PDO::FETCH_OBJ);
+//    var_dump($pdpstm);
+
+    $resultSet = $pdpstm->fetchAll();
+    error_log("resultSet: " . print_r($resultSet, true));
+//    error_log("FirstName: " . $resultSet[0]->FirstName . " LastName: ". $resultSet[0]->LastName . " EMail: ". $resultSet[0]->EMail);
+    $response['ShiftId'] = $resultSet[0]->ShiftId;
+//    $response['AssignedTo'] = $resultSet[0]->AssignedTo;
+    $response['CompanyName'] = $resultSet[0]->CompanyName;
+    $response['Address'] = $resultSet[0]->Address;
+    $response['StartTime'] = $resultSet[0]->StartTime;
+    $response['EndTime'] = $resultSet[0]->EndTime;
+    $response['EMail'] = $resultSet[0]->EMail;
+    $response['FirstName'] = $resultSet[0]->FirstName;
+    $response['LastName'] = $resultSet[0]->LastName;
+//error_log("response: " . print_r($response));
+    return $response;
+}
+
+function sendNotificationEmail($eMailSubject, $eMailBody, $firstName, $lastName, $eMail) {
+
+    error_log("firstName: " . $firstName . " lastName: " . $lastName . "eMail" . $eMail);
+    // By using Google OAuth 2.0
+    $mail = new PHPMailer;
+    $mail->isSMTP();
+    $mail->SMTPDebug = 0;
+    $mail->Host = 'smtp.gmail.com';
+    $mail->Port = 587;
+    $mail->SMTPSecure = 'tls';
+    $mail->SMTPAuth = true;
+    $mail->AuthType = 'XOAUTH2';
+
+    $email = 'mail.beontime@gmail.com';
+    $clientId = '54609260413-6h0k89v22dej7neoc4hndh2jisos3a4a.apps.googleusercontent.com';
+    $clientSecret = 'esvUbmEqrZvXKDz-6RCx11oA';
+
+    $refreshToken = '1/qSqerD_tXh9bCwZyfa0j2vx3zIAWgFNZk2CBekgM9K4Moig2PqRA_Np5daRRAi3n';
+    $provider = new Google(['clientId' => $clientId, 'clientSecret' => $clientSecret]);
+    $mail->setOAuth(
+        new OAuth(
+            [
+                'provider' => $provider,
+                'clientId' => $clientId,
+                'clientSecret' => $clientSecret,
+                'refreshToken' => $refreshToken,
+                'userName' => $email
+            ]));
+    $mail->setFrom($email, 'BeOnTime Admin');
+    $mail->addAddress($eMail, $firstName . ' ' . $lastName);
+    $mail->Subject = $eMailSubject;
+    $mail->CharSet = 'utf-8';
+    $mail->msgHTML($eMailBody, "./", false);
+//    $mail->Body = $eMailBody;
+
+    if (!$mail->send()) {
+        error_log("Mailer Error: " . $mail->ErrorInfo);
+    } else {
+        error_log("Message sent!");
+    }
+}
 
 
 ?>

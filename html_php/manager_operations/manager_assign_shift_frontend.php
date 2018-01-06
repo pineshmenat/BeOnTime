@@ -57,6 +57,12 @@ if (!isset($_SESSION['userId'])) {
 </head>
 <body data-open="click" data-menu="vertical-menu" data-col="2-columns" class="vertical-layout vertical-menu 2-columns  fixed-navbar">
 
+
+<input type="hidden" id="sessionUserId" data-value="<?=$_SESSION['userId']; ?>" />
+<?php
+//error_log("_SESSION['userId']: " . $_SESSION['userId']);
+?>
+
 <!-- navbar-fixed-top-->
 <nav class="header-navbar navbar navbar-with-menu navbar-fixed-top navbar-semi-dark navbar-shadow">
     <div class="navbar-wrapper">
@@ -129,22 +135,22 @@ if (!isset($_SESSION['userId'])) {
                         <a href="manager_assign_shift_frontend.php" data-i18n="nav.page_layouts.1_column" class="menu-item">Assign Shift</a>
                     </li>
                     <li>
-                        <a href="manager_view_shift_frontend.php" data-i18n="nav.page_layouts.2_columns" class="menu-item">View Shift</a>
+                        <a href="manager_view_shift_frontend.php" data-i18n="nav.page_layouts.1_column" class="menu-item">View Shift</a>
                     </li>
                     <li>
-                        <a href="manager_track_emphours.php" data-i18n="nav.page_layouts.2_columns" class="menu-item">Track Emp's Workhour</a>
+                        <a href="manager_track_emphours.php" data-i18n="nav.page_layouts.1_column" class="menu-item">Track Emp's Workhour</a>
                     </li>
                     <li>
-                        <a href="manager_track_employee.php" data-i18n="nav.page_layouts.2_columns" class="menu-item">Track Emp's Position</a>
+                        <a href="manager_track_employee.php" data-i18n="nav.page_layouts.1_column" class="menu-item">Track Emp's Position</a>
                     </li>
                     <li>
-                        <a href="manager_create_employee.php" data-i18n="nav.page_layouts.2_columns" class="menu-item">Create Employee</a>
+                        <a href="manager_create_employee.php" data-i18n="nav.page_layouts.1_column" class="menu-item">Create Employee</a>
                     </li>
                     <li>
-                        <a href="manager_manage_employee.php" data-i18n="nav.page_layouts.2_columns" class="menu-item">Manage Employee</a>
+                        <a href="manager_manage_employee.php" data-i18n="nav.page_layouts.1_column" class="menu-item">Manage Employee</a>
                     </li>
                     <li>
-                        <a href="manager_view_companyprofile.php" data-i18n="nav.page_layouts.2_columns" class="menu-item">View Company's Profile</a>
+                        <a href="manager_view_companyprofile.php" data-i18n="nav.page_layouts.1_column" class="menu-item">View Company's Profile</a>
                     </li>
                 </ul>
             </li>
@@ -245,20 +251,29 @@ if (!isset($_SESSION['userId'])) {
                 </div>
 
 <!--                error display-->
-                <div id="errorDisplayForShiftSearch" class="row mt-1 col-md-12"></div>
+                <div id="errorDisplayInBasePage_1" class="row mt-1 col-md-12"></div>
 
                 <!--                search shift button-->
                 <div class="row mt-1 col-md-12">
                     <div class="col-xl-2 col-lg-2 col-xs-12" align="center">
-                        <button id="btnSearchShift" type="button" formmethod="post" class="btn btn-success btn-lg font-weight-bold">Search Shift</button>
+                        <button id="btnSearchShift" type="button" formmethod="post" class="btn btn-block btn-success font-weight-bold">Search Shift</button>
                     </div>
 
-                    <div class="col-xl-2 col-lg-2 col-xs-12">
-                        <button id="btnAssignEmployee" type="button" formmethod="post" class="btn btn-success btn-lg font-weight-bold" data-toggle="modal"
-                                data-target="#select_employee">Assign Employee
+                    <div class="col-xl-3 col-lg-3 col-xs-12">
+                        <button id="btnShowAssignEmployeeModal" type="button" formmethod="post" class="btn btn-block btn-success font-weight-bold" data-toggle="modal"
+                                data-target="#select_employee" disabled>Assign Employee
                         </button>
                     </div>
+
+                    <div class="col-xl-3 col-lg-3 col-xs-12">
+                        <button id="btnUndoAssignEmployee" type="button" formmethod="post" class="btn btn-block btn-danger font-weight-bold" disabled>Undo Assign Employee
+                        </button>
+                    </div>
+
                 </div>
+
+                <!--                error display-->
+                <div id="errorDisplayInBasePage_2" class="row mt-1 col-md-12"></div>
 
             </form>
 
@@ -269,7 +284,7 @@ if (!isset($_SESSION['userId'])) {
             <div id="shiftDisplay" class="table-responsive"></div>
 
             <!--                error display-->
-            <div id="errorDisplayForAssignShift" class="row mt-1 col-md-12"></div>
+<!--            <div id="errorDisplayForAssignShift" class="row mt-1 col-md-12"></div>-->
 
 
             <!--            To make a space line-->
@@ -350,24 +365,41 @@ if (!isset($_SESSION['userId'])) {
                         </form>
 
                         <!--                error display-->
-                        <div id="errorDisplayForEmployeeSearch" class="row mt-1 col-md-12"></div>
+                        <div id="errorDisplayInModal" class="row mt-1 col-md-12"></div>
 
                         <!--            To make a space line-->
 <!--                        <div class="row mt-1 col-md-12"></div>-->
 
                         <!--            Display employee search result here-->
                         <div id="employeeDisplay" class="table-responsive"></div>
+
                     </div>
 
                 </div>
                 <div class="modal-footer">
                     <div class="col-xs-7"></div>
                     <div class="col-xs-3">
-                        <button type="button" class="btn btn-block btn-success font-weight-bold">Assign</button>
+                        <button type="button" id="btnAssignEmployee" class="btn btn-block btn-success font-weight-bold" disabled="true">Assign</button>
                     </div>
                     <div class="col-xs-2">
                         <button type="button" class="btn btn-block btn-default" data-dismiss="modal">Close</button>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for operation result display-->
+    <div id="operationResultDisplay" class="modal fade" id="myModal" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Info</h4>
+                </div>
+                <div id="operationResultInfo" class="modal-body"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
