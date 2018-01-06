@@ -145,16 +145,16 @@ function searchShifts($dbConnection, $companyId, $companyLocationId, $startDateF
     if (isset($companyId) && isset($companyLocationId) && isset($startDateFormatted) && isset($startTimeFormatted)
         && isset($endDateFormatted) && isset($endTimeFormatted)) {
 
-//        error_log("companyId: " . $companyId . " companyLocationId: " . $companyLocationId
-//             . " startDateFormatted: " . $startDateFormatted . " startTimeFormatted: " . $startTimeFormatted
-//             . " endDateFormatted: " . $endDateFormatted . " endTimeFormatted: " . $endTimeFormatted);
+        error_log("companyId: " . $companyId . " companyLocationId: " . $companyLocationId
+             . " startDateFormatted: " . $startDateFormatted . " startTimeFormatted: " . $startTimeFormatted
+             . " endDateFormatted: " . $endDateFormatted . " endTimeFormatted: " . $endTimeFormatted);
 
         // NOTE: Line (shiftmaster.CompanyLocationId = '$companyLocationId' OR '$companyLocationId' = '') means even if $companyLocationId is "",
         // sql query will get all locations from DB.
         $selectShiftSQL =
             "SELECT shiftmaster.ShiftId, u1.UserName AssignedBy, u2.UserName AssignedTo, companylocationmaster.Address, employeedesignationmaster.empDesignationName, shiftmaster.StartTime, shiftmaster.EndTime, shiftmaster.ShiftStatus 
                   FROM shiftmaster 
-                      JOIN usermaster u1 ON (u1.UserId = shiftmaster.AssignedBy) 
+                      LEFT JOIN usermaster u1 ON (u1.UserId = shiftmaster.AssignedBy) 
                       LEFT JOIN usermaster u2 ON (u2.UserId = shiftmaster.AssignedTo) 
                       JOIN companymaster ON (companymaster.CompanyId = shiftmaster.CompanyId) 
                       JOIN companylocationmaster ON (companylocationmaster.CompanyLocationId = shiftmaster.CompanyLocationId) 

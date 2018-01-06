@@ -21,16 +21,6 @@ $("#btnCheckShift").click(function () {
         getShiftInNext30Minutes();
     }
 
-    // Below is just for page refreshed manually
-    // console.log("btnCheckShift click workStartStatus: " + workStartStatus);
-    // if(workStartStatus) {
-    //     if (workPlaceLat != null && workPlaceLng != null) {
-    //
-    //         plotWorkPlace();
-    //     }
-    //
-    //     toRealEmployeePosition();
-    // }
 });
 
 $("#btnStartToWork").click(function () {
@@ -64,6 +54,8 @@ $("#btnTakeOff").click(function () {
     if (workPlaceMarker != null) {
         workPlaceMarker.setMap(null);
     }
+
+    $("#shiftDisplay").empty();
 
     saveActualWorkingEndTimeInDB();
 });

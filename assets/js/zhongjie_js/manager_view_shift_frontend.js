@@ -327,7 +327,7 @@ function displayShifts() {
         // console.log(key + " " + value.ShiftId);
         shiftsTable += "<tr value=" + value.ShiftId + ">";
         shiftsTable += "<td>" + value.ShiftId + "</td>";
-        shiftsTable += "<td>" + value.AssignedBy + "</td>";
+        shiftsTable += "<td>" + ((value.AssignedBy != null) ? value.AssignedBy : "") + "</td>";
         shiftsTable += "<td>" + ((value.AssignedTo != null) ? value.AssignedTo : "") + "</td>";
         shiftsTable += "<td>" + value.Address + "</td>";
         shiftsTable += "<td>" + value.empDesignationName + "</td>";

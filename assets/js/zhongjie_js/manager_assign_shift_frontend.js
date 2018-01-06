@@ -132,6 +132,8 @@ $("#btnShowAssignEmployeeModal").click(function () {
             cleanFormInModal();
 
             $("#selectEmployee").modal('show');
+            employeeRowselected = false;
+
         } else {
             $("#errorDisplayInBasePage_2").html("<p class='text-danger font-weight-bold'>Error. No valid selectedShiftStartTime, or selectedShiftEndTime, or selectedShiftDay</p>");
         }
