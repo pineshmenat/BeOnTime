@@ -55,9 +55,10 @@ $("#btnTakeOff").click(function () {
         workPlaceMarker.setMap(null);
     }
 
-    $("#shiftDisplay").empty();
-
     saveActualWorkingEndTimeInDB();
+
+    // Clean shiftDisplay must be after saveActualWorkingEndTimeInDB(). Otherwise method saveActualWorkingEndTimeInDB() cannot get shiftId
+    $("#shiftDisplay").empty();
 });
 
 $("#btnFakeLocation").click(function () {
@@ -387,6 +388,7 @@ function saveActualWorkingEndTimeInDB() {
     // Set request header, otherwise AJAX call won't work.
     xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xmlhttp.send(paramOperation + "&" + paramShiftId + "&" + paramCurrentTime);
+    console.log(paramOperation + "&" + paramShiftId + "&" + paramCurrentTime);
 
     xmlhttp.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
