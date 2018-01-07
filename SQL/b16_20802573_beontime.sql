@@ -33,7 +33,7 @@ CREATE TABLE `companylocationmaster` (
   `Longitude` decimal(11,8) NOT NULL,
   PRIMARY KEY (`CompanyLocationId`),
   KEY `FK_companylocationmaster_CompanyId_idx` (`CompanyId`)
-) ENGINE=MyISAM AUTO_INCREMENT=10005 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=10006 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -42,7 +42,7 @@ CREATE TABLE `companylocationmaster` (
 
 LOCK TABLES `companylocationmaster` WRITE;
 /*!40000 ALTER TABLE `companylocationmaster` DISABLE KEYS */;
-INSERT INTO `companylocationmaster` VALUES (10001,1001,'205 Humber College Blvd','Etobicoke','Ontario','M9W5L7',43.72889340,-79.60761770),(10002,1001,'206 Humber College Blvd','Etobicoke','Ontario','M9W5L7',45.11111111,-78.22222222),(10003,1002,'207 Humber College Blvd','Etobicoke','Ontario','M9W5L7',46.33333333,-78.55555555),(10004,1003,'208 Humber College Blvd','Etobicoke','Ontario','M9W5L7',43.11111111,-72.22222222);
+INSERT INTO `companylocationmaster` VALUES (10001,1001,'330 Dufferin St','York','Ontario','M6N0A7',43.71236080,-79.53278200),(10002,1001,'60 Weston Road','Etobicoke','Ontario','M9L1V7',43.67371960,-79.47047420),(10003,1002,'2245 Islington Ave','Etobicoke','Ontario','M9W3W7',43.71376590,-79.55534900),(10004,1003,'1620 Albion Rd','Etobicoke','Ontario','M9V4B4',43.74225840,-79.59047950),(10005,1004,'205 Humber College Blvd','Etobicoke','Ontario','M9W5L7',43.72876220,-79.60786460);
 /*!40000 ALTER TABLE `companylocationmaster` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -66,7 +66,7 @@ CREATE TABLE `companymaster` (
   `CompanyPostal` varchar(7) NOT NULL,
   `CompanyCountry` varchar(50) NOT NULL,
   PRIMARY KEY (`CompanyId`)
-) ENGINE=MyISAM AUTO_INCREMENT=1004 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=1005 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -75,7 +75,7 @@ CREATE TABLE `companymaster` (
 
 LOCK TABLES `companymaster` WRITE;
 /*!40000 ALTER TABLE `companymaster` DISABLE KEYS */;
-INSERT INTO `companymaster` VALUES (1001,'Bell','bell@beontime.com','www.bell.ca','password1',1,'street name 2','Toronto','Ontario','Q1Q 2W2','Canada'),(1002,'Walmart','walmart@beontime.com','www.walmart.ca','password2',2,'street name 3','Toronto','Ontario','Q1Q 2W2','Canada'),(1003,'Sunny Foodmart','sunny@beontime.com','www.sunnyfoodmart.ca','password3',4,'street name 5','Toronto','Ontario','Q1Q 2W2','Canada');
+INSERT INTO `companymaster` VALUES (1001,'Bell','bell@beontime.com','www.bell.ca','123',1,'Weston Road','Toronto','Ontario','Q1Q 2W2','Canada'),(1002,'Walmart','walmart@beontime.com','www.walmart.ca','123',2,'Islington Ave','Toronto','Ontario','Q1Q 2W2','Canada'),(1003,'Sunny Foodmart','sunny@beontime.com','www.sunnyfoodmart.ca','123',4,'Albion Rd','Toronto','Ontario','Q1Q 2W2','Canada'),(1004,'Humber College','inqury@humber.com','www.humber.ca','123',205,'Humber Blvd','Toronto','Ontario','M9W5L7','Canada');
 /*!40000 ALTER TABLE `companymaster` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -195,7 +195,7 @@ CREATE TABLE `shiftmaster` (
   KEY `FK_shiftmaster_AssignedTo_idx` (`AssignedTo`),
   KEY `FK_shiftmaster_CompanyId_idx` (`CompanyId`),
   KEY `FK_shiftmaster_CompanyLocationId_idx` (`CompanyLocationId`)
-) ENGINE=MyISAM AUTO_INCREMENT=500008 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=500002 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -204,7 +204,7 @@ CREATE TABLE `shiftmaster` (
 
 LOCK TABLES `shiftmaster` WRITE;
 /*!40000 ALTER TABLE `shiftmaster` DISABLE KEYS */;
-INSERT INTO `shiftmaster` VALUES (500001,1,10001,10005,1001,10001,'2017-11-18 09:00:00','2017-11-18 14:00:00',NULL,NULL,'2017-12-06 00:16:51','2017-12-06 00:16:51','N',NULL,43.65389990,-79.38113870,NULL,NULL,NULL,NULL,'Toronto',NULL,NULL),(500002,2,10001,10007,1002,10003,'2017-11-20 09:00:00','2017-11-20 14:00:00',NULL,NULL,'2017-12-06 00:16:51','2017-12-06 00:16:51','A',NULL,43.64662060,-79.38857800,NULL,NULL,NULL,NULL,'Toronto',NULL,NULL),(500003,3,10001,10007,1001,10002,'2017-11-21 07:00:00','2017-11-21 12:00:00',NULL,NULL,'2017-12-06 00:16:51','2017-12-06 00:16:51','R',NULL,43.63562720,-79.41721870,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(500004,1,10001,10007,1001,10001,'2017-12-16 17:03:00','2017-12-16 22:00:00',NULL,NULL,'2017-11-20 09:00:00','2017-11-20 09:00:00','A',NULL,43.64097800,-79.35685930,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(500006,1,10001,10007,1001,10001,'2018-01-01 22:40:00','2018-01-01 23:50:00','2018-01-01 23:01:44','2018-01-01 23:05:01','2017-11-20 09:00:00','2017-11-20 09:00:00','R',NULL,43.63039040,-79.65433450,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `shiftmaster` VALUES (500001,1,10001,10002,1004,10005,'2018-01-06 20:30:00','2018-01-06 23:50:00','2018-01-06 20:48:21',NULL,'2017-11-20 09:00:00','2017-11-20 09:00:00','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
 /*!40000 ALTER TABLE `shiftmaster` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -251,7 +251,7 @@ CREATE TABLE `usermaster` (
 
 LOCK TABLES `usermaster` WRITE;
 /*!40000 ALTER TABLE `usermaster` DISABLE KEYS */;
-INSERT INTO `usermaster` VALUES (10001,10,1001,0,'fzhongjie','123','2018-01-01 00:00:00',0,'Zhongjie','Fan','\0',0,'fzhongjie@msn.com',123456789,'205 Humber College Blvd','Toronto','Ontario','M9W5L7',NULL,'2017-12-06 18:59:32','2017-12-06 18:59:32','CURRENT_TIMESTAMP'),(10002,10,1001,0,'pineshmenat','123','2018-01-01 00:00:00',0,'Pinesh','Menat','\0',0,'pineshmenat@gmail.com',123456789,'205 Humber College Blvd','Toronto','Ontario','M9W5L7',NULL,'2017-12-06 18:59:32','2017-12-06 18:59:32','CURRENT_TIMESTAMP'),(10003,10,1001,0,'manager1','123','2018-01-01 00:00:00',0,'f1','l1','\0',0,'fzhongjie@msn.com',123456789,'205 Humber College Blvd','Toronto','Ontario','M9W5L7',NULL,'2017-12-06 18:59:32','2017-12-06 18:59:32','CURRENT_TIMESTAMP'),(10004,11,1001,0,'vaishnavi','123','2018-01-01 00:00:00',0,'f2','l2','\0',0,'fzhongjie@msn.com',123456789,'205 Humber College Blvd','Toronto','Ontario','M9W5L7',NULL,'2017-12-07 21:54:14','2017-12-07 21:54:14','CURRENT_TIMESTAMP'),(10005,12,1001,2,'employee1','123','2018-01-01 00:00:00',0,'f3','l3','\0',0,'fzhongjie@msn.com',123456789,'205 Humber College Blvd','Toronto','Ontario','M9W5L7','0000011','2017-12-06 18:59:32','2017-12-06 18:59:32','CURRENT_TIMESTAMP'),(10006,11,1002,0,'client2','123','2018-01-01 00:00:00',0,'f4','l4','\0',0,'fzhongjie@msn.com',123456789,'205 Humber College Blvd','Toronto','Ontario','M9W5L7',NULL,'2017-12-06 18:59:33','2017-12-06 18:59:33','CURRENT_TIMESTAMP'),(10007,12,1002,3,'employee2','123','2018-01-01 00:00:00',0,'Jack','Smith','\0',0,'fzhongjie@msn.com',123456789,'205 Humber College Blvd','Toronto','Ontario','M9W5L7','1111111','2017-12-06 18:59:33','2017-12-06 18:59:33','CURRENT_TIMESTAMP'),(10008,12,1003,1,'employee3','123','2019-01-01 00:00:00',0,'f6','l6','\0',0,'fzhongjie@msn.com',123456789,'240 McLeod St','Ottawa','Ontario','K2P2R1','0000011','2017-12-06 18:59:33','2017-12-06 18:59:33','CURRENT_TIMESTAMP'),(10009,12,1001,2,'employee4','123','2019-01-01 00:00:00',0,'f7','l7','\0',0,'fzhongjie@msn.com',123456789,'4555 Erie Ave','Niagara Fall','Ontario','L2E7G9','1000010','2017-12-06 18:59:33','2017-12-06 18:59:33','CURRENT_TIMESTAMP'),(10010,12,1003,3,'employee5','123','2019-01-01 00:00:00',0,'f8','l8','\0',0,'fzhongjie@msn.com',123456789,'88 Bronte College Ct','Mississauga','Ontario','L5B1M9','1100010','2017-12-06 18:59:33','2017-12-06 18:59:33','CURRENT_TIMESTAMP'),(10011,12,1002,1,'employee6','123','2019-01-01 00:00:00',0,'f9','l9','\0',0,'fzhongjie@msn.com',123456789,'680 Rexdale Blvd','Toronto','Ontario','M9W6T4','1000001','2017-12-06 18:59:33','2017-12-06 18:59:33','CURRENT_TIMESTAMP'),(10013,10,1001,2,'jsmith','123','2018-01-01 00:00:00',0,'Jason','Smith','\0',0,'jsmith@mail.com',123456789,'205 Humber College Blvd','Toronto','Ontario','M9W5L7',NULL,'2017-12-22 22:15:31','2017-12-22 22:15:31','CURRENT_TIMESTAMP');
+INSERT INTO `usermaster` VALUES (10001,10,1001,1,'zhongjie','123','2018-01-01 00:00:00',0,'Zhongjie','Fan','\0',0,'fzhongjie@msn.com',123456789,'205 Humber College Blvd','Toronto','Ontario','M9W5L7','1100011','2017-12-06 18:59:32','2017-12-06 18:59:32','CURRENT_TIMESTAMP'),(10002,12,1001,1,'pinesh','123','2018-01-01 00:00:00',0,'Pinesh','Menat','\0',0,'pineshmenat@gmail.com',123456789,'205 Humber College Blvd','Toronto','Ontario','M9W5L7','1100011','2017-12-06 18:59:32','2017-12-06 18:59:32','CURRENT_TIMESTAMP'),(10004,11,1001,1,'vaishnavi','123','2018-01-01 00:00:00',0,'f2','l2','\0',0,'vaishnavi.panchalk@gmail.com',123456789,'205 Humber College Blvd','Toronto','Ontario','M9W5L7','1100011','2017-12-07 21:54:14','2017-12-07 21:54:14','CURRENT_TIMESTAMP'),(10005,10,1001,1,'anubhav','123','2018-03-01 00:00:00',0,'Anubhav','Narasimhan','\0',0,'anbhav93@gmail.com',123456789,'205 Humber College Blvd','Toronto','Ontario','M9W5L7','1100011','2018-01-06 16:59:54','2018-01-06 16:59:54','CURRENT_TIMESTAMP'),(10003,10,1001,1,'dhruvin','123','2018-03-01 00:00:00',0,'Dhruvin','Parikh','\0',0,'imsilent93@gmail.com',123456789,'205 Humber College Blvd','Toronto','Ontario','M9W5L7','1100011','2018-01-06 16:56:24','2018-01-06 16:56:24','CURRENT_TIMESTAMP');
 /*!40000 ALTER TABLE `usermaster` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -264,4 +264,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-01-05 12:27:27
+-- Dump completed on 2018-01-06 21:32:09
