@@ -1,5 +1,5 @@
 <?php
-include("../model/db_config.php");
+include_once("../model/db_config.php");
 class EmployeeCalendar {
 
     /**
@@ -91,6 +91,16 @@ class EmployeeCalendar {
     }
 
     /********************* PRIVATE **********************/
+
+    public static function getCompanyName($companyId) {
+        $shiftsOfCurrentMonthSQL = "SELECT companyName from companymaster where CompanyId = :CompanyId;";
+        $pdpstm = DB::getDBConnection()->prepare($shiftsOfCurrentMonthSQL);
+        $pdpstm->bindValue(':CompanyId', $companyId, PDO::PARAM_INT);
+        $pdpstm->execute();
+        $pdpstm->setFetchMode(PDO::FETCH_ASSOC);
+        $companyName = $pdpstm->fetch();
+        return $companyName['companyName'];
+    }
 
     private function _getShiftsOfCurrentMonth($user_id) {
         $shiftsOfCurrentMonthSQL = "SELECT ShiftId,day(StartTime),hour(StartTime),ShiftStatus FROM shiftmaster where AssignedTo = :userId and month(StartTime) = :month AND YEAR(StartTime) = :year;";

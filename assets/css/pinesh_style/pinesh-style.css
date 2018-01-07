@@ -22,4 +22,7 @@
     /* To center horizontally */
     margin: 0 auto;
 }
+#map {
+    height: 40%;
+}
 <!--Modal for CKEditor textarea-->

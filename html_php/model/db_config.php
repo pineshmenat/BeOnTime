@@ -47,4 +47,10 @@ class DB
     public static function getDbErrorMessage(){
         return self::$dbErrorMessage;
     }
+
+    public static function disconnectFromDB() {
+
+        self::$db = null;
+
+    }
 }
