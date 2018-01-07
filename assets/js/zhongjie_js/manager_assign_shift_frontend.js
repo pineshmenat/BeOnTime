@@ -133,6 +133,7 @@ $("#btnShowAssignEmployeeModal").click(function () {
 
             $("#selectEmployee").modal('show');
             employeeRowselected = false;
+            $("#btnAssignEmployee").attr('disabled', true);
 
         } else {
             $("#errorDisplayInBasePage_2").html("<p class='text-danger font-weight-bold'>Error. No valid selectedShiftStartTime, or selectedShiftEndTime, or selectedShiftDay</p>");
@@ -304,7 +305,7 @@ $("#btnAssignEmployee").click(function () {
     // console.log("selectedEmployeeId: " + selectedEmployeeId);
 
 
-    if (selectedEmployeeId == false) {
+    if (selectedEmployeeId == null) {
 
         $("#errorDisplayInModal").html("<p class='text-danger font-weight-bold'>Please select an employee</p>");
     } else {
