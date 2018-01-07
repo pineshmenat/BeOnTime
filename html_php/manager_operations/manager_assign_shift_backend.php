@@ -249,8 +249,8 @@ function searchAllCities($dbConnection) {
 function searchEmployees($dbConnection, $cityName, $employeeId, $firstName, $lastName, $desiredDaySelection, $selectedShiftStartTime, $selectedShiftEndTime) {
 
     if (isset($cityName) && isset($employeeId) && isset($firstName) && isset($lastName) && isset($desiredDaySelection)) {
-//        error_log("cityName: " . $cityName . " employeeId: " . $employeeId . " firstName: " . $firstName . " lastName: " . $lastName);
-//        error_log("desiredDaySelection: " . $desiredDaySelection);
+        error_log("cityName: " . $cityName . " employeeId: " . $employeeId . " firstName: " . $firstName . " lastName: " . $lastName);
+        error_log("desiredDaySelection: " . $desiredDaySelection);
         error_log("selectedShiftStartTime: " . $selectedShiftStartTime . " selectedShiftEndTime: " . $selectedShiftEndTime);
 
         $desiredDaySelection = str_replace('0', '_', $desiredDaySelection);

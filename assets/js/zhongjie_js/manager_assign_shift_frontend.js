@@ -304,7 +304,7 @@ $("#btnAssignEmployee").click(function () {
     // console.log("selectedEmployeeId: " + selectedEmployeeId);
 
 
-    if (selectedEmployeeId == null) {
+    if (selectedEmployeeId == false) {
 
         $("#errorDisplayInModal").html("<p class='text-danger font-weight-bold'>Please select an employee</p>");
     } else {
