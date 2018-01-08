@@ -1,5 +1,4 @@
 <?php
-require_once "../model/db_config.php";
 include "../model/CompanyDB.php";
 include "../model/Company.php";
 include "../model/Validate.php";

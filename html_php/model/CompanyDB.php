@@ -40,6 +40,7 @@ Class CompanyDB{
      $statement->bindValue(':country',$country);
      $statement->bindValue(':phone',$phone);
      $statement->execute();
+     //get the id of current inserted row
      $lastid = $db->lastInsertId();
      $statement->closeCursor();
 
@@ -84,12 +85,12 @@ return $row;
 
     public static function getSelectedEmployee($companyId,$employeeId,$province,$city,$firstname,$lastname){
         $db = DB::getDBConnection();
-        /*if($firstname != "0") {
-            $firstname .= $firstname.'%';
+        if($firstname != "0") {
+            $firstname = $firstname.'%';
         }
         if($lastname != "0"){
-            $lastname .= $lastname.'%';
-        }*/
+            $lastname = $lastname.'%';
+        }
         if($employeeId != "0"){
             $query = 'SELECT * FROM usermaster where UserId=:employeeId and CompanyId=:companyId and RoleId=12';
             $statement = $db->prepare($query);
@@ -221,6 +222,39 @@ return $row;
         $statement->closeCursor();
 
         return $emps;
+    }
+
+    public static function getEmployeeDetails($userId,$companyId){
+        $db = DB::getDBConnection();
+        $query = 'SELECT * FROM usermaster
+          where CompanyId = :companyId and RoleId=12 and UserId = :userId';
+        $statement = $db->prepare($query);
+        $statement->bindValue(":companyId",$companyId);
+        $statement->bindValue(":userId",$userId);
+        $statement->execute();
+        $row = $statement->fetchAll();
+        $statement->closeCursor();
+        return $row;
+    }
+
+    public static function updateEmployeeDetails($companyId,$employeeId,$firstName,$lastName,$sin,$email,$address,$city,
+            $province,$postalCode){
+        $db = DB::getDBConnection();
+        $query = 'UPDATE usermaster SET FirstName=:firstName,LastName=:lastName,SIN=:sin,Address=:address,City=:city,
+                  Province=:province,PostalCode=:postalCode,EMail=:email where CompanyId = :companyId and RoleId=12 and UserId=:employeeId';
+        $statement = $db->prepare($query);
+        $statement->bindValue(":firstName",$firstName);
+        $statement->bindValue(":lastName",$lastName);
+        $statement->bindValue(":sin",$sin);
+        $statement->bindValue(":address",$address);
+        $statement->bindValue(":city",$city);
+        $statement->bindValue(":province",$province);
+        $statement->bindValue(":postalCode",$postalCode);
+        $statement->bindValue(":email",$email);
+        $statement->bindValue(":companyId",$companyId);
+        $statement->bindValue(":employeeId",$employeeId);
+        $statement->execute();
+        $statement->closeCursor();
     }
 }
 ?>

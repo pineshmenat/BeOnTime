@@ -35,7 +35,7 @@ class Validate
         if(empty($firstName)){
             return "first name cannot be empty";
         }
-        else if(ctype_alpha($firstName)){
+        else if(!ctype_alpha($firstName)){
             return "no characters except alphabetic allowed";
         }
         else{
@@ -47,7 +47,7 @@ class Validate
         if(empty($lastName)){
             return "last name cannot be empty";
         }
-        else if(ctype_alpha($lastName)){
+        else if(!ctype_alpha($lastName)){
             return "no characters except alphanumeric allowed";
         }
         else{
@@ -181,6 +181,18 @@ class Validate
         }
         else if(!ctype_alpha($country)){
             return "invalid name";
+        }
+        else{
+            return "";
+        }
+    }
+
+    public static function validateSINNumber($sinNumber){
+        if(empty($sinNumber)){
+            return "sin number cannot be empty";
+        }
+        else if(!preg_match("/^[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]$/",$sinNumber)){
+            return "invalid sin number";
         }
         else{
             return "";

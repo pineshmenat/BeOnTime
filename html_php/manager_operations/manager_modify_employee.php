@@ -1,48 +1,68 @@
 <?php
 session_start();
 require "../model/CompanyDB.php";
-$errorDisplayMessage="";
-$errorModify="";
-if(!isset($_SESSION['userName'])) {
-    header("location:../login/login.php");
+require "../model/Validate.php";
+$errorFirstName = "";
+$errorLastName = "";
+$errorEmail = "";
+$errorStreetAddress = "";
+$errorCity = "";
+$errorProvince = "";
+$errorZipCode = "";
+$errorSINNumber = "";
+if (!isset($_SESSION['userName'])) {
+    header("location: ../login/login.php");
 }
-else {
-    $companyId = $_SESSION['companyId'];
-    $ids = CompanyDB::getAllEmployeeID($companyId);
-    $provinces = CompanyDB::getAllProvince($companyId);
-    $cities = CompanyDB::getAllCities($companyId);
-    if (isset($_POST['search']) && $_POST['search'] == "Search") {
-        $employeeId = $_POST['employeeID'];
-        $province = $_POST['province'];
-        $city = $_POST['city'];
-        $firstname = $_POST['firstname'];
-        $lastname = $_POST['lastname'];
-        if ($employeeId != "0" || $province || "0" || $city != "0" || !empty($firstname) || !empty($lastname)) {
-            $employeerecords = CompanyDB::getSelectedEmployee($companyId, $employeeId, $province, $city, $firstname, $lastname);
-            /* foreach ($employeerecords as $employeerecord){
-                 echo $employeerecord['UserId'];
-             }*/
-        } else {
-            $errorDisplayMessage = "Alteast one field should be selected";
-        }
-    } elseif (isset($_POST['modify']) && $_POST['modify'] == "Modify") {
-        if (isset($_POST['employeeId'])) {
-            $empId = $_POST['employeeId'];
-            header("Location: manager_modify_employee.php?employeeId=" . $empId);
-        } else {
-            $errorModify = "Please Select one record.";
-            $employeeId = $_POST['employeeID'];
-            $province = $_POST['province'];
-            $city = $_POST['city'];
-            $firstname = $_POST['firstname'];
-            $lastname = $_POST['lastname'];
-            if ($employeeId != "0" || $province || "0" || $city != "0" || !empty($firstname) || !empty($lastname)) {
-                $employeerecords = CompanyDB::getSelectedEmployee($companyId, $employeeId, $province, $city, $firstname, $lastname);
-            } else {
-                $errorDisplayMessage = "Alteast one field should be selected";
-            }
-        }
+else{
 
+    if($_SERVER['REQUEST_METHOD'] == "GET" && isset($_GET['employeeId'])){
+        $employeeDetails  = CompanyDB::getEmployeeDetails($_GET['employeeId'],$_SESSION['companyId']);
+        unset($_GET['employeeId']);
+        foreach ($employeeDetails as $employeeDetail){
+            $firstName = $employeeDetail['FirstName'];
+            $lastName = $employeeDetail['LastName'];
+            $sin = $employeeDetail['SIN'];
+            $email = $employeeDetail['EMail'];
+            $streetAddress = $employeeDetail['Address'];
+            $city = $employeeDetail['City'];
+            $state = $employeeDetail['Province'];
+            $zipCode = $employeeDetail['PostalCode'];
+            $employeeId =   $employeeDetail['UserId'];
+            $country = "Canada";
+        }
+    }
+    else if(isset($_POST['save_changes']) && $_POST['save_changes']){
+        $firstName = $_POST['firstName'];
+        $lastName = $_POST['lastName'];
+        $sin = $_POST['sin'];
+        $email = $_POST['email'];
+        $streetAddress = $_POST['route'];
+        $city = $_POST['locality'];
+        $state = $_POST['administrative_area_level_1'];
+        $zipCode = $_POST['postal_code'];
+        $employeeId =   $_POST['employeeId'];
+        $country = "Canada";
+        if(Validate::validateFirstName($firstName) != "" || Validate::validateLastName($lastName) != "" ||
+            Validate::validateSINNumber($sin) != "" || Validate::validateEmail($email) != "" ||
+            Validate::validateStreet($streetAddress) != "" || Validate::validateCity($city) != "" ||
+            Validate::validateProvince($state) != "" || Validate::validateZipCode($zipCode) != ""){
+            $errorFirstName = Validate::validateFirstName($firstName);
+            $errorLastName = Validate::validateLastName($lastName);
+            $errorEmail = Validate::validateEmail($email);
+            $errorStreetAddress = Validate::validateStreet($streetAddress);
+            $errorCity = Validate::validateCity($city);
+            $errorProvince = Validate::validateProvince($state);
+            $errorZipCode = Validate::validateZipCode($zipCode);
+            $errorSINNumber = Validate::validateSINNumber($sin);
+        }
+        else {
+            CompanyDB::updateEmployeeDetails($_SESSION['companyId'], $_POST['employeeId'], $firstName, $lastName, $sin, $email,
+                $streetAddress, $city, $state, $zipCode);
+            header("Location: manager_manage_employee.php");
+        }
+    }
+    else{
+        header("manager_manage_employee.php");
     }
 }
 ?>
@@ -85,7 +105,6 @@ else {
     <link rel="stylesheet" type="text/css" href="../../app-assets/css/core/colors/palette-gradient.css">
     <!-- END Page Level CSS-->
     <!-- BEGIN Custom CSS-->
-    <link rel="stylesheet" type="text/css" href="../assets/css/zhongjie_style.css">
     <!-- END Custom CSS-->
 </head>
 <body data-open="click" data-menu="vertical-menu" data-col="2-columns" class="vertical-layout vertical-menu 2-columns  fixed-navbar">
@@ -119,9 +138,6 @@ else {
 
                     <li class="dropdown dropdown-user nav-item">
                         <a href="#" data-toggle="dropdown" class="dropdown-toggle nav-link dropdown-user-link">
-                            <span class="avatar avatar-online">
-                                <img src="../../assets/images/portrait_img/<?= $_SESSION['portraintImg']; ?>" alt="portraitImg"><i></i>
-                            </span>
                             <span class="user-name"><?= $_SESSION['userName']; ?></span>
                         </a>
                         <div class="dropdown-menu dropdown-menu-right">
@@ -170,10 +186,10 @@ else {
                     <li>
                         <a href="manager_track_employee.php" data-i18n="nav.page_layouts.2_columns" class="menu-item">Track Emp's Position</a>
                     </li>
-                    <li>
+                    <li class="active">
                         <a href="manager_create_employee.php" data-i18n="nav.page_layouts.2_columns" class="menu-item">Create Employee</a>
                     </li>
-                    <li class="active">
+                    <li>
                         <a href="manager_manage_employee.php" data-i18n="nav.page_layouts.2_columns" class="menu-item">Manage Employee</a>
                     </li>
                     <li>
@@ -195,103 +211,102 @@ else {
 <!-- / main menu-->
 <div class="app-content content container-fluid">
     <div class="content-wrapper">
-        <div class="content-header row"></div>
-            <div class="content-body">
-                <form action="" method="post">
-                    <div class="row mt-2 ml-2 col-md-12">
-                        <div class="col-xl-2 col-lg-3 col-xs-12">
-                            <div class="card-body">
-                            <select class="form-control" name="employeeID">
-                                <option value="0">Select ID</option>
-                                <?php foreach ($ids as $id): ?>
-                                <option value="<?php echo $id['UserId'] ?>" <?php if(isset($_POST['employeeID'])){echo $_POST['employeeID'] == $id['UserId'] ? ' selected="selected"' : '' ;} ?> ><?php echo $id['UserId']; ?></option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
-                        </div>
-                        <div class="col-xl-2 col-lg-3 col-xs-12">
-                            <select class="form-control" name="province">
-                                <option value="0">Select Province</option>
-                                <?php foreach ($provinces as $province): ?>
-                                    <option value="<?php echo $province['Province'] ?>" <?php if(isset($_POST['province'])){echo $_POST['province'] == $province['Province'] ? ' selected="selected"' : '' ;} ?> ><?php echo $province['Province'];?></option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
-                        <div class="col-xl-2 col-lg-3 col-xs-12">
-                            <select class="form-control" name="city">
-                                <option value="0">Select City</option>
-                                <?php foreach ($cities as $city): ?>
-                                    <option value="<?php echo $city['City'] ?>" <?php if(isset($_POST['city'])){echo $_POST['city'] == $city['City'] ? ' selected="selected"' : '' ;} ?> ><?php echo $city['City'];?></option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
-                        <div class="col-xl-2 col-lg-3 col-xs-12">
-                            <input class="form-control" name="firstname" id="firstname" placeholder="First Name" value="<?php if(isset($_POST['firstname'])){echo $_POST['firstname'];}?>"/>
-                        </div>
-                        <div class="col-xl-2 col-lg-3 col-xs-12">
-                            <input class="form-control" name="lastname" id="lastname" placeholder="Last Name" value="<?php if(isset($_POST['lastname'])){echo $_POST['lastname'];}?>"/>
+        <div class="content-header row">
+            <h1>Employee Signup</h1>
+        </div>
+        <div class="row mt-1 col-md-12"></div>
+        <div class="content-body">
+            <form class="form" id="company_signup" method="post" action="">
+                <input type="hidden" value="<?php  echo $employeeId; ?>" name="employeeId">
+                <div class="form-group row">
+                    <label for="firstName" class="col-sm-3 col-lg-1 label-control">First Name: </label>
+                    <div class="col-sm-9 col-lg-2">
+                        <input class="form-control-sm col-sm-12" type="text" value="<?php echo $firstName ?>" id="firstName" name="firstName">
+                        <div class="col-sm-10 nopadding">
+                            <small class="help-block text-danger"><?php echo $errorFirstName;?></small>
                         </div>
                     </div>
-                    <div class="row mt-1 ml-3 col-md-12 help-block text-danger"><span><?php echo $errorDisplayMessage; ?></span></div>
-                    <div class="row mt-1 col-md-12 ml-3">
-                        <input class="btn btn-success btn-lg font-weight-bold" type="submit" name="search" id="search" value="Search"/>
+                    <label for="lastName" class="col-sm-3 col-lg-1 label-control">Last Name: </label>
+                    <div class="col-sm-9 col-lg-2">
+                        <input class="form-control-sm col-sm-13" type="text" value="<?php echo $lastName ?>" id="lastName" name="lastName">
+                        <div class="col-sm-10 nopadding">
+                            <small class="help-block text-danger"><?php echo $errorLastName;?></small>
+                        </div>
                     </div>
-                </form>
+                </div>
+                <div class="form-group row">
+                    <label for="sin" class="col-sm-3 col-lg-1 label-control">SIN: </label>
+                    <div class="col-sm-9 col-lg-10">
+                        <input class="form-control-sm col-sm-6" type="text" value="<?php echo $sin ?>" id="sin" name="sin">
+                        <div class="col-sm-10 nopadding">
+                            <small class="help-block text-danger"><?php echo $errorSINNumber;?></small>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="email" class="col-sm-3 col-lg-1 label-control">Email: </label>
+                    <div class="col-sm-9 col-lg-10">
+                        <input class="form-control-sm col-sm-6" type="text" value="<?php echo $email ?>" id="email" name="email">
+                        <div class="col-sm-10 nopadding">
+                            <small class="help-block text-danger"><?php echo $errorEmail;?></small>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="route" class="col-sm-3 col-lg-1 label-control">Street Address: </label>
+                    <div class="col-sm-9 col-lg-10">
+                        <input class="form-control-sm col-sm-5" type="text" value="<?php echo $streetAddress ?>" id="route" name="route">
+                        <div class="col-sm-10 nopadding">
+                            <small class="help-block text-danger"><?php echo $errorStreetAddress;?></small>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="locality" class="col-sm-3 col-lg-1 label-control">City</label>
+                    <div class="col-sm-9 col-lg-10">
+                        <input class="form-control-sm col-sm-6" type="text" value="<?php echo $city ?>" id="locality" name="locality">
+                        <div class="col-sm-10 nopadding">
+                            <small class="help-block text-danger"><?php echo $errorCity;?></small>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="administrative_area_level_1" class="col-sm-3 col-lg-1 label-control">State: </label>
+                    <div class="col-sm-9 col-lg-2">
+                        <input class="form-control-sm col-sm-12" type="text" value="<?php echo $state ?>" id="administrative_area_level_1" name="administrative_area_level_1">
+                        <div class="col-sm-10 nopadding">
+                            <small class="help-block text-danger"><?php echo $errorProvince;?></small>
+                        </div>
+                    </div>
+                    <label for="postal_code" class="col-sm-3 col-lg-1 label-control">ZipCode: </label>
+                    <div class="col-sm-9 col-lg-2">
+                        <input class="form-control-sm col-sm-13" type="text" value="<?php echo $zipCode ?>" id="postal_code" name="postal_code">
+                        <div class="col-sm-10 nopadding">
+                            <small class="help-block text-danger"><?php echo $errorZipCode;?></small>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="country" class="col-sm-3 col-lg-1 label-control">Country</label>
+                    <div class="col-sm-9 col-lg-10">
+                        <input class="form-control-sm col-sm-6" type="text" value="<?php echo $country ?>" id="country" name="country" disabled>
+                    </div>
+                </div>
+                <div class="row mt-1 col-md-12"></div>
+                <div class="form-group row ml-3">
+                    <input type="submit" class="btn btn-success" value="Save Changes" name="save_changes" />
+                </div>
+            </form>
         </div>
     </div>
-    <div class="row mt-1 col-md-12"></div>
-    <?php if(isset($employeerecords) && empty($employeerecords)){ ?>
-        <p class="row mt-1 ml-3 col-md-12 help-block text-danger"><span>No records found!</span></p>
-    <?php }else if(isset($employeerecords) && !empty($employeerecords)){ ?>
-    <div class="table-responsive">
-        <form action="" method="post">
-            <input type="hidden" name="employeeID" value="<?php echo $_POST['employeeID']; ?>">
-            <input type="hidden" name="province" value="<?php echo $_POST['province']; ?>">
-            <input type="hidden" name="city" value="<?php echo $_POST['city']; ?>">
-            <input type="hidden" name="firstname" value="<?php echo $_POST['firstname']; ?>">
-            <input type="hidden" name="lastname" value="<?php echo $_POST['lastname']; ?>">
-        <table class="table table-condensed">
-            <thead>
-                <tr>
-                    <th>Employee ID</th>
-                    <th>First Name</th>
-                    <th>Last Name</th>
-                    <th>City</th>
-                    <th>Province</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($employeerecords as $employeerecord): ?>
-                <tr>
-                    <td><input type="radio" name="employeeId" value="<?php echo $employeerecord['UserId']?>" id="employeeId"><?php echo $employeerecord['UserId'] ?></td>
-                    <td><?php echo $employeerecord['FirstName'] ?></td>
-                    <td><?php echo $employeerecord['LastName'] ?></td>
-                    <td><?php echo $employeerecord['City'] ?></td>
-                    <td><?php echo $employeerecord['Province'] ?></td>
-                    <td><?php echo "Status"; ?></td>
-                </tr>
-                <?php endforeach;?>
-            </tbody>
-        </table>
-            <div class="row mt-1 ml-3 col-md-2 help-block text-danger"><span><?php echo $errorModify; ?></span></div>
-            <div class="row mt-1 col-md-12">
-                <div align="center" class="col-xl-2 col-lg-2 col-xs-12">
-                    <input class="btn btn-success btn-lg font-weight-bold" value="Modify" id="modify" type="submit" name="modify"/>
-                </div>
-            </div>
-        </form>
-    </div>
-    <?php } ?>
-    <div class="row mt-1 col-md-12"></div>
 </div>
 <!-- ////////////////////////////////////////////////////////////////////////////-->
 
 
 <footer class="footer footer-static footer-light navbar-border">
     <p class="clearfix text-muted text-sm-center mb-0 px-2"><span class="float-md-left d-xs-block d-md-inline-block">Copyright  &copy; 2017 <a
-                href="#" target="_blank" class="text-bold-800 grey darken-2">BeOnTime Project Group </a>, All rights reserved. </span><span
-            class="float-md-right d-xs-block d-md-inline-block">We made with <i class="icon-heart5 pink"></i></span></p>
+                    href="#" target="_blank" class="text-bold-800 grey darken-2">BeOnTime Project Group </a>, All rights reserved. </span><span
+                class="float-md-right d-xs-block d-md-inline-block">We made with <i class="icon-heart5 pink"></i></span></p>
 </footer>
 
 <!-- BEGIN VENDOR JS-->
