@@ -119,6 +119,8 @@
                     </li>
                     <li><a href="pay_details.php" data-i18n="nav.dash.main" class="menu-item">Pay Details</a>
                     </li>
+                    <li><a href="./employee_start_stop_work_frontend.php" data-i18n="nav.dash.main" class="menu-item">Work</a>
+                    </li>
                 </ul>
             </li>
         </ul>

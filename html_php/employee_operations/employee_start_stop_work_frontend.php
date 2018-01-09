@@ -126,17 +126,13 @@ if (!isset($_SESSION['userId'])) {
                     <span data-i18n="nav.page_layouts.main" class="menu-title">Employee</span>
                 </a>
                 <ul class="menu-content">
-                    <li class="active">
-                        <a href="employee_start_stop_work_frontend.php" data-i18n="nav.page_layouts.1_column" class="menu-item">Work</a>
+                    <li><a href="employee-dashboard.php" data-i18n="nav.dash.main" class="menu-item">Dashboard</a>
                     </li>
-                    <li>
-                        <a href="#" data-i18n="nav.page_layouts.1_column" class="menu-item">Pending</a>
+                    <li><a href="latest_shift.php" data-i18n="nav.dash.main" class="menu-item">Latest Shift</a>
                     </li>
-                    <li>
-                        <a href="#" data-i18n="nav.page_layouts.1_column" class="menu-item">Pending</a>
+                    <li><a href="pay_details.php" data-i18n="nav.dash.main" class="menu-item">Pay Details</a>
                     </li>
-                    <li>
-                        <a href="#" data-i18n="nav.page_layouts.1_column" class="menu-item">Pending</a>
+                    <li class="active"><a href="./employee_start_stop_work_frontend.php" data-i18n="nav.dash.main" class="menu-item">Work</a>
                     </li>
                 </ul>
             </li>
