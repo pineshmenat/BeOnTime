@@ -12,7 +12,7 @@ $dbConnection = DB::getDBConnection();
 $ajaxCallReturn;
 
 $operation = $_POST["operation"];
-
+//error_log("operation: " . $operation);
 // Get value if key exists in $_POST
 //
 if (array_key_exists('userId', $_POST)) {
@@ -24,7 +24,12 @@ if (array_key_exists('currentTime', $_POST)) {
 if (array_key_exists('shiftId', $_POST)) {
     $shiftId = $_POST['shiftId'];
 }
-
+if (array_key_exists('employeeCurrentLat', $_POST)) {
+    $employeeCurrentLat = $_POST['employeeCurrentLat'];
+}
+if (array_key_exists('employeeCurrentLng', $_POST)) {
+    $employeeCurrentLng = $_POST['employeeCurrentLng'];
+}
 
 // Interaction with DB based on different operation keywords
 //
@@ -52,7 +57,6 @@ switch ($operation) {
         }
         break;
     }
-    // ZF
     case "SaveActualWorkingEndTime": {
 
         if (isset($shiftId) && isset($currentTime)) {
@@ -61,6 +65,19 @@ switch ($operation) {
 
         } else {
             $ajaxCallReturn = "<p>shiftId is not set, or currentTime is not set.</p>";
+        }
+        break;
+    }
+    case "SaveCurrentEmployeePosition": {
+
+//        error_log($shiftId . $employeeCurrentLat . $employeeCurrentLng);
+
+        if (isset($shiftId) && isset($employeeCurrentLat) && isset($employeeCurrentLng)) {
+
+            $ajaxCallReturn = saveCurrentEmployeePosition($dbConnection, $shiftId, $employeeCurrentLat, $employeeCurrentLng);
+
+        } else {
+            $ajaxCallReturn = "<p>shiftId is not set, or employeeCurrentLat/employeeCurrentLng is not set.</p>";
         }
         break;
     }
@@ -85,11 +102,11 @@ echo $ajaxCallReturn;
 //
 function getShiftInNext30Minutes($dbConnection, $userId, $currentTime) {
 
-    $sql = "select ShiftId, CompanyName, companylocationmaster.Address WorkingPlace, StartTime, EndTime, ActualWorkingStartTime, Latitude, Longitude 
+    $sql = "select ShiftId, CompanyName, companylocationmaster.Address WorkingPlace, StartTime, EndTime, Latitude, Longitude 
             from shiftmaster 
 	            join companymaster on (shiftmaster.CompanyId = companymaster.CompanyId) 
 	            join companylocationmaster on (shiftmaster.CompanyLocationId = companylocationmaster.CompanyLocationId) 
-            where (:currentTime between DATE_ADD(StartTime, interval -30 minute) and DATE_ADD(EndTime, interval -30 minute)) 
+            where (:currentTime between DATE_ADD(StartTime, interval 0 minute) and DATE_ADD(EndTime, interval 0 minute)) 
 	            and AssignedTo=:assignTo 
 	            and ShiftStatus = 'A'  
             order by StartTime";
@@ -140,4 +157,20 @@ function saveActualWorkingEndTime($dbConnection, $shiftId, $time) {
     return json_encode($response);
 }
 
+function saveCurrentEmployeePosition($dbConnection, $shiftId, $employeeCurrentLat, $employeeCurrentLng) {
+
+    $response = [];
+    $response['success'] = false;
+
+    $SQL = "UPDATE shiftmaster SET CurrentLat=:employeeCurrentLat, CurrentLong=:employeeCurrentLng WHERE ShiftId=:shiftId";
+    $pdpstm = $dbConnection->prepare($SQL);
+    $pdpstm->bindValue(':employeeCurrentLat', $employeeCurrentLat, PDO::PARAM_STR);
+    $pdpstm->bindValue(':employeeCurrentLng', $employeeCurrentLng, PDO::PARAM_STR);
+    $pdpstm->bindValue(':shiftId', $shiftId, PDO::PARAM_STR);
+
+    if ($pdpstm->execute()) {
+        $response['success'] = true;
+    }
+    return json_encode($response);
+}
 ?>

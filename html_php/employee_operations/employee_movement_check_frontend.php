@@ -132,7 +132,7 @@ if (!isset($_SESSION['userId'])) {
                     </li>
                     <li><a href="pay_details.php" data-i18n="nav.dash.main" class="menu-item">Pay Details</a>
                     </li>
-                    <li class="active"><a href="./employee_start_stop_work_frontend.php" data-i18n="nav.dash.main" class="menu-item">Work</a>
+                    <li class="active"><a href="employee_movement_check_frontend.php" data-i18n="nav.dash.main" class="menu-item">Movement Check</a>
                     </li>
                 </ul>
             </li>
@@ -161,25 +161,25 @@ if (!isset($_SESSION['userId'])) {
             <div class="row mt-0 col-md-12">
 
                 <!--                Check shift button-->
-                <div class="col-xl-2 col-lg-2 col-xs-4">
-                    <button type="button" id="btnCheckShift" class="btn btn-block btn-success font-weight-bold">
-                        Check Shift
-                    </button>
-                </div>
+<!--                <div class="col-xl-2 col-lg-2 col-xs-4">-->
+<!--                    <button type="button" id="btnCheckShift" class="btn btn-block btn-success font-weight-bold">-->
+<!--                        Check Shift-->
+<!--                    </button>-->
+<!--                </div>-->
 
                 <!--                Start to work button-->
-                <div class="col-xl-2 col-lg-2 col-xs-4">
-                    <button type="button" id="btnStartToWork" class="btn btn-block btn-success font-weight-bold" disabled>
-                        Start To Work
-                    </button>
-                </div>
+<!--                <div class="col-xl-2 col-lg-2 col-xs-4">-->
+<!--                    <button type="button" id="btnStartToWork" class="btn btn-block btn-success font-weight-bold" disabled>-->
+<!--                        Start To Work-->
+<!--                    </button>-->
+<!--                </div>-->
 
                 <!--                Take off work button-->
-                <div class="col-xl-2 col-lg-2 col-xs-4">
-                    <button type="button" id="btnTakeOff" class="btn btn-block btn-danger font-weight-bold" disabled>
-                        Take Off
-                    </button>
-                </div>
+<!--                <div class="col-xl-2 col-lg-2 col-xs-4">-->
+<!--                    <button type="button" id="btnTakeOff" class="btn btn-block btn-danger font-weight-bold" disabled>-->
+<!--                        Take Off-->
+<!--                    </button>-->
+<!--                </div>-->
 
                 <!--                Refresh My Position button-->
                 <div class="col-xl-2 col-lg-2 col-xs-5">
@@ -189,7 +189,7 @@ if (!isset($_SESSION['userId'])) {
                 </div>
 
                 <!--                Empty column for placehold-->
-                <div class="col-xl-2 col-lg-2"></div>
+                <div class="col-xl-8 col-lg-8"></div>
 
                 <!--                Fake Location button-->
                 <div class="col-xl-2 col-lg-2 col-xs-5">
@@ -275,7 +275,7 @@ if (!isset($_SESSION['userId'])) {
 <!--/START & END CALENDAR JS-->
 
 <!--Zhongjie JS-->
-<script src="../../assets/js/zhongjie_js/employee_start_stop_work_frontend.js" type="text/javascript"></script>
+<script src="../../assets/js/zhongjie_js/employee_movement_check_frontend.js" type="text/javascript"></script>
 <!--/Zhongjie JS-->
 <!--START & END Google Maps-->
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBVwcDlI_b14uF5T0Nr9oOBgzP0LH6pvNg&callback=prepareMap" async

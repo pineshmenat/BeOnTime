@@ -1,18 +1,17 @@
-const backendURL = "./employee_start_stop_work_backend.php";
+const backendURL = "./employee_movement_check_backend.php";
 const CANADA_CENTER_LAT = 59.0985492, CANADA_CENTER_LNG = -104.4796261, ZOOM = 16;
 const MOVEMENT_RADIUS = 180;
 const INFOWINDOW_DELAY = 1800;
+const EMPLOYEE_LOCATION_REFRESH_INTERVAL = 8000;
 
 var map;
 var userId;
-var workPlaceLat, workPlaceLng;
-var currentLat, currentLng;
+var workPlaceLat, workPlaceLng, currentLat, currentLng;
 var currentEmployeePositionMarker, workPlaceMarker;
 var workPlaceMovementcircle;
-var workStartStatus = false;
+var hasActiveShift = false;
 
-
-$("#btnCheckShift").click(function () {
+$(document).ready(function () {
 
     userId = $('#sessionUserId').data('value');
     // console.log("userId: " + userId);
@@ -20,45 +19,6 @@ $("#btnCheckShift").click(function () {
     if (userId != null) {
         getShiftInNext30Minutes();
     }
-
-});
-
-$("#btnStartToWork").click(function () {
-
-    $("#errorDisplayInBasePage").empty();
-
-    $("#btnTakeOff").attr("disabled", false);
-    $("#btnStartToWork").attr("disabled", true);
-    $("#btnFakeLocation").attr("disabled", false);
-
-    if (workPlaceLat != null && workPlaceLng != null) {
-
-        plotWorkPlace();
-    }
-
-    toRealEmployeePosition();
-
-    saveActualWorkingStartTimeInDB();
-
-});
-
-$("#btnTakeOff").click(function () {
-
-    $("#btnTakeOff").attr("disabled", true);
-    $("#btnFakeLocation").attr("disabled", true);
-
-    // clean workplace circle and marker
-    if (workPlaceMovementcircle != null) {
-        workPlaceMovementcircle.setMap(null);
-    }
-    if (workPlaceMarker != null) {
-        workPlaceMarker.setMap(null);
-    }
-
-    saveActualWorkingEndTimeInDB();
-
-    // Clean shiftDisplay must be after saveActualWorkingEndTimeInDB(). Otherwise method saveActualWorkingEndTimeInDB() cannot get shiftId
-    $("#shiftDisplay").empty();
 });
 
 $("#btnFakeLocation").click(function () {
@@ -77,13 +37,16 @@ $("#btnFakeLocation").click(function () {
     currentLng = fakeLatLng[randomIndex][1];
 
     plotCurrentEmployeePosition();
-    moveToLocation(currentLat, currentLng);
+    // panTo() is to move to employee's current position
+    map.panTo(new google.maps.LatLng(currentLat, currentLng));
+
+    checkEmployeeInRange();
 
 });
 
 $("#btnRefreshMyPosition").click(function () {
 
-    toRealEmployeePosition();
+    getEmployeeRealPosition();
 });
 
 function prepareMap() {
@@ -103,32 +66,6 @@ function initMap() {
         center: {lat: CANADA_CENTER_LAT, lng: CANADA_CENTER_LNG},
         zoom: 4
     });
-}
-
-function toRealEmployeePosition() {
-
-    navigator.geolocation.getCurrentPosition(
-        // successfully get position
-        function (position) {
-            // console.log(position);
-            // console.log(position.coords.latitude + " " + position.coords.longitude);
-            currentLat = position.coords.latitude;
-            currentLng = position.coords.longitude;
-            // console.log("currentLat: " + currentLat + " currentLng: " + currentLng);
-
-            if (currentLat != null && currentLng != null) {
-
-                plotCurrentEmployeePosition();
-                moveToLocation(currentLat, currentLng);
-            }
-        },
-        // failed to get position
-        function () {
-
-            $("#errorDisplayInBasePage").html("<p class='text-danger font-weight-bold'>Failed to get your current position data.</p>");
-
-        }
-    );
 }
 
 function getShiftInNext30Minutes() {
@@ -158,6 +95,24 @@ function getShiftInNext30Minutes() {
             var shiftInNext30Minutes = JSON.parse(this.responseText);
 
             displayShift(shiftInNext30Minutes);
+
+            if(hasActiveShift) {
+                // Go to work place
+                toWorkPlace();
+
+                // Add marker and info window for work place
+                plotWorkPlace();
+
+                // Get employee real geo position
+                getEmployeeRealPosition();
+
+                // Go to real employee position
+                setInterval(toEmployeeCurrentPosition, EMPLOYEE_LOCATION_REFRESH_INTERVAL);
+
+                $("#btnFakeLocation").attr("disabled", false);
+
+            }
+
         }
     }
 }
@@ -167,10 +122,9 @@ function displayShift(shiftInNext30Minutes) {
     $("#errorDisplayInBasePage").empty();
     $("#shiftDisplay").empty();
 
-    // console.log("shiftInNext30Minutes.shift.length: "+ shiftInNext30Minutes.shift.length);
     if (shiftInNext30Minutes.shift.length == 0) {
 
-        $("#errorDisplayInBasePage").html("<p class='text-danger font-weight-bold'>You do not have any shift in next 30 minutes.</p>");
+        $("#errorDisplayInBasePage").html("<p class='text-danger font-weight-bold'>You do not have any shift now.</p>");
 
     } else if (shiftInNext30Minutes.shift.length == 1) {
 
@@ -197,7 +151,6 @@ function displayShift(shiftInNext30Minutes) {
 
             workPlaceLat = parseFloat(value.Latitude);
             workPlaceLng = parseFloat(value.Longitude);
-            actualWorkingStartTime = value.ActualWorkingStartTime;
 
         });
 
@@ -205,34 +158,7 @@ function displayShift(shiftInNext30Minutes) {
 
         $("#shiftDisplay").html(shiftsTable);
 
-        // START: For page refreshed manually
-        // console.log("value.ActualWorkingStartTime: " + actualWorkingStartTime + " " + (actualWorkingStartTime == null));
-
-        if (actualWorkingStartTime != null) {
-
-            workStartStatus = true;
-
-            if (workPlaceLat != null && workPlaceLng != null) {
-
-                plotWorkPlace();
-            }
-
-            toRealEmployeePosition();
-        }
-        // console.log("displayShift() workStartStatus: " + workStartStatus);
-
-        // set buttons status
-        if (!workStartStatus) {
-            // if employee has started to work
-            $("#btnStartToWork").attr("disabled", false);
-        } else {
-            // if employee is ready to start to work, but work hasn't actually started
-            $("#btnTakeOff").attr("disabled", false);
-        }
-
-        $("#btnFakeLocation").attr("disabled", false);
-        // END: For page refreshed manually
-
+        hasActiveShift = true;
 
         // console.log("workPlaceLat: " + workPlaceLat + " workPlaceLng: " + workPlaceLng);
     } else {
@@ -241,7 +167,7 @@ function displayShift(shiftInNext30Minutes) {
     }
 }
 
-function plotWorkPlace() {
+function toWorkPlace() {
 
     // console.log("workPlaceLat: " + workPlaceLat + " workPlaceLng: " + workPlaceLng);
 
@@ -251,6 +177,9 @@ function plotWorkPlace() {
         center: {lat: workPlaceLat, lng: workPlaceLng},
         zoom: ZOOM
     });
+}
+
+function plotWorkPlace() {
 
     // Mark work place position
     workPlaceMarker = new google.maps.Marker({
@@ -285,6 +214,41 @@ function plotWorkPlace() {
 
 }
 
+function toEmployeeCurrentPosition() {
+
+    navigator.geolocation.getCurrentPosition(
+        // successfully get position
+        function (position) {
+            // console.log(position);
+            // console.log(position.coords.latitude + " " + position.coords.longitude);
+            currentLat = position.coords.latitude;
+            currentLng = position.coords.longitude;
+            // console.log("currentLat: " + currentLat + " currentLng: " + currentLng);
+
+            if (currentLat != null && currentLng != null) {
+
+                plotCurrentEmployeePosition();
+
+                // panTo() is to move to employee's current position
+                map.panTo(new google.maps.LatLng(currentLat, currentLng));
+
+                // Save current employee's position in DB shiftmaster table
+                saveCurrentEmployeePositionInDB();
+
+                // Check employee's position every few seconds
+                checkEmployeeInRange();
+            }
+        },
+        // failed to get position
+        function () {
+
+            $("#errorDisplayInBasePage").html("<p class='text-danger font-weight-bold'>Failed to get your current position data.</p>");
+
+        }
+    );
+
+}
+
 function plotCurrentEmployeePosition() {
 
     // Clean previous currentEmployeePositionMarker on the map
@@ -298,6 +262,10 @@ function plotCurrentEmployeePosition() {
         map: map,
         icon: "http://maps.google.com/mapfiles/marker_yellow.png"
     });
+
+}
+
+function checkEmployeeInRange() {
 
     var distance = getDistance(currentLat, currentLng, workPlaceLat, workPlaceLng);
 
@@ -314,16 +282,40 @@ function plotCurrentEmployeePosition() {
             currentEmployeePositionInfoWindow.close();
         }, INFOWINDOW_DELAY);
     });
-}
 
-function moveToLocation(lat, lng) {
-    // map.setCenter(new google.maps.LatLng(lat, lng));
-    map.panTo(new google.maps.LatLng(lat, lng));
-
-    if (getDistance(currentLat, currentLng, workPlaceLat, workPlaceLng) > MOVEMENT_RADIUS) {
+    if (distance > MOVEMENT_RADIUS) {
         $("#warningInfo").html("<p>Please go back to work.</p>")
         $("#warningDisplay").modal('show');
     }
+}
+
+function getEmployeeRealPosition() {
+
+    navigator.geolocation.getCurrentPosition(
+        // successfully get position
+        function (position) {
+            // console.log(position);
+            // console.log(position.coords.latitude + " " + position.coords.longitude);
+            currentLat = position.coords.latitude;
+            currentLng = position.coords.longitude;
+            // console.log("currentLat: " + currentLat + " currentLng: " + currentLng);
+
+            if (currentLat != null && currentLng != null) {
+
+                plotCurrentEmployeePosition();
+
+                // panTo() is to move to employee's current position
+                map.panTo(new google.maps.LatLng(currentLat, currentLng));
+                
+            }
+        },
+        // failed to get position
+        function () {
+
+            $("#errorDisplayInBasePage").html("<p class='text-danger font-weight-bold'>Failed to get your current position data.</p>");
+
+        }
+    );
 }
 
 function getDistance(p1Lat, p1Lng, p2Lat, p2Lng) {
@@ -338,25 +330,19 @@ function getDistance(p1Lat, p1Lng, p2Lat, p2Lng) {
     return Math.round(d * 10) / 10; // returns the distance in meter
 }
 
-function saveActualWorkingStartTimeInDB() {
+function saveCurrentEmployeePositionInDB() {
 
-    // Get current date and time
-    var dt = new Date($.now());
-    // console.log("Date: " + dt);
-    // console.log("Year: " + dt.getFullYear() + " Month: " + (dt.getMonth() + 1) + " Date: " + dt.getDate());
-    // console.log("Hour: " + dt.getHours() + " Minute: " + dt.getMinutes() + " Second: " + dt.getSeconds());
-    // console.log(dt.getFullYear() + "-" + (dt.getMonth() + 1) + "-" + dt.getDate() + " " + dt.getHours() + ":" + dt.getMinutes() + ":" + dt.getSeconds());
-    var currentTime = dt.getFullYear() + "-" + (dt.getMonth() + 1) + "-" + dt.getDate() + " " + dt.getHours() + ":" + dt.getMinutes() + ":" + dt.getSeconds();
-
-    var paramOperation = "operation=SaveActualWorkingStartTime";
+    var paramOperation = "operation=SaveCurrentEmployeePosition";
     var paramShiftId = "shiftId=" + $("#shiftDisplay tbody tr").first().attr('value');
-    var paramCurrentTime = "currentTime=" + currentTime;
+    var paramEmployeeCurrentLat = "employeeCurrentLat=" + Math.round(currentLat * 100000000) / 100000000;
+    var paramEmployeeCurrentLng = "employeeCurrentLng=" + Math.round(currentLng * 100000000) / 100000000;
 
     var xmlhttp = new XMLHttpRequest();
     xmlhttp.open("POST", backendURL, true);
     // Set request header, otherwise AJAX call won't work.
     xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xmlhttp.send(paramOperation + "&" + paramShiftId + "&" + paramCurrentTime);
+    xmlhttp.send(paramOperation + "&" + paramShiftId + "&" + paramEmployeeCurrentLat + "&" + paramEmployeeCurrentLng);
+    // console.log(paramOperation + "&" + paramShiftId + "&" + paramEmployeeCurrentLat + "&" + paramEmployeeCurrentLng);
 
     xmlhttp.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
@@ -365,38 +351,6 @@ function saveActualWorkingStartTimeInDB() {
             var result = JSON.parse(this.responseText);
 
             // console.log("saveActualWorkingStartTimeInDB() result: " + result['success']);
-        }
-    }
-}
-
-function saveActualWorkingEndTimeInDB() {
-
-    // Get current date and time
-    var dt = new Date($.now());
-    // console.log("Date: " + dt);
-    // console.log("Year: " + dt.getFullYear() + " Month: " + (dt.getMonth() + 1) + " Date: " + dt.getDate());
-    // console.log("Hour: " + dt.getHours() + " Minute: " + dt.getMinutes() + " Second: " + dt.getSeconds());
-    // console.log(dt.getFullYear() + "-" + (dt.getMonth() + 1) + "-" + dt.getDate() + " " + dt.getHours() + ":" + dt.getMinutes() + ":" + dt.getSeconds());
-    var currentTime = dt.getFullYear() + "-" + (dt.getMonth() + 1) + "-" + dt.getDate() + " " + dt.getHours() + ":" + dt.getMinutes() + ":" + dt.getSeconds();
-
-    var paramOperation = "operation=SaveActualWorkingEndTime";
-    var paramShiftId = "shiftId=" + $("#shiftDisplay tbody tr").first().attr('value');
-    var paramCurrentTime = "currentTime=" + currentTime;
-
-    var xmlhttp = new XMLHttpRequest();
-    xmlhttp.open("POST", backendURL, true);
-    // Set request header, otherwise AJAX call won't work.
-    xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xmlhttp.send(paramOperation + "&" + paramShiftId + "&" + paramCurrentTime);
-    console.log(paramOperation + "&" + paramShiftId + "&" + paramCurrentTime);
-
-    xmlhttp.onreadystatechange = function () {
-        if (this.readyState == 4 && this.status == 200) {
-            // $("#companyLocationSelection").html(this.responseText);
-            // console.log(this.responseText);
-            var result = JSON.parse(this.responseText);
-
-            // console.log("saveActualWorkingEndTimeInDB() result: " + result['success']);
         }
     }
 }
