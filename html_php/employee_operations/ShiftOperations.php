@@ -180,6 +180,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $responseToClientRequest = ShiftLogoutUpdate($dbConnection, $shiftId, $LogoutLat, $LogoutLat);
             break;
         }
+        case "getTodaysPayDetails": {
+            $responseToClientRequest = getTodaysPayDetails($dbConnection,$userId );
+            break;
+        }
 
     }
 
@@ -615,6 +619,26 @@ function getTodayShiftDetailsPhp($dbConnection,$user_id) {
     $shiftDetails = $pdpstm->fetchAll();
 
     return json_encode($shiftDetails);
+}
+
+function getTodaysPayDetails($dbConnection,$user_id) {
+
+    $shiftsPayOfTodaySQL = "select ShiftId,StartTime,EndTime, shiftmaster.empDesignationId,hour(ActualWorkingStartTime-ActualWorkingEndTime)*payPerHour as 'shiftPay',CompanyName,ActualWorkingStartTime,ActualWorkingEndTime,SpecialNote 
+            from shiftmaster join companymaster on (shiftmaster.CompanyId = companymaster.CompanyId) 
+            join companylocationmaster on (shiftmaster.CompanyLocationId = companylocationmaster.CompanyLocationId) 
+            join employeedesignationmaster on (employeedesignationmaster.empDesignationId = shiftmaster.empDesignationId) where 
+            date(StartTime) = current_date()
+            AND AssignedTo = :AssignedTo
+            AND ShiftStatus = 'A'
+            ORDER BY StartTime;";
+
+    $pdpstm = $dbConnection->prepare($shiftsPayOfTodaySQL);
+    $pdpstm->bindValue(':AssignedTo', $user_id, PDO::PARAM_INT);
+    $pdpstm->execute();
+    $pdpstm->setFetchMode(PDO::FETCH_ASSOC);
+    $shiftPayDetails = $pdpstm->fetchAll();
+
+    return json_encode($shiftPayDetails);
 }
 
 ?>

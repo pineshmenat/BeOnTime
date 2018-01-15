@@ -1,17 +1,51 @@
 <?php
 session_start();
-include 'employeeCalendar.php';
+include_once 'employeeCalendar.php';
+include_once 'ShiftOperations.php';
 ?>
+
+
+<script
+        src="https://code.jquery.com/jquery-3.2.1.min.js"
+        integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+        crossorigin="anonymous">
+</script>
+
+<script>
+    var shiftPayDetails;
+    var settings = {
+        "async": true,
+        "crossDomain": true,
+        "url": "http://localhost/BOT/html_php/employee_operations/ShiftOperations.php",
+        "method": "POST",
+        "headers": {
+            "content-type": "application/x-www-form-urlencoded",
+            "cache-control": "no-cache",
+            "postman-token": "3f0afa24-0ff4-63fc-ed48-7bb348022540"
+        },
+        "data": {
+            "operation": "getTodaysPayDetails",
+            "userId": "<?php echo $_SESSION['userId'];?>"
+        }
+    }
+
+    $.ajax(settings).done(function (response) {
+        //console.log(response);
+        shiftPayDetails= JSON.parse(response);
+    });
+
+</script>
 
 <html lang="en" data-textdirection="ltr" class="loading">
 <title>Pay Details</title>
+
 <?php include("emp_header.php"); ?>
 
 <div class="app-content content container-fluid">
     <div class="content-wrapper">
         <div class="content-header row"></div>
         <div class="content-body">
-
+            <!--/ project charts -->
             <!--Company Name Row-->
             <div class="row">
                 <div class="col-xl-12 col-lg-6 col-xs-12">
@@ -28,276 +62,53 @@ include 'employeeCalendar.php';
                 </div>
             </div>
             <!--/Company Name Row-->
+            </br>
 
-            <!--Form 1 with Location Designation StartDate EndDate-->
-            <form method="get" action="">
-                <div class="row mt-2 col-md-12">
-                    <div class="col-xl-6 col-lg-6 col-xs-12">
-                        <div class="card-body">
-                            <div class="media">
-                                <div class="p-2 text-xs-center bg-light-green bg-darken-2 media-left media-middle">
-                                    <i class="icon-android-locate font-large-2 white"></i>
-                                </div>
-                                <div class="form-group p-2 bg-light-green white media-body">
-                                    <select class="form-control" id="sel1">
-                                        <option>Select Location</option>
-                                        <option>Niagara Falls</option>
-                                        <option>Missisauga Ocean Hall</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xl-6 col-lg-6 col-xs-12">
-                        <div class="card-body">
-                            <div class="media">
-                                <div class="p-2 text-xs-center bg-amber bg-darken-2 media-left media-middle">
-                                    <i class="icon-person font-large-2 white"></i>
-                                </div>
-                                <div class="form-group p-2 bg-amber white media-body">
-                                    <select class="form-control" id="sel1">
-                                        <option>Select Job Designation</option>
-                                        <option>Security Assistant</option>
-                                        <option>Security Senior</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!--Start & End Calender-->
-
-                <div class="row mt-2 col-md-12">
-                    <div class="col-xl-6 col-lg-6 col-xs-12">
-                        <div class="card-body">
-                            <div style="overflow: visible" class="media" >
-                                <div class="p-2 text-xs-center bg-grey bg-darken-2 media-left media-middle">
-                                    <i class="icon-android-calendar font-large-2 white"></i>
-                                </div>
-                                <div style="overflow: visible" class="p-2 bg-grey white media-body">
-                                    <!--<input type="date" id="startDate" name="startDate">-->
-                                    <div class="form-group">
-                                        <div class='input-group date' id='datetimepicker6'>
-                                            <input type='text' class="form-control"/>
-                                            <span class="input-group-addon">
-                                                <!--<span class="glyphicon glyphicon-calendar"></span>-->
-                                                <i class="icon-android-calendar font-size-large black"></i>
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xl-6 col-lg-6 col-xs-12">
-                        <div class="card-body">
-                            <div style="overflow: visible" class="media">
-                                <div class="p-2 text-xs-center bg-grey bg-darken-2 media-left media-middle">
-                                    <i class="icon-android-calendar font-large-2 white"></i>
-                                </div>
-                                <div style="overflow: visible" class="p-2 bg-grey white media-body">
-                                    <!--<input type="date" id="endDate" name="endDate">-->
-                                    <div class="form-group">
-                                        <div class='input-group date' id='datetimepicker7'>
-                                            <input type='text' class="form-control"/>
-                                            <span class="input-group-addon">
-                                                <!--<span class="glyphicon glyphicon-calendar"></span>-->
-                                                <i class="icon-android-calendar font-size-large black"></i>
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!--/Start & End Calender-->
-                <div class="row mt-2 col-md-12">
-                    <div class="row">
-                        <div class="col-xl-12 col-lg-6 col-xs-12">
-                            <div class="card-body">
-                                <div class="media">
-                                    <!--<div class="col-xl-0 col-lg-6 col-xs-12"></div>-->
-                                    <div class="col-xl-12 col-lg-6 col-xs-12" class="p-2 text-xs-center bg-accent-2 media-left media-middle">
-                                        <input style='border-radius: 0 !important; '
-                                               type="submit" class="btn btn-info btn-lg btn-block" value="Display Shifts">
-                                    </div>
-                                    <!--<div class="col-xl-0 col-lg-6 col-xs-12"></div>-->
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </form>
-            <!--/Form 1 with Location Designation StartDate EndDate-->
-
-            <!--Form 2 View Shift Details Table-->
-            <form method="get" action="">
+            <form method="post" action="">
                 <div class="row mt-2 col-md-12">
                     <div class="col-xl-12 col-lg-12 col-xs-12">
-                        <table class="table table-striped table-hover table-responsive">
-                        <thead class="thead-inverse">
-                            <tr>
-                                <th></th>
-                                <th style="padding-right: 5em;">Date</th>
-                                <th style="padding-right: 9em;">Timing</th>
-                                <th>Location</th>
-                                <th>Designation</th>
-                                <th>Status</th>
-                                <th>Payment Per Hr</th>
-                                <th>Employee Name</th>
-                                <th style="padding-right: 6.5em;">Rating</th>
-                                <th>Comment</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <th scope="row">
-                                    <input type="checkbox">
-                                </th>
-                                <td>31 Oct 2016</td>
-                                <td>10:00 AM - 10:00 PM</td>
-                                <td>Sunny, Etobicoke</td>
-                                <td>Asst Security</td>
-                                <td>Confirmed</td>
-                                <td>$13</td>
-                                <td>Mr. X</td>
-                                <td>
-                                    <!-- Rating Stars Box -->
-                                    <div class='rating-stars text-center'>
-                                        <ul id='stars'>
-                                            <li class='star' title='Poor' data-value='1'>
-                                                <i class='fa fa-star fa-fw'></i>
-                                            </li>
-                                            <li class='star' title='Fair' data-value='2'>
-                                                <i class='fa fa-star fa-fw'></i>
-                                            </li>
-                                            <li class='star' title='Good' data-value='3'>
-                                                <i class='fa fa-star fa-fw'></i>
-                                            </li>
-                                            <li class='star' title='Excellent' data-value='4'>
-                                                <i class='fa fa-star fa-fw'></i>
-                                            </li>
-                                            <li class='star' title='WOW!!!' data-value='5'>
-                                                <i class='fa fa-star fa-fw'></i>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </td>
-                                <td>
-                                    <!--<textarea class="ckeditor" id="row1_editor" cols="50" rows="5"></textarea>-->
-                                    <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Comment</button>
-                                    <div class="modal fade" id="myModal" role="dialog">
-                                        <div class="modal-dialog modal-lg">
+                        <script>
+                            var shifts_table = "<table class='table table-striped table-hover table-responsive'>" +
+                                "<thead class='thead-inverse'>" +
+                                "<tr>" +
+                                "<th>ShiftId</th>" +
+                                "<th>Company</th>" +
+                                "<th>StartTime</th>" +
+                                "<th>EndTime</th>" +
+                                "<th>ActualWorkingStartTime</th>" +
+                                "<th>ActualWorkingEndTime</th>" +
+                                "<th>SpecialNote</th>" +
+                                "<th>ShiftPay</th>" +
+                                "</tr>" +
+                                "</thead>" +
+                                "<tbody>";
+                            if(shiftPayDetails != null){
+                                for(var i=0; i<shiftPayDetails.length; i++){
 
-                                            <!-- Modal content-->
-                                            <div class="vertical-alignment-helper">
-                                                <div class="modal-dialog vertical-align-center">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header">
-                                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                                            <h4 class="modal-title">Comments</h4>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            <textarea class="ckeditor" id="row_editor" cols="3" rows="1"></textarea>
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                                            <button type="button" class="btn btn-primary">Save changes</button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <!--/ Modal content-->
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th scope="row">
-                                    <input type="checkbox">
-                                </th>
-                                <td>30 Oct 2016</td>
-                                <td>9:00 AM - 4:00 PM</td>
-                                <td>Sunny, Etobicoke</td>
-                                <td>Asst Security</td>
-                                <td>Confirmed</td>
-                                <td>$13</td>
-                                <td>Mr. X</td>
-                                <td>
-                                    <!-- Rating Stars Box -->
-                                    <div class='rating-stars text-center'>
-                                        <ul id='stars'>
-                                            <li class='star' title='Poor' data-value='1'>
-                                                <i class='fa fa-star fa-fw'></i>
-                                            </li>
-                                            <li class='star' title='Fair' data-value='2'>
-                                                <i class='fa fa-star fa-fw'></i>
-                                            </li>
-                                            <li class='star' title='Good' data-value='3'>
-                                                <i class='fa fa-star fa-fw'></i>
-                                            </li>
-                                            <li class='star' title='Excellent' data-value='4'>
-                                                <i class='fa fa-star fa-fw'></i>
-                                            </li>
-                                            <li class='star' title='WOW!!!' data-value='5'>
-                                                <i class='fa fa-star fa-fw'></i>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </td>
-                                <td>
-                                    <!--<textarea class="ckeditor" id="row2_editor" cols="3" rows="1"></textarea>-->
-                                    <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Comment</button>
-                                    <div class="modal fade" id="myModal" role="dialog">
-                                        <div class="modal-dialog modal-lg">
+                                    shifts_table += "<tr>" +
+                                        "<td>" + shiftPayDetails[i].ShiftId + "</td>" +
+                                        "<td>" + shiftPayDetails[i].CompanyName + "</td>" +
+                                        "<td>" + shiftPayDetails[i].StartTime + "</td>" +
+                                        "<td>" + shiftPayDetails[i].EndTime + "</td>" +
+                                        "<td>" + shiftPayDetails[i].ActualWorkingStartTime+ "</td>" +
+                                        "<td>" + shiftPayDetails[i].ActualWorkingEndTime + "</td>" +
+                                        "<td style='word-wrap: break-word;min-width: 160px;max-width: 160px;'>" + shiftPayDetails[i].SpecialNote + "</td>" +
+                                        "<td>" + shiftPayDetails[i].shiftPay + "</td>" +
+                                        "</tr>";
+                                }
+                            }
 
-                                            <!-- Modal content-->
-                                            <div class="vertical-alignment-helper">
-                                                <div class="modal-dialog vertical-align-center">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header">
-                                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                                            <h4 class="modal-title">Comments</h4>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            <textarea class="ckeditor" id="row2_editor" cols="3" rows="1"></textarea>
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                                            <button type="button" class="btn btn-primary">Save changes</button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <!--/ Modal content-->
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="row mt-2 col-md-12">
-                    <div class="col-xl-6 col-lg-12 col-xs-12">
-                        <input style='border-radius: 0 !important; '
-                               type="submit" class="btn btn-info btn-lg btn-block" value="Modify">
-                    </div>
-                    <div class="col-xl-6 col-lg-12 col-xs-12">
-                        <input style='border-radius: 0 !important; '
-                               type="submit" class="btn btn-danger btn-lg btn-block" value="Delete">
+                            shifts_table += "</tbody></table>";
+
+                            document.write(shifts_table);
+
+                        </script>
                     </div>
                 </div>
             </form>
-            <!--/Form 2 View Shift Details Table-->
-		</div>
-	</div>
+        </div>
+    </div>
 </div>
-        <!--/ project charts -->
-<!-- ////////////////////////////////////////////////////////////////////////////-->
-<br/>
 
 <?php include("emp_footer.php"); ?>
 
@@ -333,25 +144,5 @@ include 'employeeCalendar.php';
 <script src="../../assets/js/datetimepicker/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
 <script src="../../assets/js/datetimepicker/transition.js" type="text/javascript"></script>
 <script src="../../assets/js/datetimepicker/collapse.js" type="text/javascript"></script>
-<script type="text/javascript">
-    $(function () {
-        $('#datetimepicker6').datetimepicker({
-            // display date only, no time. remove below line will show time picker
-            format: 'MMM DD, YYYY'
-        });
-        $('#datetimepicker7').datetimepicker({
-            // display date only, no time. remove below line will show time picker
-            format: 'MMM DD, YYYY',
-            useCurrent: false //Important! See issue #1075
-        });
-        $("#datetimepicker6").on("dp.change", function (e) {
-            $('#datetimepicker7').data("DateTimePicker").minDate(e.date);
-        });
-        $("#datetimepicker7").on("dp.change", function (e) {
-            $('#datetimepicker6').data("DateTimePicker").maxDate(e.date);
-        });
-    });
-</script>
 <!--/START & END CALENDAR JS-->
-
 </html>
