@@ -5,6 +5,7 @@ error_reporting(E_ALL);
 ?>
 <?php
 include("../model/db_config.php");
+$loginErrorDisplay = "";
 
 // Login logic:
 // If user already logs in, when he/she opens another window or tab of browser, no need to login again.
@@ -17,6 +18,11 @@ if (isset($_SESSION['userId'])) {
 
 } else {
 
+    if (isset($_COOKIE['rememberMe'])) {
+
+        $usernameForDisplay = $_COOKIE['userName'];
+    }
+
     // If an user logs out or close all the BeOnTime pages, he/she will be asked to login.
     // Once user clicks login button, program will go to here.
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -25,6 +31,10 @@ if (isset($_SESSION['userId'])) {
         $loginPassword = $_POST['loginPassword'];
 
 //        error_log("loginUsername: " . $loginUsername . " loginPassword: " . $loginPassword);
+
+        if (array_key_exists('rememberMe', $_POST)) {
+            $rememberMe = $_POST['rememberMe'];
+        }
 
         if (isset($loginUsername) && isset($loginPassword)) {
 
@@ -52,10 +62,20 @@ if (isset($_SESSION['userId'])) {
                 $_SESSION['companyId'] = $resultSet[0]['CompanyId'];
                 $_SESSION['portraintImg'] = $resultSet[0]['UserId'] . '_' . $resultSet[0]['UserName'] . '.png';
 
-                error_log("_SESSION['userId']: " . $_SESSION['userId'] . " _SESSION['userName']: " . $_SESSION['userName']
-                    . " _SESSION['roleId']: " . $_SESSION['roleId'] . " _SESSION['portraintImg']: " . $_SESSION['portraintImg']);
+//                error_log("_SESSION['userId']: " . $_SESSION['userId'] . " _SESSION['userName']: " . $_SESSION['userName']
+//                    . " _SESSION['roleId']: " . $_SESSION['roleId'] . " _SESSION['portraintImg']: " . $_SESSION['portraintImg']);
+
+                if (isset($rememberMe)) {
+                    // Because saving user password in local machine is not a secure way, so I save it in a DB table.
+                    setRememberMe($resultSet[0]['UserName']);
+                } else {
+                    // If user doesn't select remember me option, remove RememberMe field in usermaster table
+                    unsetRememberMe($resultSet[0]['UserName']);
+                }
 
                 redirectPage($resultSet[0]['RoleId']);
+            } else {
+                $loginErrorDisplay = "Username or password is wrong.";
             }
         }
     }
@@ -84,6 +104,19 @@ function redirectPage($roleId) {
     }
 }
 
+function setRememberMe($userName) {
+
+    setcookie('userName', $userName, time() + 86400, '/');
+    setcookie('rememberMe', 'TRUE', time() + 86400, '/');
+
+}
+
+function unsetRememberMe($userName) {
+
+    setcookie('userName', $userName, time() - 86400, '/');
+    setcookie('rememberMe', 'FALSE', time() - 86400, '/');
+
+}
 
 ?>
 
@@ -163,8 +196,8 @@ function redirectPage($roleId) {
                                     <!--                                    username-->
                                     <fieldset class="form-group position-relative has-icon-left mb-0">
                                         <input type="text" class="form-control form-control-lg input-lg" id="loginUsername"
-                                               name="loginUsername"
-                                               placeholder="Your Username" required autofocus>
+                                               name="loginUsername" placeholder="Your Username"
+                                               value="<?php echo (isset($usernameForDisplay)) ? $usernameForDisplay : "";  ?>" required autofocus>
                                         <div class="form-control-position">
                                             <i class="icon-head"></i>
                                         </div>
@@ -178,14 +211,18 @@ function redirectPage($roleId) {
                                         <div class="form-control-position">
                                             <i class="icon-key3"></i>
                                         </div>
+                                        <div class="text-danger">
+                                            <?= $loginErrorDisplay; ?>
+                                        </div>
                                     </fieldset>
 
                                     <!--                                    remember me option-->
                                     <fieldset class="form-group row">
                                         <div class="col-md-6 col-xs-12 text-xs-center text-md-left">
                                             <fieldset>
-                                                <input type="checkbox" id="remember-me" class="chk-remember">
-                                                <label for="remember-me"> Remember Me</label>
+                                                <input type="checkbox" id="rememberMe" class="chk-remember" name="rememberMe"
+                                                    <?php echo (isset($_COOKIE['rememberMe']) ? "checked" : ""); ?> >
+                                                <label for="rememberMe"> Remember Me</label>
                                             </fieldset>
                                         </div>
                                         <div class="col-md-6 col-xs-12 text-xs-center text-md-right">
