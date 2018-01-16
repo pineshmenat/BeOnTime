@@ -77,7 +77,7 @@
                     <li class="dropdown dropdown-user nav-item">
                         <a href="#" data-toggle="dropdown" class="dropdown-toggle nav-link dropdown-user-link">
                             <span class="avatar avatar-online">
-                                <img src="../../app-assets/images/portrait/small/avatar-s-1.png" alt="portraitImg"><i></i>
+                                <img src="../../assets/images/portrait_img/<?= $_SESSION['portraintImg']; ?>" alt="portraitImg"><i></i>
                             </span>
                             <span class="user-name"><?= $_SESSION['userName']; ?></span>
                         </a>
@@ -97,37 +97,3 @@
 </nav>
 
 <!-- ////////////////////////////////////////////////////////////////////////////-->
-
-
-<!-- main menu-->
-<div data-scroll-to-active="true" class="main-menu menu-fixed menu-dark menu-accordion menu-shadow">
-    <!-- main menu header-->
-    <div class="main-menu-header">
-        <input type="text" placeholder="Search" class="menu-search form-control round"/>
-    </div>
-    <!-- / main menu header-->
-    <!-- main menu content-->
-    <div class="main-menu-content">
-        <ul id="main-menu-navigation" data-menu="menu-navigation" class="navigation navigation-main">
-            <li class=" nav-item"><a href="#"><i class="icon-home3"></i><span data-i18n="nav.dash.main"
-                                                                              class="menu-title">Employee</span><span
-                        class="tag tag tag-primary tag-pill float-xs-right mr-2">2</span></a>
-                <ul class="menu-content">
-                    <li class="active"><a href="employee-dashboard.php" data-i18n="nav.dash.main" class="menu-item">Dashboard</a>
-                    </li>
-                    <li><a href="latest_shift.php" data-i18n="nav.dash.main" class="menu-item">Latest Shift</a>
-                    </li>
-                    <li><a href="pay_details.php" data-i18n="nav.dash.main" class="menu-item">Pay Details</a>
-                    </li>
-                    <li><a href="employee_movement_check_frontend.php" data-i18n="nav.dash.main" class="menu-item">Movement Check</a>
-                    </li>
-                </ul>
-            </li>
-        </ul>
-    </div>
-    <!-- /main menu content-->
-    <!-- main menu footer-->
-    <!-- include includes/menu-footer-->
-    <!-- main menu footer-->
-</div>
-<!-- / main menu-->

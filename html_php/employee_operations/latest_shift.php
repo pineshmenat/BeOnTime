@@ -30,8 +30,8 @@ var shiftDetails;
     };
 
     $.ajax(settings).done(function (response) {
-        console.log(response);
-        shiftDetails= JSON.parse(response);
+        //console.log(response);
+        shiftDetails = JSON.parse(response);
     });
 
 </script>
@@ -39,6 +39,39 @@ var shiftDetails;
 <html lang="en" data-textdirection="ltr" class="loading">
 <title>Latest Shift</title>
 <?php include("emp_header.php"); ?>
+<!-- main menu-->
+<div data-scroll-to-active="true" class="main-menu menu-fixed menu-dark menu-accordion menu-shadow">
+    <!-- main menu header-->
+    <div class="main-menu-header">
+
+    </div>
+    <!-- / main menu header-->
+    <!-- main menu content-->
+    <div class="main-menu-content">
+        <ul id="main-menu-navigation" data-menu="menu-navigation" class="navigation navigation-main">
+            <li class=" nav-item"><a href="#"><i class="icon-home3"></i><span data-i18n="nav.dash.main"
+                                                                              class="menu-title">Employee</span></a>
+                <ul class="menu-content">
+                    <li><a href="employee-dashboard.php" data-i18n="nav.dash.main" class="menu-item">Dashboard</a>
+                    </li>
+                    <li class="active"><a href="latest_shift.php" data-i18n="nav.dash.main" class="menu-item">Latest
+                            Shift</a>
+                    </li>
+                    <li><a href="pay_details.php" data-i18n="nav.dash.main" class="menu-item">Pay Details</a>
+                    </li>
+                    <li><a href="employee_movement_check_frontend.php" data-i18n="nav.dash.main" class="menu-item">Movement
+                            Check</a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+    <!-- /main menu content-->
+    <!-- main menu footer-->
+    <!-- include includes/menu-footer-->
+    <!-- main menu footer-->
+</div>
+<!-- / main menu-->
 <div class="app-content content container-fluid">
     <div class="content-wrapper">
         <div class="content-header row"></div>
@@ -53,7 +86,9 @@ var shiftDetails;
                                 <i class="icon-bank font-large-2 white"></i>
                             </div>
                             <div class="p-2 bg-cyan white media-body">
-                                <label id="companyName"><h1><?php if(isset($_SESSION['companyId'])) echo EmployeeCalendar::getCompanyName($_SESSION['companyId']); else echo 'Unknown';?></h1></label>
+                                <label id="companyName">
+                                    <h1><?php if (isset($_SESSION['companyId'])) echo EmployeeCalendar::getCompanyName($_SESSION['companyId']); else echo 'Unknown'; ?></h1>
+                                </label>
                             </div>
                         </div>
                     </div>
@@ -79,9 +114,12 @@ var shiftDetails;
                 }
 
                 function plotShiftLocations() {
-                    for(var i=0;i<shiftDetails.length;i++){
+                    for (var i = 0; i < shiftDetails.length; i++) {
                         var marker1 = new google.maps.Marker({
-                            position: {lat:parseFloat(shiftDetails[i].Latitude),lng:parseFloat(shiftDetails[i].Longitude)},
+                            position: {
+                                lat: parseFloat(shiftDetails[i].Latitude),
+                                lng: parseFloat(shiftDetails[i].Longitude)
+                            },
                             map: map,
                             title: 'ShiftId:'+ shiftDetails[i].ShiftId +'. CompanyName: '+shiftDetails[i].CompanyName
                         });
@@ -108,7 +146,8 @@ var shiftDetails;
                             });
                             map.setCenter(myCoordinates);
                         });
-                    } else {}
+                    } else {
+                    }
                     //handleLocationError(false, infoWindow, map.getCenter());
                 }
 
@@ -121,33 +160,38 @@ var shiftDetails;
                 }
 
                 function loginClick(rowId) {
-                    if(shiftDetails != null){
+                    if (shiftDetails != null) {
+                        //console.log(rowId);
                         //console.log("Inside loginClick: " + shiftDetails[rowId - 1].ShiftId);
-                        workplace = new google.maps.LatLng(parseFloat(shiftDetails[i - 1].Latitude), parseFloat(shiftDetails[i - 1].Longitude));
+                        workplace = new google.maps.LatLng(parseFloat(shiftDetails[rowId].Latitude), parseFloat(shiftDetails[rowId].Longitude));
                         var distanceInMetres = google.maps.geometry.spherical.computeDistanceBetween(myCoordinates, workplace);
                         if (distanceInMetres < 300) {
-                            var settings = {
-                                "async": true,
-                                "crossDomain": true,
-                                "url": "http://localhost/BOT/html_php/employee_operations/ShiftOperations.php",
-                                "method": "POST",
-                                "headers": {
-                                    "content-type": "application/x-www-form-urlencoded",
-                                    "cache-control": "no-cache",
-                                    "postman-token": "e84e9a9e-2427-6d51-fbae-36d4c9ab9bef"
-                                },
-                                "data": {
-                                    "operation": "ShiftLoginUpdate",
-                                    "LoginLat": currentLat,
-                                    "LoginLng": currentLng,
-                                    "shiftId": shiftDetails[i-1].ShiftId
+                            if(shiftDetails[rowId].ActualWorkingStartTime == null) {
+                                var settings = {
+                                    "async": true,
+                                    "crossDomain": true,
+                                    "url": "http://localhost/BOT/html_php/employee_operations/ShiftOperations.php",
+                                    "method": "POST",
+                                    "headers": {
+                                        "content-type": "application/x-www-form-urlencoded",
+                                        "cache-control": "no-cache",
+                                        "postman-token": "e84e9a9e-2427-6d51-fbae-36d4c9ab9bef"
+                                    },
+                                    "data": {
+                                        "operation": "ShiftLoginUpdate",
+                                        "LoginLat": currentLat,
+                                        "LoginLng": currentLng,
+                                        "shiftId": shiftDetails[rowId].ShiftId
+                                    }
                                 }
+
+                                $.ajax(settings).done(function (response) {
+                                    alert("Shift Started!!");
+                                    document.getElementById(shiftDetails[rowId].ShiftId).disabled = true;
+                                });
+                            } else {
+                                alert("Shift is already started!!");
                             }
-
-                            $.ajax(settings).done(function (response) {
-                                console.log(response);
-                            });
-
                         } else {
                             alert("You're not in the range of your workplace!!");
                         }
@@ -155,33 +199,36 @@ var shiftDetails;
                 }
 
                 function logoutClick(rowId) {
-                    if(shiftDetails != null){
-                        //console.log("Inside loginClick: " + shiftDetails[rowId - 1].ShiftId);
-                        workplace = new google.maps.LatLng(parseFloat(shiftDetails[i - 1].Latitude), parseFloat(shiftDetails[i - 1].Longitude));
+                    if (shiftDetails != null) {
+                        workplace = new google.maps.LatLng(parseFloat(shiftDetails[rowId].Latitude), parseFloat(shiftDetails[rowId].Longitude));
                         var distanceInMetres = google.maps.geometry.spherical.computeDistanceBetween(myCoordinates, workplace);
-                        if (distanceInMetres > 300) {
-                            var settings = {
-                                "async": true,
-                                "crossDomain": true,
-                                "url": "http://localhost/BOT/html_php/employee_operations/ShiftOperations.php",
-                                "method": "POST",
-                                "headers": {
-                                    "content-type": "application/x-www-form-urlencoded",
-                                    "cache-control": "no-cache",
-                                    "postman-token": "00764e16-14d4-e620-2cb3-1dd56a5127ca"
-                                },
-                                "data": {
-                                    "operation": "ShiftLogoutUpdate",
-                                    "LogoutLat": currentLat,
-                                    "LogoutLng": currentLng,
-                                    "shiftId": shiftDetails[i-1].ShiftId
+                        if (distanceInMetres < 300) {
+                            if(shiftDetails[rowId].ActualWorkingEndTime == null) {
+                                var settings = {
+                                    "async": true,
+                                    "crossDomain": true,
+                                    "url": "http://localhost/BOT/html_php/employee_operations/ShiftOperations.php",
+                                    "method": "POST",
+                                    "headers": {
+                                        "content-type": "application/x-www-form-urlencoded",
+                                        "cache-control": "no-cache",
+                                        "postman-token": "00764e16-14d4-e620-2cb3-1dd56a5127ca"
+                                    },
+                                    "data": {
+                                        "operation": "ShiftLogoutUpdate",
+                                        "LogoutLat": currentLat,
+                                        "LogoutLng": currentLng,
+                                        "shiftId": shiftDetails[rowId].ShiftId
+                                    }
                                 }
+
+                                $.ajax(settings).done(function (response) {
+                                    alert("Shift Ended!!");
+                                    document.getElementById(shiftDetails[rowId].ShiftId + 'l').disabled = true;
+                                });
+                            } else {
+                                alert("Shift is already Ended!!");
                             }
-
-                            $.ajax(settings).done(function (response) {
-                                console.log(response);
-                            });
-
                         } else {
                             alert("You're not in the range of your workplace!!");
                         }
@@ -190,51 +237,70 @@ var shiftDetails;
             </script>
 
 
-
             <form method="post" action="">
-            <div class="row mt-2 col-md-12">
-                <div class="col-xl-12 col-lg-12 col-xs-12">
-                    <script>
-                        var shifts_table = "<table class='table table-striped table-hover table-responsive'>" +
-                            "<thead class='thead-inverse'>" +
-                            "<tr>" +
-                            "<th>ShiftId</th>" +
-                            "<th>Company</th>" +
-                            "<th>StartTime</th>" +
-                            "<th>EndTime</th>" +
-                            "<th>ActualWorkingStartTime</th>" +
-                            "<th>ActualWorkingEndTime</th>" +
-                            "<th>SpecialNote</th>" +
-                            "<th>Login</th>" +
-                            "<th>LogOut</th>" +
-                            "</tr>" +
-                            "</thead>" +
-                            "<tbody>";
-                        if(shiftDetails != null){
-                        for(var i=0;i<shiftDetails.length;i++){
+                <div class="row mt-2 col-md-12">
+                    <div class="col-xl-12 col-lg-12 col-xs-12">
+                        <script>
+                                var shifts_table = "";
+                                if (shiftDetails != '') {
+                                    shifts_table = "<table class='table table-striped table-hover table-responsive'>" +
+                                        "<thead class='thead-inverse'>" +
+                                        "<tr>" +
+                                        "<th>ShiftId</th>" +
+                                        "<th>Company</th>" +
+                                        "<th>StartTime</th>" +
+                                        "<th>EndTime</th>" +
+                                        "<th>ActualWorkingStartTime</th>" +
+                                        "<th>ActualWorkingEndTime</th>" +
+                                        "<th>SpecialNote</th>" +
+                                        "<th>Login</th>" +
+                                        "<th>LogOut</th>" +
+                                        "</tr>" +
+                                        "</thead>" +
+                                        "<tbody>";
 
-                            shifts_table += "<tr>" +
-                             "<td>" + shiftDetails[i].ShiftId + "</td>" +
-                             "<td>" + shiftDetails[i].CompanyName + "</td>" +
-                             "<td>" + shiftDetails[i].StartTime + "</td>" +
-                             "<td>" + shiftDetails[i].EndTime + "</td>" +
-                             "<td>" + shiftDetails[i].ActualWorkingStartTime+ "</td>" +
-                             "<td>" + shiftDetails[i].ActualWorkingEndTime + "</td>" +
-                             "<td style='word-wrap: break-word;min-width: 160px;max-width: 160px;'>" + shiftDetails[i].SpecialNote + "</td>" +
-                             "<td><input type='number' name='WorkplaceLat' id='" + shiftDetails[i].ShiftId + "Lat' value='" + shiftDetails[i].Latitude + "' hidden/>" +
-                             "<input type='number' name='WorkplaceLong' id='" + shiftDetails[i].ShiftId + "Long' value='" + shiftDetails[i].Longitude + "' hidden/>" +
-                             "<input type='button' class='btn btn-info' name='Login' value='Login' onclick='loginClick(i)'/></td>" +
-                             "<td><input type='button' class='btn btn-info' name='Logout' value='Logout' onclick='logoutClick(i)'/></td></tr>";
-                        }
-                        }
-
-                        shifts_table += "</tbody></table>";
-
-                    document.write(shifts_table);
-
-                    </script>
+                                    $.each(shiftDetails, function (index, shift) {
+                                        console.log(shift);
+                                        if(shift.ActualWorkingStartTime != null) {
+                                            shifts_table += "<tr>" +
+                                                "<td>" + shift.ShiftId + "</td>" +
+                                                "<td>" + shift.CompanyName + "</td>" +
+                                                "<td>" + shift.StartTime + "</td>" +
+                                                "<td>" + shift.EndTime + "</td>" +
+                                                "<td>" + shift.ActualWorkingStartTime + "</td>" +
+                                                "<td>" + shift.ActualWorkingEndTime + "</td>" +
+                                                "<td style='word-wrap: break-word;min-width: 160px;max-width: 160px;'>" + shift.SpecialNote + "</td>" +
+                                                "<td>" +
+                                                "<input type='hidden' name='WorkplaceLat' id='" + shift.ShiftId + "Lat' value='" + shift.Latitude + "'/>" +
+                                                "<input type='hidden' name='WorkplaceLong' id='" + shift.ShiftId + "Long' value='" + shift.Longitude + "'/>" +
+                                                "<input type='button' class='btn btn-info' name='Login' value='Login' id='"+shift.ShiftId+"' onclick='loginClick("+index+")' disabled/></td>" +
+                                                "<td><input type='button' class='btn btn-info' name='Logout' value='Logout' id='"+shift.ShiftId+"l' onclick='logoutClick("+index+")'/></td>" +
+                                                "</tr>";
+                                        } else {
+                                            shifts_table += "<tr>" +
+                                                "<td>" + shift.ShiftId + "</td>" +
+                                                "<td>" + shift.CompanyName + "</td>" +
+                                                "<td>" + shift.StartTime + "</td>" +
+                                                "<td>" + shift.EndTime + "</td>" +
+                                                "<td>" + shift.ActualWorkingStartTime + "</td>" +
+                                                "<td>" + shift.ActualWorkingEndTime + "</td>" +
+                                                "<td style='word-wrap: break-word;min-width: 160px;max-width: 160px;'>" + shift.SpecialNote + "</td>" +
+                                                "<td>" +
+                                                "<input type='hidden' name='WorkplaceLat' id='" + shift.ShiftId + "Lat' value='" + shift.Latitude + "'/>" +
+                                                "<input type='hidden' name='WorkplaceLong' id='" + shift.ShiftId + "Long' value='" + shift.Longitude + "'/>" +
+                                                "<input type='button' class='btn btn-info' name='Login' value='Login' id='"+shift.ShiftId+"' onclick='loginClick("+index+")'/></td>" +
+                                                "<td><input type='button' class='btn btn-info' name='Logout' value='Logout' id='"+shift.ShiftId+"l' onclick='logoutClick("+index+")'/></td>" +
+                                                "</tr>";
+                                        }
+                                    });
+                                    shifts_table += "</tbody></table>";
+                                } else {
+                                    shifts_table += "<h2>You're on leave Today :)</h2>";
+                                }
+                                document.write(shifts_table);
+                        </script>
+                    </div>
                 </div>
-            </div>
             </form>
         </div>
     </div>
@@ -269,7 +335,6 @@ var shiftDetails;
 <!-- END ROBUST JS-->
 <!-- BEGIN PAGE LEVEL JS-->
 <!-- END PAGE LEVEL JS-->
-
 
 
 <!--<script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>-->

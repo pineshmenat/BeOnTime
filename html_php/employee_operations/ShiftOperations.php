@@ -471,7 +471,7 @@ function changeStatus($dbConnection, $shiftId, $status) {
 
 function ShiftLoginUpdate($dbConnection, $shiftId, $Lat, $Long) {
 
-    $sql = "Update shiftmaster SET LogInLat=:latitide,LogInLong=:longitude WHERE ShiftId=:shiftId";
+    $sql = "Update shiftmaster SET LogInLat=:latitide,LogInLong=:longitude,ActualWorkingStartTime = current_timestamp() WHERE ShiftId=:shiftId";
 
     $pdpstm = $dbConnection->prepare($sql);
     $pdpstm->bindValue(':latitide', $Long, PDO::PARAM_STR);
@@ -487,7 +487,7 @@ function ShiftLoginUpdate($dbConnection, $shiftId, $Lat, $Long) {
 
 function ShiftLogoutUpdate($dbConnection, $shiftId, $Lat, $Long) {
 
-    $sql = "Update shiftmaster SET LogOutLat=:latitide,LogOutLong=:longitude WHERE ShiftId=:shiftId";
+    $sql = "Update shiftmaster SET LogOutLat=:latitide,LogOutLong=:longitude,ActualWorkingEndTime = CURRENT_TIMESTAMP(),ShiftStatus='D' WHERE ShiftId=:shiftId";
 
     $pdpstm = $dbConnection->prepare($sql);
     $pdpstm->bindValue(':latitide', $Long, PDO::PARAM_STR);
@@ -623,13 +623,13 @@ function getTodayShiftDetailsPhp($dbConnection,$user_id) {
 
 function getTodaysPayDetails($dbConnection,$user_id) {
 
-    $shiftsPayOfTodaySQL = "select ShiftId,StartTime,EndTime, shiftmaster.empDesignationId,hour(ActualWorkingStartTime-ActualWorkingEndTime)*payPerHour as 'shiftPay',CompanyName,ActualWorkingStartTime,ActualWorkingEndTime,SpecialNote 
+    $shiftsPayOfTodaySQL = "select ShiftId,StartTime,EndTime, shiftmaster.empDesignationId,hour(ActualWorkingEndTime-ActualWorkingStartTime)*payPerHour as 'shiftPay',CompanyName,ActualWorkingStartTime,ActualWorkingEndTime,SpecialNote 
             from shiftmaster join companymaster on (shiftmaster.CompanyId = companymaster.CompanyId) 
             join companylocationmaster on (shiftmaster.CompanyLocationId = companylocationmaster.CompanyLocationId) 
             join employeedesignationmaster on (employeedesignationmaster.empDesignationId = shiftmaster.empDesignationId) where 
             date(StartTime) = current_date()
             AND AssignedTo = :AssignedTo
-            AND ShiftStatus = 'A'
+            AND ShiftStatus = 'D'
             ORDER BY StartTime;";
 
     $pdpstm = $dbConnection->prepare($shiftsPayOfTodaySQL);

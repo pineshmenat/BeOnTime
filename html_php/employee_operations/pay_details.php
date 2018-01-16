@@ -41,6 +41,38 @@ include_once 'ShiftOperations.php';
 
 <?php include("emp_header.php"); ?>
 
+<!-- main menu-->
+<div data-scroll-to-active="true" class="main-menu menu-fixed menu-dark menu-accordion menu-shadow">
+    <!-- main menu header-->
+    <div class="main-menu-header">
+
+    </div>
+    <!-- / main menu header-->
+    <!-- main menu content-->
+    <div class="main-menu-content">
+        <ul id="main-menu-navigation" data-menu="menu-navigation" class="navigation navigation-main">
+            <li class=" nav-item"><a href="#"><i class="icon-home3"></i><span data-i18n="nav.dash.main"
+                                                                              class="menu-title">Employee</span></a>
+                <ul class="menu-content">
+                    <li><a href="employee-dashboard.php" data-i18n="nav.dash.main" class="menu-item">Dashboard</a>
+                    </li>
+                    <li><a href="latest_shift.php" data-i18n="nav.dash.main" class="menu-item">Latest Shift</a>
+                    </li>
+                    <li class="active"><a href="pay_details.php" data-i18n="nav.dash.main" class="menu-item">Pay Details</a>
+                    </li>
+                    <li><a href="employee_movement_check_frontend.php" data-i18n="nav.dash.main" class="menu-item">Movement Check</a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+    <!-- /main menu content-->
+    <!-- main menu footer-->
+    <!-- include includes/menu-footer-->
+    <!-- main menu footer-->
+</div>
+<!-- / main menu-->
+
 <div class="app-content content container-fluid">
     <div class="content-wrapper">
         <div class="content-header row"></div>
