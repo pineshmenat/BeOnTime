@@ -170,7 +170,7 @@ var shiftDetails;
                                 var settings = {
                                     "async": true,
                                     "crossDomain": true,
-                                    "url": "http://localhost/BOT/html_php/employee_operations/ShiftOperations.php",
+                                    "url": "http://beontime.byethost16.com/beontime/html_php/employee_operations/ShiftOperations.php",
                                     "method": "POST",
                                     "headers": {
                                         "content-type": "application/x-www-form-urlencoded",
@@ -207,7 +207,7 @@ var shiftDetails;
                                 var settings = {
                                     "async": true,
                                     "crossDomain": true,
-                                    "url": "http://localhost/BOT/html_php/employee_operations/ShiftOperations.php",
+                                    "url": "http://beontime.byethost16.com/beontime/html_php/employee_operations/ShiftOperations.php",
                                     "method": "POST",
                                     "headers": {
                                         "content-type": "application/x-www-form-urlencoded",
