@@ -1,3 +1,108 @@
+<?php
+
+ini_set('display_errors', 'On');
+error_reporting(E_ALL);
+?>
+
+<?php
+
+use PHPMailer\PHPMailer\PHPMailer;
+//use PHPMailer\PHPMailer\Exception;
+use PHPMailer\PHPMailer\OAuth;
+use League\OAuth2\Client\Provider\Google;
+
+session_start();
+include("../model/db_config.php");
+require '../../assets/composer/vendor/autoload.php';
+
+
+$forgetPasswordErrorDisplay = "";
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+    $userEmail = $_POST['userEmail'];
+
+    error_log("userEmail: " . $userEmail);
+
+    if (isset($userEmail)) {
+
+        $forgetPasswordErrorDisplay = processForgetPassword($userEmail);
+    }
+}
+
+function processForgetPassword($userEmail) {
+
+    $forgetPasswordSQL = "SELECT FirstName, LastName, Password FROM usermaster WHERE EMail = :email";
+    $pdpstm = DB::getDBConnection()->prepare($forgetPasswordSQL);
+    $pdpstm->bindValue(':email', $userEmail, PDO::PARAM_STR);
+    $pdpstm->execute();
+    $pdpstm->setFetchMode(PDO::FETCH_ASSOC);
+
+    $rowCount = $pdpstm->rowCount();
+//    error_log("rowCount: " . $rowCount);
+
+    $resultSet = $pdpstm->fetchAll();
+
+    if ($rowCount == 1) {
+
+        $firstname = $resultSet[0]['FirstName'];
+        $lastname = $resultSet[0]['LastName'];
+        $password = $resultSet[0]['Password'];
+
+//        return sendEmail($userEmail, $firstname, $lastname, $password);
+        return sendEmailWithOAuth($userEmail, $firstname, $lastname, $password);
+
+    } else if ($rowCount == 0) {
+        return "This email address doesn't exist.";
+    } else {
+        return "There is more than 1 BeOnTime user account associated with this email address. Please change.";
+    }
+
+}
+
+
+function sendEmailWithOAuth($userEmail, $firstname, $lastname, $password) {
+
+    $mail = new PHPMailer;
+    $mail->isSMTP();
+    $mail->SMTPDebug = 0;
+    $mail->Host = 'smtp.gmail.com';
+    $mail->Port = 587;
+    $mail->SMTPSecure = 'tls';
+    $mail->SMTPAuth = true;
+    $mail->AuthType = 'XOAUTH2';
+
+    $email = 'mail.beontime@gmail.com';
+    $clientId = '54609260413-6h0k89v22dej7neoc4hndh2jisos3a4a.apps.googleusercontent.com';
+    $clientSecret = 'esvUbmEqrZvXKDz-6RCx11oA';
+
+    $refreshToken = '1/qSqerD_tXh9bCwZyfa0j2vx3zIAWgFNZk2CBekgM9K4Moig2PqRA_Np5daRRAi3n';
+    $provider = new Google(['clientId' => $clientId, 'clientSecret' => $clientSecret]);
+    $mail->setOAuth(
+        new OAuth(
+            [
+                'provider' => $provider,
+                'clientId' => $clientId,
+                'clientSecret' => $clientSecret,
+                'refreshToken' => $refreshToken,
+                'userName' => $email
+            ]));
+    $mail->setFrom($email, 'BeOnTime Admin');
+    $mail->addAddress($userEmail, $firstname . ' ' . $lastname);
+    $mail->Subject = 'PHP lab 7 forget password feature';
+    $mail->CharSet = 'utf-8';
+    $mail->Body = "Dear " . ucwords($firstname) . ' ' . ucwords($lastname) . ",\r\n\r\nYour password is " . $password . "\r\n\r\nRegards,\r\nBeOnTime project group";
+
+    if (!$mail->send()) {
+        return "Mailer Error: " . $mail->ErrorInfo;
+    } else {
+        return "Message sent!";
+    }
+}
+
+?>
+
+
 <!--<!DOCTYPE html> is important. Removing this indication will cause padding display abnormal in some places.-->
 <!DOCTYPE html>
 <html lang="en" data-textdirection="ltr" class="loading">
@@ -58,7 +163,7 @@
                             <div class="card-title text-xs-center">
                                 <img src="../../assets/images/logo.png" alt="branding logo" height="50" width="193">
                             </div>
-                            <h6 class="card-subtitle line-on-side text-muted text-xs-center font-small-3 pt-2"><span>We will send you a link to reset your password.</span>
+                            <h6 class="card-subtitle line-on-side text-muted text-xs-center font-small-3 pt-2"><span>We will send you an email to tell you your password.</span>
                             </h6>
                         </div>
 
@@ -66,15 +171,18 @@
                         <div class="card-body collapse in">
                             <div class="card-block">
 <!--                                recover password form-->
-                                <form class="form-horizontal" action="login.php" novalidate>
+                                <form class="form-horizontal" action="" novalidate>
                                     <fieldset class="form-group position-relative has-icon-left">
-                                        <input type="email" class="form-control form-control-lg input-lg" id="user-email"
-                                               placeholder="Your Email Address" required>
+                                        <input type="email" class="form-control form-control-lg input-lg" id="userEmail" name="userEmail"
+                                               placeholder="Your Email Address" required autofocus>
                                         <div class="form-control-position">
                                             <i class="icon-mail6"></i>
                                         </div>
+                                        <div class="text-danger">
+                                            <?= $forgetPasswordErrorDisplay; ?>
+                                        </div>
                                     </fieldset>
-                                    <button type="submit" class="btn btn-primary btn-lg btn-block"><i class="icon-lock4"></i> Recover
+                                    <button type="submit" class="btn btn-success btn-lg btn-block" formmethod="post"><i class="icon-lock4"></i> Recover
                                         Password
                                     </button>
                                 </form>
@@ -87,8 +195,6 @@
                             <p class="float-sm-left text-xs-center"><a href="../index.html" class="card-link">Main page&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
                             </p>
                             <p class="float-sm-left text-xs-center"><a href="login.php" class="card-link">Login</a></p>
-                            <p class="float-sm-right text-xs-center">New to BeOnTime ? <a href="register-simple.php" class="card-link">Create
-                                    Account</a></p>
                         </div>
 
                     </div>

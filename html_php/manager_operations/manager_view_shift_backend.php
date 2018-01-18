@@ -146,8 +146,8 @@ function searchShifts($dbConnection, $companyId, $companyLocationId, $startDateF
         && isset($endDateFormatted) && isset($endTimeFormatted)) {
 
         error_log("companyId: " . $companyId . " companyLocationId: " . $companyLocationId
-             . " startDateFormatted: " . $startDateFormatted . " startTimeFormatted: " . $startTimeFormatted
-             . " endDateFormatted: " . $endDateFormatted . " endTimeFormatted: " . $endTimeFormatted);
+            . " startDateFormatted: " . $startDateFormatted . " startTimeFormatted: " . $startTimeFormatted
+            . " endDateFormatted: " . $endDateFormatted . " endTimeFormatted: " . $endTimeFormatted);
 
         // NOTE: Line (shiftmaster.CompanyLocationId = '$companyLocationId' OR '$companyLocationId' = '') means even if $companyLocationId is "",
         // sql query will get all locations from DB.
@@ -208,8 +208,10 @@ function cancelShift($dbConnection, $selectedShiftId) {
 
                 // Get shift info
                 $shiftAndClientInfoResponse = getShiftAndClientInfo($dbConnection, $selectedShiftId);
+
                 $shiftId = $selectedShiftId;
                 $companyName = $shiftAndClientInfoResponse['CompanyName'];
+                $companyEmail = $shiftAndClientInfoResponse['CompanyEmail'];
                 $address = $shiftAndClientInfoResponse['Address'];
                 $startTime = $shiftAndClientInfoResponse['StartTime'];
                 $endTime = $shiftAndClientInfoResponse['EndTime'];
@@ -219,21 +221,50 @@ function cancelShift($dbConnection, $selectedShiftId) {
 
                 // Specify email subject and body
                 $eMailSubject = '[BeOnTime][Client] Shift Cancellation Notification';
-                $eMailBody = "<html>"
-                    . "Dear " . ucwords($firstName) . ' ' . ucwords($lastName) . ",<br/><br/>"
-                    . "Below shift is cancelled. <br/><br/>"
-                    . "Shift Id: <b>" . $shiftId . "</b><br/>"
-                    . "Company Name: <b>" . $companyName . "</b><br/>"
-                    . "Address: <b>" . $address . "</b><br/>"
-                    . "Shift Start Time: <b>" . $startTime . "</b><br/>"
-                    . "Shift End Time: <b>" . $endTime . "</b><br/><br/>"
-                    . "Regards,<br/>BeOnTime project group"
-                    . "</html>";
 
-                // If email is not null and valid, send notification email
-                if (isset($eMail) && filter_var($eMail, FILTER_VALIDATE_EMAIL)) {
-                    sendNotificationEmail($eMailSubject, $eMailBody, $firstName, $lastName, $eMail);
+                // send employee a notification email
+//                error_log("firstName: " . $firstName . " lastName: " . $lastName . " eMail: " . $eMail);
+
+                if($firstName != "" && $lastName != "" && $eMail != "") {
+                    if (filter_var($eMail, FILTER_VALIDATE_EMAIL)) {
+
+                        $eMailBody = "<html>"
+                            . "Dear " . ucwords($firstName) . ' ' . ucwords($lastName) . ",<br/><br/>"
+                            . "Below shift is cancelled. <br/><br/>"
+                            . "Shift Id: <b>" . $shiftId . "</b><br/>"
+                            . "Company Name: <b>" . $companyName . "</b><br/>"
+                            . "Address: <b>" . $address . "</b><br/>"
+                            . "Shift Start Time: <b>" . $startTime . "</b><br/>"
+                            . "Shift End Time: <b>" . $endTime . "</b><br/><br/>"
+                            . "Regards,<br/>BeOnTime project group"
+                            . "</html>";
+
+                        sendNotificationEmail($eMailSubject, $eMailBody, $firstName, $lastName, $eMail);
+                    }
                 }
+
+
+                // send notification to company email
+                error_log("companyName: " . $companyName . " companyEmail: " . $companyEmail);
+
+                if($companyName != "" && $companyEmail != "") {
+                    if (filter_var($companyEmail, FILTER_VALIDATE_EMAIL)) {
+
+                        $eMailBody = "<html>"
+                            . "Dear " . ucwords($companyName) . ",<br/><br/>"
+                            . "Below shift is cancelled. <br/><br/>"
+                            . "Shift Id: <b>" . $shiftId . "</b><br/>"
+                            . "Company Name: <b>" . $companyName . "</b><br/>"
+                            . "Address: <b>" . $address . "</b><br/>"
+                            . "Shift Start Time: <b>" . $startTime . "</b><br/>"
+                            . "Shift End Time: <b>" . $endTime . "</b><br/><br/>"
+                            . "Regards,<br/>BeOnTime project group"
+                            . "</html>";
+
+                        sendNotificationEmail($eMailSubject, $eMailBody, $companyName, "", $companyEmail);
+                    }
+                }
+
             }
 
             $ajaxCallReturn = json_encode(array("status" => $response));
@@ -268,8 +299,10 @@ function activateShift($dbConnection, $selectedShiftId) {
 
                 // Get shift info
                 $shiftAndClientInfoResponse = getShiftAndClientInfo($dbConnection, $selectedShiftId);
+
                 $shiftId = $selectedShiftId;
                 $companyName = $shiftAndClientInfoResponse['CompanyName'];
+                $companyEmail = $shiftAndClientInfoResponse['CompanyEmail'];
                 $address = $shiftAndClientInfoResponse['Address'];
                 $startTime = $shiftAndClientInfoResponse['StartTime'];
                 $endTime = $shiftAndClientInfoResponse['EndTime'];
@@ -279,21 +312,50 @@ function activateShift($dbConnection, $selectedShiftId) {
 
                 // Specify email subject and body
                 $eMailSubject = '[BeOnTime][Client] Shift Activation Notification';
-                $eMailBody = "<html>"
-                    . "Dear " . ucwords($firstName) . ' ' . ucwords($lastName) . ",<br/><br/>"
-                    . "Below shift is activated. <br/><br/>"
-                    . "Shift Id: <b>" . $shiftId . "</b><br/>"
-                    . "Company Name: <b>" . $companyName . "</b><br/>"
-                    . "Address: <b>" . $address . "</b><br/>"
-                    . "Shift Start Time: <b>" . $startTime . "</b><br/>"
-                    . "Shift End Time: <b>" . $endTime . "</b><br/><br/>"
-                    . "Regards,<br/>BeOnTime project group"
-                    . "</html>";
 
-                // If email is not null and valid, send notification email
-                if (isset($eMail) && filter_var($eMail, FILTER_VALIDATE_EMAIL)) {
-                    sendNotificationEmail($eMailSubject, $eMailBody, $firstName, $lastName, $eMail);
+                // send employee a notification email
+//                error_log("firstName: " . $firstName . " lastName: " . $lastName . " eMail: " . $eMail);
+
+                if($firstName != "" && $lastName != "" && $eMail != "") {
+                    if (filter_var($eMail, FILTER_VALIDATE_EMAIL)) {
+
+                        $eMailBody = "<html>"
+                            . "Dear " . ucwords($firstName) . ' ' . ucwords($lastName) . ",<br/><br/>"
+                            . "Below shift is activated. <br/><br/>"
+                            . "Shift Id: <b>" . $shiftId . "</b><br/>"
+                            . "Company Name: <b>" . $companyName . "</b><br/>"
+                            . "Address: <b>" . $address . "</b><br/>"
+                            . "Shift Start Time: <b>" . $startTime . "</b><br/>"
+                            . "Shift End Time: <b>" . $endTime . "</b><br/><br/>"
+                            . "Regards,<br/>BeOnTime project group"
+                            . "</html>";
+
+                        sendNotificationEmail($eMailSubject, $eMailBody, $firstName, $lastName, $eMail);
+                    }
                 }
+
+
+                // send notification to company email
+                error_log("companyName: " . $companyName . " companyEmail: " . $companyEmail);
+
+                if($companyName != "" && $companyEmail != "") {
+                    if (filter_var($companyEmail, FILTER_VALIDATE_EMAIL)) {
+
+                        $eMailBody = "<html>"
+                            . "Dear " . ucwords($companyName) . ",<br/><br/>"
+                            . "Below shift is cancelled. <br/><br/>"
+                            . "Shift Id: <b>" . $shiftId . "</b><br/>"
+                            . "Company Name: <b>" . $companyName . "</b><br/>"
+                            . "Address: <b>" . $address . "</b><br/>"
+                            . "Shift Start Time: <b>" . $startTime . "</b><br/>"
+                            . "Shift End Time: <b>" . $endTime . "</b><br/><br/>"
+                            . "Regards,<br/>BeOnTime project group"
+                            . "</html>";
+
+                        sendNotificationEmail($eMailSubject, $eMailBody, $companyName, "", $companyEmail);
+                    }
+                }
+
             }
 
             $ajaxCallReturn = json_encode(array("status" => $response));
@@ -309,11 +371,11 @@ function activateShift($dbConnection, $selectedShiftId) {
 
 function getShiftAndClientInfo($dbConnection, $selectedShiftId) {
 
-    $getShiftInfoSQL = "SELECT s.ShiftId, s.AssignedBy, c.CompanyName, cl.Address, s.StartTime, s.EndTime, u.EMail, u.FirstName, u.LastName 
+    $getShiftInfoSQL = "SELECT s.ShiftId, s.AssignedTo, c.CompanyName, c.CompanyEmail, cl.Address, s.StartTime, s.EndTime, u.FirstName, u.LastName, u.EMail  
                           FROM shiftmaster s 
                           JOIN companymaster c ON(s.CompanyId = c.CompanyId) 
                           JOIN companylocationmaster cl ON(s.CompanyLocationId = cl.CompanyLocationId) 
-                          JOIN usermaster u ON(s.AssignedBy = u.UserId) 
+                          LEFT JOIN usermaster u ON(s.AssignedTo = u.UserId) 
                           WHERE s.ShiftId=:selectedShiftId";
     $pdpstm = $dbConnection->prepare($getShiftInfoSQL);
     $pdpstm->bindValue(':selectedShiftId', $selectedShiftId, PDO::PARAM_STR);
@@ -325,21 +387,22 @@ function getShiftAndClientInfo($dbConnection, $selectedShiftId) {
 //    error_log("resultSet: " . print_r($resultSet, true));
 //    error_log("FirstName: " . $resultSet[0]->FirstName . " LastName: ". $resultSet[0]->LastName . " EMail: ". $resultSet[0]->EMail);
     $response['ShiftId'] = $resultSet[0]->ShiftId;
-    $response['AssignedBy'] = $resultSet[0]->AssignedBy;
+    $response['AssignedTo'] = $resultSet[0]->AssignedTo;
     $response['CompanyName'] = $resultSet[0]->CompanyName;
+    $response['CompanyEmail'] = $resultSet[0]->CompanyEmail;
     $response['Address'] = $resultSet[0]->Address;
     $response['StartTime'] = $resultSet[0]->StartTime;
     $response['EndTime'] = $resultSet[0]->EndTime;
-    $response['EMail'] = $resultSet[0]->EMail;
     $response['FirstName'] = $resultSet[0]->FirstName;
     $response['LastName'] = $resultSet[0]->LastName;
+    $response['EMail'] = $resultSet[0]->EMail;
 
     return $response;
 }
 
 function sendNotificationEmail($eMailSubject, $eMailBody, $firstName, $lastName, $eMail) {
 
-    error_log("firstName: " . $firstName . " lastName: " . $lastName . "eMail" . $eMail);
+//    error_log("firstName: " . $firstName . " lastName: " . $lastName . "eMail" . $eMail);
     // By using Google OAuth 2.0
     $mail = new PHPMailer;
     $mail->isSMTP();
