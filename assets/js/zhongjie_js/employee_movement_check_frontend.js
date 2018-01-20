@@ -2,7 +2,7 @@ const backendURL = "./employee_movement_check_backend.php";
 const CANADA_CENTER_LAT = 59.0985492, CANADA_CENTER_LNG = -104.4796261, ZOOM = 16;
 const MOVEMENT_RADIUS = 180;
 const INFOWINDOW_DELAY = 1800;
-const EMPLOYEE_LOCATION_REFRESH_INTERVAL = 8000;
+const EMPLOYEE_LOCATION_REFRESH_INTERVAL = 12000;
 
 var map;
 var userId;
