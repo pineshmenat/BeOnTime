@@ -315,7 +315,7 @@ function activateShift($dbConnection, $selectedShiftId) {
                 $lastName = $shiftAndClientInfoResponse['LastName'];
 
                 // Specify email subject and body
-                $eMailSubject = '[BeOnTime][Client] Shift Activation Notification';
+                $eMailSubject = '[BeOnTime][Employee] Shift Activation Notification';
 
                 // send employee a notification email
 //                error_log("firstName: " . $firstName . " lastName: " . $lastName . " eMail: " . $eMail);
@@ -340,6 +340,7 @@ function activateShift($dbConnection, $selectedShiftId) {
                 }
 
 
+                $eMailSubject = '[BeOnTime][Client] Shift Activation Notification';
                 // send notification to company email
                 error_log("companyName: " . $companyName . " companyEmail: " . $companyEmail);
 
