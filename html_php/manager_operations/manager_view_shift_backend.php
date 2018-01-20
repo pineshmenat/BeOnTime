@@ -228,7 +228,7 @@ function cancelShift($dbConnection, $selectedShiftId) {
                 if($firstName != "" && $lastName != "" && $eMail != "") {
                     if (filter_var($eMail, FILTER_VALIDATE_EMAIL)) {
 
-                        $eMailBody = "<html>"
+                        $eMailBody = "<html><body>"
                             . "Dear " . ucwords($firstName) . ' ' . ucwords($lastName) . ",<br/><br/>"
                             . "Below shift is cancelled. <br/><br/>"
                             . "Shift Id: <b>" . $shiftId . "</b><br/>"
@@ -236,8 +236,9 @@ function cancelShift($dbConnection, $selectedShiftId) {
                             . "Address: <b>" . $address . "</b><br/>"
                             . "Shift Start Time: <b>" . $startTime . "</b><br/>"
                             . "Shift End Time: <b>" . $endTime . "</b><br/><br/>"
-                            . "Regards,<br/>BeOnTime project group"
-                            . "</html>";
+                            . "Regards,<br/>BeOnTime project group<br/>"
+                            . "<img src=\"https://lh3.googleusercontent.com/txsj9j8T7lrry_VAxqamtdSLjTI09WqB_2wToAF9RL_IDcPGi4oin4hrB_UBGRcdSqCbeNl8PBj9LsumgTe6IGgSXztdb-GLKC-TlOfarAXTr8zAEciMExpUS3syFCqvqxYKAMTe=w194-h50-no\" alt=\"BeOnTime logo 50\" width=\"194\" height=\"50\">"
+                            . "</body></html>";
 
                         sendNotificationEmail($eMailSubject, $eMailBody, $firstName, $lastName, $eMail);
                     }
@@ -250,7 +251,7 @@ function cancelShift($dbConnection, $selectedShiftId) {
                 if($companyName != "" && $companyEmail != "") {
                     if (filter_var($companyEmail, FILTER_VALIDATE_EMAIL)) {
 
-                        $eMailBody = "<html>"
+                        $eMailBody = "<html><body>"
                             . "Dear " . ucwords($companyName) . ",<br/><br/>"
                             . "Below shift is cancelled. <br/><br/>"
                             . "Shift Id: <b>" . $shiftId . "</b><br/>"
@@ -258,8 +259,9 @@ function cancelShift($dbConnection, $selectedShiftId) {
                             . "Address: <b>" . $address . "</b><br/>"
                             . "Shift Start Time: <b>" . $startTime . "</b><br/>"
                             . "Shift End Time: <b>" . $endTime . "</b><br/><br/>"
-                            . "Regards,<br/>BeOnTime project group"
-                            . "</html>";
+                            . "Regards,<br/>BeOnTime project group<br/>"
+                            . "<img src=\"https://lh3.googleusercontent.com/txsj9j8T7lrry_VAxqamtdSLjTI09WqB_2wToAF9RL_IDcPGi4oin4hrB_UBGRcdSqCbeNl8PBj9LsumgTe6IGgSXztdb-GLKC-TlOfarAXTr8zAEciMExpUS3syFCqvqxYKAMTe=w194-h50-no\" alt=\"BeOnTime logo 50\" width=\"194\" height=\"50\">"
+                            . "</body></html>";
 
                         sendNotificationEmail($eMailSubject, $eMailBody, $companyName, "", $companyEmail);
                     }
@@ -319,7 +321,7 @@ function activateShift($dbConnection, $selectedShiftId) {
                 if($firstName != "" && $lastName != "" && $eMail != "") {
                     if (filter_var($eMail, FILTER_VALIDATE_EMAIL)) {
 
-                        $eMailBody = "<html>"
+                        $eMailBody = "<html><body>"
                             . "Dear " . ucwords($firstName) . ' ' . ucwords($lastName) . ",<br/><br/>"
                             . "Below shift is activated. <br/><br/>"
                             . "Shift Id: <b>" . $shiftId . "</b><br/>"
@@ -327,8 +329,9 @@ function activateShift($dbConnection, $selectedShiftId) {
                             . "Address: <b>" . $address . "</b><br/>"
                             . "Shift Start Time: <b>" . $startTime . "</b><br/>"
                             . "Shift End Time: <b>" . $endTime . "</b><br/><br/>"
-                            . "Regards,<br/>BeOnTime project group"
-                            . "</html>";
+                            . "Regards,<br/>BeOnTime project group<br/>"
+                            . "<img src=\"https://lh3.googleusercontent.com/txsj9j8T7lrry_VAxqamtdSLjTI09WqB_2wToAF9RL_IDcPGi4oin4hrB_UBGRcdSqCbeNl8PBj9LsumgTe6IGgSXztdb-GLKC-TlOfarAXTr8zAEciMExpUS3syFCqvqxYKAMTe=w194-h50-no\" alt=\"BeOnTime logo 50\" width=\"194\" height=\"50\">"
+                            . "</body></html>";
 
                         sendNotificationEmail($eMailSubject, $eMailBody, $firstName, $lastName, $eMail);
                     }
@@ -341,7 +344,7 @@ function activateShift($dbConnection, $selectedShiftId) {
                 if($companyName != "" && $companyEmail != "") {
                     if (filter_var($companyEmail, FILTER_VALIDATE_EMAIL)) {
 
-                        $eMailBody = "<html>"
+                        $eMailBody = "<html><body>"
                             . "Dear " . ucwords($companyName) . ",<br/><br/>"
                             . "Below shift is cancelled. <br/><br/>"
                             . "Shift Id: <b>" . $shiftId . "</b><br/>"
@@ -349,8 +352,9 @@ function activateShift($dbConnection, $selectedShiftId) {
                             . "Address: <b>" . $address . "</b><br/>"
                             . "Shift Start Time: <b>" . $startTime . "</b><br/>"
                             . "Shift End Time: <b>" . $endTime . "</b><br/><br/>"
-                            . "Regards,<br/>BeOnTime project group"
-                            . "</html>";
+                            . "Regards,<br/>BeOnTime project group<br/>"
+                            . "<img src=\"https://lh3.googleusercontent.com/txsj9j8T7lrry_VAxqamtdSLjTI09WqB_2wToAF9RL_IDcPGi4oin4hrB_UBGRcdSqCbeNl8PBj9LsumgTe6IGgSXztdb-GLKC-TlOfarAXTr8zAEciMExpUS3syFCqvqxYKAMTe=w194-h50-no\" alt=\"BeOnTime logo 50\" width=\"194\" height=\"50\">"
+                            . "</body></html>";
 
                         sendNotificationEmail($eMailSubject, $eMailBody, $companyName, "", $companyEmail);
                     }

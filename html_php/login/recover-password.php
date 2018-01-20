@@ -32,7 +32,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 function processForgetPassword($userEmail) {
 
-    $forgetPasswordSQL = "SELECT FirstName, LastName, Password FROM usermaster WHERE EMail = :email";
+    $forgetPasswordSQL = "SELECT UserName, FirstName, LastName, Password FROM usermaster WHERE EMail = :email";
     $pdpstm = DB::getDBConnection()->prepare($forgetPasswordSQL);
     $pdpstm->bindValue(':email', $userEmail, PDO::PARAM_STR);
     $pdpstm->execute();
@@ -45,12 +45,13 @@ function processForgetPassword($userEmail) {
 
     if ($rowCount == 1) {
 
+        $userName = $resultSet[0]['UserName'];
         $firstname = $resultSet[0]['FirstName'];
         $lastname = $resultSet[0]['LastName'];
         $password = $resultSet[0]['Password'];
 
 //        return sendEmail($userEmail, $firstname, $lastname, $password);
-        return sendEmailWithOAuth($userEmail, $firstname, $lastname, $password);
+        return sendEmailWithOAuth($userName, $userEmail, $firstname, $lastname, $password);
 
     } else if ($rowCount == 0) {
         return "This email address doesn't exist.";
@@ -61,7 +62,7 @@ function processForgetPassword($userEmail) {
 }
 
 
-function sendEmailWithOAuth($userEmail, $firstname, $lastname, $password) {
+function sendEmailWithOAuth($userName, $userEmail, $firstname, $lastname, $password) {
 
     $mail = new PHPMailer;
     $mail->isSMTP();
@@ -89,9 +90,17 @@ function sendEmailWithOAuth($userEmail, $firstname, $lastname, $password) {
             ]));
     $mail->setFrom($email, 'BeOnTime Admin');
     $mail->addAddress($userEmail, $firstname . ' ' . $lastname);
-    $mail->Subject = 'PHP lab 7 forget password feature';
+    $mail->Subject = '[BeOnTime] Password recovery';
     $mail->CharSet = 'utf-8';
-    $mail->Body = "Dear " . ucwords($firstname) . ' ' . ucwords($lastname) . ",\r\n\r\nYour password is " . $password . "\r\n\r\nRegards,\r\nBeOnTime project group";
+    $mail->Body = "<html><body>" .
+        "Dear " . ucwords($firstname) . ' ' . ucwords($lastname) . ",<br/><br/>" .
+        "Your username is " . "<b>" . $userName . "</b><br/>" .
+        "Your password is " . "<b>" . $password . "</b><br/>" .
+        "<br/>Regards," .
+        "<br/>BeOnTime project group" .
+        "<br/><img src=\"https://lh3.googleusercontent.com/txsj9j8T7lrry_VAxqamtdSLjTI09WqB_2wToAF9RL_IDcPGi4oin4hrB_UBGRcdSqCbeNl8PBj9LsumgTe6IGgSXztdb-GLKC-TlOfarAXTr8zAEciMExpUS3syFCqvqxYKAMTe=w194-h50-no\" alt=\"BeOnTime logo 50\" width=\"194\" height=\"50\">" .
+        "</body></html>";
+    $mail->IsHTML(true);
 
     if (!$mail->send()) {
         return "Mailer Error: " . $mail->ErrorInfo;
@@ -158,7 +167,7 @@ function sendEmailWithOAuth($userEmail, $firstname, $lastname, $password) {
                 <div class="col-md-4 offset-md-4 col-xs-10 offset-xs-1 box-shadow-2 p-0">
                     <div class="card border-grey border-lighten-3 px-2 py-2 m-0">
 
-<!--                        Information display-->
+                        <!--                        Information display-->
                         <div class="card-header no-border pb-0">
                             <div class="card-title text-xs-center">
                                 <img src="../../assets/images/logo.png" alt="branding logo" height="50" width="193">
@@ -170,10 +179,11 @@ function sendEmailWithOAuth($userEmail, $firstname, $lastname, $password) {
 
                         <div class="card-body collapse in">
                             <div class="card-block">
-<!--                                recover password form-->
+                                <!--                                recover password form-->
                                 <form class="form-horizontal" action="" novalidate>
                                     <fieldset class="form-group position-relative has-icon-left">
-                                        <input type="email" class="form-control form-control-lg input-lg" id="userEmail" name="userEmail"
+                                        <input type="email" class="form-control form-control-lg input-lg" id="userEmail"
+                                               name="userEmail"
                                                placeholder="Your Email Address" required autofocus>
                                         <div class="form-control-position">
                                             <i class="icon-mail6"></i>
@@ -182,7 +192,8 @@ function sendEmailWithOAuth($userEmail, $firstname, $lastname, $password) {
                                             <?= $forgetPasswordErrorDisplay; ?>
                                         </div>
                                     </fieldset>
-                                    <button type="submit" class="btn btn-success btn-lg btn-block" formmethod="post"><i class="icon-lock4"></i> Recover
+                                    <button type="submit" class="btn btn-success btn-lg btn-block" formmethod="post"><i
+                                                class="icon-lock4"></i> Recover
                                         Password
                                     </button>
                                 </form>
@@ -190,7 +201,7 @@ function sendEmailWithOAuth($userEmail, $firstname, $lastname, $password) {
                             </div>
                         </div>
 
-<!--                        some links to other login related functions-->
+                        <!--                        some links to other login related functions-->
                         <div class="card-footer no-border">
                             <p class="float-sm-left text-xs-center"><a href="../index.html" class="card-link">Main page&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
                             </p>
