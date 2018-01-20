@@ -1,4 +1,7 @@
 <?php
+//
+// By Zhongjie
+//
 session_start();
 
 if (!isset($_SESSION['userId'])) {

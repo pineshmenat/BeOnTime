@@ -1,4 +1,7 @@
 <?php
+//
+// By Zhongjie
+//
 session_start();
 
 if (!isset($_SESSION['userId'])) {
@@ -44,8 +47,6 @@ if (!isset($_SESSION['userId'])) {
     <link rel="stylesheet" type="text/css" href="../../app-assets/css/core/menu/menu-types/vertical-overlay-menu.css">
     <link rel="stylesheet" type="text/css" href="../../app-assets/css/core/colors/palette-gradient.css">
     <!-- END Page Level CSS-->
-
-<!--    <link rel="stylesheet" type="text/css" href="../../assets/css/pinesh_style/pinesh-style.css">-->
 
 
 </head>
@@ -160,26 +161,6 @@ if (!isset($_SESSION['userId'])) {
             <!--            4 buttons-->
             <div class="row mt-0 col-md-12">
 
-                <!--                Check shift button-->
-<!--                <div class="col-xl-2 col-lg-2 col-xs-4">-->
-<!--                    <button type="button" id="btnCheckShift" class="btn btn-block btn-success font-weight-bold">-->
-<!--                        Check Shift-->
-<!--                    </button>-->
-<!--                </div>-->
-
-                <!--                Start to work button-->
-<!--                <div class="col-xl-2 col-lg-2 col-xs-4">-->
-<!--                    <button type="button" id="btnStartToWork" class="btn btn-block btn-success font-weight-bold" disabled>-->
-<!--                        Start To Work-->
-<!--                    </button>-->
-<!--                </div>-->
-
-                <!--                Take off work button-->
-<!--                <div class="col-xl-2 col-lg-2 col-xs-4">-->
-<!--                    <button type="button" id="btnTakeOff" class="btn btn-block btn-danger font-weight-bold" disabled>-->
-<!--                        Take Off-->
-<!--                    </button>-->
-<!--                </div>-->
 
                 <!--                Refresh My Position button-->
                 <div class="col-xl-2 col-lg-2 col-xs-5">

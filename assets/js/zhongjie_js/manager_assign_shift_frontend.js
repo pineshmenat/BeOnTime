@@ -453,8 +453,8 @@ function loadEmployees(cityName, employeeId, firstName, lastName, desiredDaySele
     var paramSelectedShiftEndTime = "selectedShiftEndTime=" + selectedShiftEndTime;
     // console.log("paramCityName: " + paramCityName);
     // console.log("paramDesiredDaySelection: " + paramDesiredDaySelection);
-    console.log(paramOperation + "&" + paramCityName + "&" + paramEmployeeId + "&" + paramFirstName + "&" + paramLastName
-        + "&" + paramDesiredDaySelection + "&" + paramSelectedShiftStartTime + "&" + paramSelectedShiftEndTime);
+    // console.log(paramOperation + "&" + paramCityName + "&" + paramEmployeeId + "&" + paramFirstName + "&" + paramLastName
+    //     + "&" + paramDesiredDaySelection + "&" + paramSelectedShiftStartTime + "&" + paramSelectedShiftEndTime);
 
     var xmlhttp = new XMLHttpRequest();
     xmlhttp.open("POST", backendURL, true);

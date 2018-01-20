@@ -92,9 +92,9 @@ function getCurrentShift() {
         if (this.readyState == 4 && this.status == 200) {
             // $("#companyLocationSelection").html(this.responseText);
             // console.log(this.responseText);
-            var shiftInNext30Minutes = JSON.parse(this.responseText);
+            var currentShift = JSON.parse(this.responseText);
 
-            displayShift(shiftInNext30Minutes);
+            displayShift(currentShift);
 
             if(hasActiveShift) {
                 // Go to work place
@@ -117,16 +117,16 @@ function getCurrentShift() {
     }
 }
 
-function displayShift(shiftInNext30Minutes) {
+function displayShift(currentShift) {
 
     $("#errorDisplayInBasePage").empty();
     $("#shiftDisplay").empty();
 
-    if (shiftInNext30Minutes.shift.length == 0) {
+    if (currentShift.shift.length == 0) {
 
         $("#errorDisplayInBasePage").html("<p class='text-danger font-weight-bold'>You do not have any shift now.</p>");
 
-    } else if (shiftInNext30Minutes.shift.length == 1) {
+    } else if (currentShift.shift.length == 1) {
 
 
         var shiftsTable = "<table class=\"table table-condensed\">";
@@ -139,7 +139,7 @@ function displayShift(shiftInNext30Minutes) {
         shiftsTable += "</tr></thead>";
         shiftsTable += "<tbody>";
 
-        $.each(shiftInNext30Minutes.shift, function (key, value) {
+        $.each(currentShift.shift, function (key, value) {
             // console.log(key + " " + value.ShiftId);
             shiftsTable += "<tr value=" + value.ShiftId + ">";
             shiftsTable += "<td>" + value.ShiftId + "</td>";

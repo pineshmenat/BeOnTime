@@ -503,7 +503,7 @@ function getShiftAndEmployeeInfo($dbConnection, $selectedShiftId) {
 
 function sendNotificationEmail($eMailSubject, $eMailBody, $firstName, $lastName, $eMail) {
 
-    error_log("firstName: " . $firstName . " lastName: " . $lastName . "eMail" . $eMail);
+//    error_log("firstName: " . $firstName . " lastName: " . $lastName . "eMail" . $eMail);
     // By using Google OAuth 2.0
     $mail = new PHPMailer;
     $mail->isSMTP();

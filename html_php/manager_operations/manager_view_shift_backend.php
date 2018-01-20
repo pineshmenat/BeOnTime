@@ -248,7 +248,7 @@ function cancelShift($dbConnection, $selectedShiftId) {
                 $eMailSubject = '[BeOnTime][Client] Shift Cancellation Notification';
 
                 // send notification to company email
-                error_log("companyName: " . $companyName . " companyEmail: " . $companyEmail);
+//                error_log("companyName: " . $companyName . " companyEmail: " . $companyEmail);
 
                 if($companyName != "" && $companyEmail != "") {
                     if (filter_var($companyEmail, FILTER_VALIDATE_EMAIL)) {
@@ -342,7 +342,7 @@ function activateShift($dbConnection, $selectedShiftId) {
 
                 $eMailSubject = '[BeOnTime][Client] Shift Activation Notification';
                 // send notification to company email
-                error_log("companyName: " . $companyName . " companyEmail: " . $companyEmail);
+//                error_log("companyName: " . $companyName . " companyEmail: " . $companyEmail);
 
                 if($companyName != "" && $companyEmail != "") {
                     if (filter_var($companyEmail, FILTER_VALIDATE_EMAIL)) {
@@ -443,9 +443,9 @@ function sendNotificationEmail($eMailSubject, $eMailBody, $firstName, $lastName,
 //    $mail->Body = $eMailBody;
 
     if (!$mail->send()) {
-        error_log("Mailer Error: " . $mail->ErrorInfo);
+//        error_log("Mailer Error: " . $mail->ErrorInfo);
     } else {
-        error_log("Message sent!");
+//        error_log("Message sent!");
     }
 }
 
