@@ -264,3 +264,8 @@ if (!isset($_SESSION['userId'])) {
 <!--/START & END Google Maps-->
 </body>
 </html>
+<?php
+//
+// By Zhongjie
+//
+?>

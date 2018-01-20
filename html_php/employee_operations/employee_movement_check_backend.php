@@ -172,4 +172,8 @@ function saveCurrentEmployeePosition($dbConnection, $shiftId, $employeeCurrentLa
     }
     return json_encode($response);
 }
+
+//
+// By Zhongjie
+//
 ?>

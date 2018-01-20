@@ -449,4 +449,7 @@ function sendNotificationEmail($eMailSubject, $eMailBody, $firstName, $lastName,
     }
 }
 
+//
+// By Zhongjie
+//
 ?>

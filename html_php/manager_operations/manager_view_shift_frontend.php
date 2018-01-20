@@ -356,3 +356,8 @@ if (!isset($_SESSION['userId'])) {
 <!--/Zhongjie JS-->
 </body>
 </html>
+<?php
+//
+// By Zhongjie
+//
+?>
