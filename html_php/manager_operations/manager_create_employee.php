@@ -1,5 +1,81 @@
 <?php
+require '../../app-assets/twilio-php-master/Twilio/autoload.php';
+use Twilio\Rest\Client;
 session_start();
+$sid = 'AC09f0a244b3694e049ea2b64f1c0609e1';
+$token = '3bc71a8b934b596f6468178160663943';
+$client = new Client($sid, $token);
+$error_name="";
+$error_email="";
+$error_url="";
+$error_street_number="";
+$error_route="";
+$error_locality="";
+$error_state="";
+$error_postal_code="";
+$error_country="";
+$error_phone="";
+$error_portraitImg="";
+$error="";
+if(isset($_POST['save_changes']) && $_POST['save_changes']){
+
+    if(isset($_POST['company_name']) && isset($_POST['email'])
+        && isset($_POST['company_url']) && isset($_POST['phone']) && isset($_POST['postal_code'])
+        && isset($_POST['country'])){
+        $name = $_POST['company_name'];
+        $email = $_POST['email'];
+        $_SESSION['userName'] = $email;
+        $url = $_POST['company_url'];
+        $phone = $_POST['phone'];
+        $password = $_POST['password'];
+        $street_number = $_POST['street_number'];
+        $street_name = $_POST['route'];
+        $city = $_POST['locality'];
+        $state = $_POST['administrative_area_level_1'];
+        $postal_code = $_POST['postal_code'];
+        $country = $_POST['country'];
+        $error_name = Validate::validateCompanyName($name);
+        $error_email = Validate::validateEmail($email);
+        $error_url = Validate::validateURL($url);
+        $error_phone = Validate::validatePhoneNumber($phone);
+        $error_street_number = Validate::validateHouseNumber($street_number);
+        $error_route = Validate::validateStreet($street_name);
+        $error_locality = Validate::validateCity($city);
+        $error_state = Validate::validateProvince($state);
+        $error_postal_code = Validate::validateZipCode($postal_code);
+        $error_country = Validate::validateCountry($country);
+        if(isset($_FILES['portraitImg']) && $_FILES['portraitImg'] != null) {
+            $error_portraitImg = Validate::validatePortraitImg($_FILES['portraitImg']['type']);
+        }
+        else{
+            $error_portraitImg = "Please upload .png image";
+        }
+        if($error_name == "" && $error_email == "" && $error_url == "" && $error_street_number == "" &&
+            $error_route == "" && $error_locality == "" && $error_postal_code == "" && $error_country == "" && $error_phone == ""
+            && $error_portraitImg == "") {
+            $_SESSION['companyId'] = CompanyDB::addCompany(new Company($name, $email, $url, $password, $street_number, $street_name, $city, $state, $postal_code, $country,$phone));
+            $_SESSION['roleID'] = RoleDB::getRoleID('Manager');
+            $_SESSION['password'] = $password;
+            $_SESSION['phone'] = $phone;
+            $image_path = getcwd().DIRECTORY_SEPARATOR.'../../assets/images/portrait_img'.DIRECTORY_SEPARATOR.$_FILES['portraitImg']['name'];
+            $image = $_FILES['portraitImg']['name'];
+            move_uploaded_file($_FILES['portraitImg']['tmp_name'],$image_path);
+            //$image_path_new =  getcwd().DIRECTORY_SEPARATOR.'../../assets/images/portrait_img'.
+            //  DIRECTORY_SEPARATOR. $_SESSION['companyId'] . '_'.$_SESSION['userName'] . '.png';
+
+            $client->messages->create($phone,
+                array(
+                    'from' => '15069060245',
+                    'body' => "Your companyID is ".$_SESSION['companyId'].' -Team BeOnTime.'
+                )
+            );
+            header("location:manager_companyID_verify.php?image=".$image);
+        }
+    }
+    else{
+        $error = "Complete all the required fields";
+    }
+}
 
 if (!isset($_SESSION['userName'])) {
     header("location: ../login/login.php");
@@ -77,13 +153,13 @@ if (!isset($_SESSION['userName'])) {
 
                     <li class="dropdown dropdown-user nav-item">
                         <a href="#" data-toggle="dropdown" class="dropdown-toggle nav-link dropdown-user-link">
+                            <span class="avatar avatar-online">
+                                <img src="../../assets/images/portrait_img/<?= $_SESSION['portraintImg']; ?>" alt="portraitImg"><i></i>
+                            </span>
                             <span class="user-name"><?= $_SESSION['userName']; ?></span>
                         </a>
                         <div class="dropdown-menu dropdown-menu-right">
-                            <a href="#" class="dropdown-item"><i class="icon-head"></i> Edit Profile</a>
-                            <a href="#" class="dropdown-item"><i class="icon-mail6"></i> My Inbox</a>
-                            <a href="#" class="dropdown-item"><i class="icon-clipboard2"></i> Task</a>
-                            <a href="#" class="dropdown-item"><i class="icon-calendar5"></i> Calender</a>
+                            <a href="manager_edit_companyprofile.php" class="dropdown-item"><i class="icon-head"></i> Edit Profile</a>
                             <div class="dropdown-divider"></div>
                             <a href="../login/logout.php" class="dropdown-item"><i class="icon-power3"></i> Logout</a>
                         </div>
@@ -132,9 +208,6 @@ if (!isset($_SESSION['userName'])) {
                         <a href="manager_manage_employee.php" data-i18n="nav.page_layouts.2_columns" class="menu-item">Manage Employee</a>
                     </li>
                     <li>
-                        <a href="manager_edit_companyprofile.php" data-i18n="nav.page_layouts.2_columns" class="menu-item">Edit Company's Profile</a>
-                    </li>
-                    <li>
                         <a href="manager_view_companyprofile.php" data-i18n="nav.page_layouts.2_columns" class="menu-item">View Company's Profile</a>
                     </li>
                 </ul>
@@ -173,13 +246,31 @@ if (!isset($_SESSION['userName'])) {
                 <div class="form-group row">
                     <label for="company_url" class="col-sm-3 col-lg-1 label-control">SIN: </label>
                     <div class="col-sm-9 col-lg-10">
-                        <input class="form-control-sm col-sm-6" type="text" value="" id="company_url" name="company_url">
+                        <input class="form-control-sm col-sm-3" type="text" value="" id="company_url" name="company_url">
                     </div>
                 </div>
                 <div class="form-group row">
                     <label for="email" class="col-sm-3 col-lg-1 label-control">Email: </label>
                     <div class="col-sm-9 col-lg-10">
                         <input class="form-control-sm col-sm-6" type="text" value="" id="email" name="email">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="phone" class="col-sm-3 col-lg-1 label-control">Phone: </label>
+                    <div class="col-sm-9 col-lg-10">
+                        <input class="form-control-sm col-sm-3" type="text" value="" id="phone" name="phone">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="password" class="col-sm-3 col-lg-1 label-control">Password: </label>
+                    <div class="col-sm-9 col-lg-10">
+                        <input class="form-control-sm col-sm-3" type="password" value="" id="password" name="password">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="confirm_password" class="col-sm-3 col-lg-1 label-control">Confirm Password: </label>
+                    <div class="col-sm-9 col-lg-10">
+                        <input class="form-control-sm col-sm-3" type="password" value="" id="confirm_password" name="confirm_password">
                     </div>
                 </div>
                 <div class="form-group row">
@@ -217,7 +308,7 @@ if (!isset($_SESSION['userName'])) {
                     </div>
                 </div>
                 <div class="form-group row">
-                    <input type="submit" class="btn btn-success" value="Save Changes" name="save_changes" />
+                    <input type="submit" class="btn btn-success" value="Submit" name="submit" />
                 </div>
             </form>
         </div>

@@ -138,6 +138,9 @@ else{
 
                     <li class="dropdown dropdown-user nav-item">
                         <a href="#" data-toggle="dropdown" class="dropdown-toggle nav-link dropdown-user-link">
+                            <span class="avatar avatar-online">
+                                <img src="../../assets/images/portrait_img/<?= $_SESSION['portraintImg']; ?>" alt="portraitImg"><i></i>
+                            </span>
                             <span class="user-name"><?= $_SESSION['userName']; ?></span>
                         </a>
                         <div class="dropdown-menu dropdown-menu-right">
@@ -212,7 +215,7 @@ else{
 <div class="app-content content container-fluid">
     <div class="content-wrapper">
         <div class="content-header row">
-            <h1>Employee Signup</h1>
+            <h1>Employee Edit Details</h1>
         </div>
         <div class="row mt-1 col-md-12"></div>
         <div class="content-body">

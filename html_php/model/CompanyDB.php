@@ -256,5 +256,20 @@ return $row;
         $statement->execute();
         $statement->closeCursor();
     }
+
+    public static function getCompanyDetails($companyId){
+     $db = DB::getDBConnection();
+     $query = 'SELECT * FROM companymaster where CompanyId = :companyId';
+     $statement = $db->prepare($query);
+     $statement->bindValue(':companyId',$companyId);
+     $statement->execute();
+     $row = $statement->fetch();
+     $statement->closeCursor();
+
+     return new Company($row['CompanyName'],$row['CompanyEmail'],$row['CompanyURL'],$row['CompanyPassword'],
+         $row['CompanyStreetNumber'],$row['CompanyStreetName'],$row['CompanyCity'],$row['CompanyState'],
+         $row['CompanyPostal'],$row['CompanyCountry'],$row['CompanyPhone']);
+
+    }
 }
 ?>

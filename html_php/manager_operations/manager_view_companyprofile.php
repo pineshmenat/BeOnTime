@@ -1,36 +1,22 @@
 <?php
-
-include "../db_config.php";
+//require "../model/db_config.php";
+require "../model/CompanyDB.php";
+require "../model/Company.php";
 session_start();
 $error_name="";
-if(isset($_POST['save_changes']) && $_POST['save_changes']){
-    $name = $_POST['company_name'];
-    $url = $_POST['company_url'];
-    $id = $_POST['company_id'];
-    $street_number = $_POST['street_number'];
-    $street_name = $_POST['route'];
-    $city = $_POST['locality'];
-    $state = $_POST['administrative_area_level_1'];
-    $postal_code = $_POST['postal_code'];
-    $country = $_POST['country'];
-    $insertcompanydataSQL = 'UPDATE managermaster SET CompanyName = :name,CompanyURL = :url,
-                             CompanyStreetNumber = :street_number, CompanyStreetName = :street_name,
-                             CompanyCity = :city, CompanyState = :state, CompanyPostal = :postal_code,
-                             CompanyCountry = :country
-                             WHERE CompanyID = :id';
-    $pdpstm = $dbConnection->prepare($insertcompanydataSQL);
-    $pdpstm->bindValue(':name',$name);
-    $pdpstm->bindValue(':url',$url);
-    $pdpstm->bindValue(':street_number',$street_number);
-    $pdpstm->bindValue(':street_name',$street_name);
-    $pdpstm->bindValue(':city',$city);
-    $pdpstm->bindValue(':state',$state);
-    $pdpstm->bindValue(':postal_code',$postal_code);
-    $pdpstm->bindValue(':country',$country);
-    $pdpstm->bindValue(':id',$id);
-    $pdpstm->execute();
-    $pdpstm->closeCursor();
-    header("location:manager_create_employee.php");
+if(isset($_SESSION['companyId'])){
+    $company = CompanyDB::getCompanyDetails($_SESSION['companyId']);
+    $name = $company->getName();
+    $email = $company->getEmail();
+    $url = $company->getURL();
+    $id = $company->getId();
+    $street_number = $company->getStreetNumber();
+    $street_name = $company->getStreetName();
+    $city = $company->getCity();
+    $state = $company->getProvince();
+    $postal_code = $company->getPostalCode();
+    $country = $company->getCountry();
+    $phone  = $company->getPhone();
 }
 
 if(!isset($_SESSION['userName'])) {
@@ -193,22 +179,31 @@ if(!isset($_SESSION['userName'])) {
         </div>
         <div class="content-body">
                 <h1>Basic Information</h1>
-                <input type="hidden" value="<?php  echo $_SESSION['company_id']; ?>" name="company_id">
+                <input type="hidden" value="<?php  echo $_SESSION['companyId']; ?>" name="company_id">
                 <div class="form-group row">
                     <label for="company_name" class="col-sm-3 col-lg-1 label-control">Company Name: </label>
+                    <?php echo $name; ?>
                     <div class="col-sm-9 col-lg-10">
                     </div>
                 </div>
                 <div class="form-group row">
                     <label for="company_url" class="col-sm-3 col-lg-1 label-control">Company website: </label>
+                    <a href="<?php echo $url; ?>"  ><?php echo $url; ?></a>
                     <div class="col-sm-9 col-lg-10">
                     </div>
                 </div>
                 <div class="form-group row">
                     <label for="email" class="col-sm-3 col-lg-1 label-control">Email: </label>
+                    <a href="<?php echo 'mailto:'.$email; ?>"  ><?php echo $email; ?></a>
                     <div class="col-sm-9 col-lg-10">
                     </div>
                 </div>
+            <div class="form-group row">
+                <label for="phone" class="col-sm-3 col-lg-1 label-control">Phone: </label>
+                <div class="col-sm-9 col-lg-10">
+                    <a href="<?php echo 'tel:'.$phone; ?>"  ><?php echo $phone; ?></a>
+                </div>
+            </div>
                 <div class="form-group row">
                     <div class="col-sm-9 col-lg-9">
                     </div>
@@ -216,24 +211,29 @@ if(!isset($_SESSION['userName'])) {
                 <div class="form-group row">
                     <label for="street_address" class="col-sm-3 col-lg-1 label-control">Street Address: </label>
                     <div class="col-sm-9 col-lg-10">
+                        <?php echo $street_number.', '.$street_name; ?>
                     </div>
                 </div>
                 <div class="form-group row">
-                    <label for="locality" class="col-sm-3 col-lg-1 label-control">City</label>
+                    <label for="locality" class="col-sm-3 col-lg-1 label-control">City: </label>
                     <div class="col-sm-9 col-lg-10">
+                        <?php echo $city; ?>
                     </div>
                 </div>
                 <div class="form-group row">
                     <label for="administrative_area_level_1" class="col-sm-3 col-lg-1 label-control">State: </label>
                     <div class="col-sm-9 col-lg-2">
+                        <?php echo $state; ?>
                     </div>
                     <label for="postal_code" class="col-sm-3 col-lg-1 label-control">ZipCode: </label>
                     <div class="col-sm-9 col-lg-2">
+                        <?php echo $postal_code; ?>
                     </div>
                 </div>
                 <div class="form-group row">
-                    <label for="country" class="col-sm-3 col-lg-1 label-control">Country</label>
+                    <label for="country" class="col-sm-3 col-lg-1 label-control">Country: </label>
                     <div class="col-sm-9 col-lg-10">
+                        <?php echo $country; ?>
                     </div>
                 </div>
                 <div class="form-group row">

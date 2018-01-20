@@ -7,8 +7,8 @@ require '../../app-assets/twilio-php-master/Twilio/autoload.php';
 require "../model/UserDB.php";
 use Twilio\Rest\Client;
 session_start();
-$sid = 'AC11257e267244b209cd12098edf1c148a';
-$token = '44d9ee7f5785dbb087c057419201578c';
+$sid = 'AC09f0a244b3694e049ea2b64f1c0609e1';
+$token = '3bc71a8b934b596f6468178160663943';
 $client = new Client($sid, $token);
 $error_name="";
 $error_email="";
@@ -68,12 +68,12 @@ if(isset($_POST['save_changes']) && $_POST['save_changes']){
             //$image_path_new =  getcwd().DIRECTORY_SEPARATOR.'../../assets/images/portrait_img'.
               //  DIRECTORY_SEPARATOR. $_SESSION['companyId'] . '_'.$_SESSION['userName'] . '.png';
 
-           /* $client->messages->create($phone,
+            $client->messages->create($phone,
                     array(
-                        'from' => '+12893014089',
-                        'body' => "Your companyID is ".$_SESSION['companyId']
+                        'from' => '15069060245',
+                        'body' => "Your companyID is ".$_SESSION['companyId'].' -Team BeOnTime.'
                     )
-                );*/
+                );
             header("location:manager_companyID_verify.php?image=".$image);
         }
     }
