@@ -14,10 +14,10 @@ var hasActiveShift = false;
 $(document).ready(function () {
 
     userId = $('#sessionUserId').data('value');
-    // console.log("userId: " + userId);
+    console.log("userId: " + userId);
 
     if (userId != null) {
-        getShiftInNext30Minutes();
+        getCurrentShift();
     }
 });
 
@@ -68,7 +68,7 @@ function initMap() {
     });
 }
 
-function getShiftInNext30Minutes() {
+function getCurrentShift() {
 
     // Get current date and time
     var dt = new Date($.now());
