@@ -220,7 +220,7 @@ function cancelShift($dbConnection, $selectedShiftId) {
                 $lastName = $shiftAndClientInfoResponse['LastName'];
 
                 // Specify email subject and body
-                $eMailSubject = '[BeOnTime][Client] Shift Cancellation Notification';
+                $eMailSubject = '[BeOnTime][Employee] Shift Cancellation Notification';
 
                 // send employee a notification email
 //                error_log("firstName: " . $firstName . " lastName: " . $lastName . " eMail: " . $eMail);
@@ -244,6 +244,8 @@ function cancelShift($dbConnection, $selectedShiftId) {
                     }
                 }
 
+
+                $eMailSubject = '[BeOnTime][Client] Shift Cancellation Notification';
 
                 // send notification to company email
                 error_log("companyName: " . $companyName . " companyEmail: " . $companyEmail);
