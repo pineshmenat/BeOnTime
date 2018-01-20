@@ -9,19 +9,19 @@
 class DB {
 
     //for Server DB (when deployed)
-    private static $username = "b16_20802573";
-    private static $password = "beontime";
-    private static $host = "sql210.byethost16.com";
-    private static $port = "3306";
-    private static $dbname = "b16_20802573_beontime";
+   // private static $username = "b16_20802573";
+    //private static $password = "beontime";
+    //private static $host = "sql210.byethost16.com";
+    //private static $port = "3306";
+    //private static $dbname = "b16_20802573_beontime";
 
 
     //for developer local DB
-//    private static $username = "root";
-//    private static $password = "aaaaaa";
-//    private static $host = "192.168.126.140";
-//    private static $port = "3306";
-//    private static $dbname = "b16_20802573_beontime";
+    private static $username = "root";
+    private static $password = "";
+        private static $host = "localhost";
+    private static $port = "3306";
+    private static $dbname = "beontime";
 
     private static $dbErrorMessage = '';
     private static $db;

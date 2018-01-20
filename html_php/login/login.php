@@ -252,6 +252,7 @@ function unsetRememberMe($userName) {
                             <div class="">
                                 <p class="float-sm-left text-xs-center m-0"><a href="../index.html" class="card-link">Main page&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
                                 </p>
+                                <p class="float-sm-right text-xs-center m-0">New to BeOnTime ? <a href="register-simple.php" class="card-link">Sign Up</a></p>
                             </div>
                         </div>
 

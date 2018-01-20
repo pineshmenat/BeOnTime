@@ -5,7 +5,7 @@
  * Date: 17/12/17
  * Time: 19:16
  */
-require ('db_config.php');
+//require ('db_config.php');
 
 class UserDB
 {

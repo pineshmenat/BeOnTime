@@ -19,6 +19,7 @@ $error_state="";
 $error_postal_code="";
 $error_country="";
 $error_phone="";
+$error_portraitImg="";
 $error="";
 if(isset($_POST['save_changes']) && $_POST['save_changes']){
 
@@ -47,18 +48,30 @@ if(isset($_POST['save_changes']) && $_POST['save_changes']){
         $error_state = Validate::validateProvince($state);
         $error_postal_code = Validate::validateZipCode($postal_code);
         $error_country = Validate::validateCountry($country);
+        if(isset($_FILES['portraitImg']) && $_FILES['portraitImg'] != null) {
+            $error_portraitImg = Validate::validatePortraitImg($_FILES['portraitImg']['type']);
+        }
+        else{
+            $error_portraitImg = "Please upload .png image";
+        }
         if($error_name == "" && $error_email == "" && $error_url == "" && $error_street_number == "" &&
-            $error_route == "" && $error_locality == "" && $error_postal_code == "" && $error_country == "" && $error_phone == "") {
+            $error_route == "" && $error_locality == "" && $error_postal_code == "" && $error_country == "" && $error_phone == ""
+        && $error_portraitImg == "") {
             $_SESSION['companyId'] = CompanyDB::addCompany(new Company($name, $email, $url, $password, $street_number, $street_name, $city, $state, $postal_code, $country,$phone));
             $_SESSION['roleID'] = RoleDB::getRoleID('Manager');
             $_SESSION['password'] = $password;
             $_SESSION['phone'] = $phone;
-            $client->messages->create($phone,
+            $image_path = getcwd().DIRECTORY_SEPARATOR.'../../assets/images/portrait_img'.DIRECTORY_SEPARATOR.$_FILES['portraitImg']['name'];
+            move_uploaded_file($_FILES['portraitImg']['tmp_name'],$image_path);
+            $image_path_new =  getcwd().DIRECTORY_SEPARATOR.'../../assets/images/portrait_img'.
+                DIRECTORY_SEPARATOR. $_SESSION['companyId'] . '_'.$_SESSION['userName'] . '.png';
+            imageresize($image_path,$image_path_new,114,114);
+           /* $client->messages->create($phone,
                     array(
                         'from' => '+12893014089',
                         'body' => "Your companyID is ".$_SESSION['companyId']
                     )
-                );
+                );*/
             header("location:manager_companyID_verify.php");
         }
     }
@@ -69,6 +82,33 @@ if(isset($_POST['save_changes']) && $_POST['save_changes']){
 
 if(!isset($_SESSION['userName'])) {
     header("location:../login/login.php");
+}
+?>
+<?php
+function imageresize($image_path,$image_path_new,$width,$height){
+    // Get the old image and its height and width
+    $old_image = imagecreatefrompng($image_path);
+    $old_width = imagesx($old_image);
+    $old_height = imagesy($old_image);
+
+    $new_image = imagecreatetruecolor($width, $height);
+    imagealphablending($new_image, false);
+    imagesavealpha($new_image, true);
+// Copy old image to new image - this resizes the image
+    $new_x = 0;
+    $new_y = 0;
+    $old_x = 0;
+    $old_y = 0;
+    imagecopyresampled($new_image, $old_image,
+        $new_x, $new_y, $old_x, $old_y,
+        $width, $height, $old_width, $old_height);
+
+    // Write the new image to a new file
+    imagepng($new_image, $image_path_new);
+
+    // Free any memory associated with the new image
+    imagedestroy($new_image);
+    unlink($image_path);
 }
 ?>
 <!DOCTYPE html>
@@ -221,7 +261,7 @@ if(!isset($_SESSION['userName'])) {
             </div>
         </div>
         <div class="content-body">
-            <form class="form" id="company_signup" method="post" action="">
+            <form class="form" id="company_signup" method="post" action="" enctype="multipart/form-data">
                 <h1>Basic Information</h1>
                 <input type="hidden" value="<?php  echo $_SESSION['password']; ?>" name="password">
                 <div class="form-group row">
@@ -230,7 +270,7 @@ if(!isset($_SESSION['userName'])) {
                         <div class="col-sm-10 nopadding">
                             <small class="help-block text-danger"><?php echo $error;?></small>
                         </div>
-                        <input class="form-control-sm col-sm-6" type="text" value="" id="company_name" name="company_name"><br/>
+                        <input class="form-control-sm col-sm-6" type="text" value="<?php if(isset($_POST['company_name'])){ echo $_POST['company_name']; } ?>" id="company_name" name="company_name"><br/>
                         <div class="col-sm-10 nopadding">
                             <small class="help-block text-danger"><?php echo $error_name;?></small>
                         </div>
@@ -239,7 +279,7 @@ if(!isset($_SESSION['userName'])) {
                 <div class="form-group row">
                     <label for="company_url" class="col-sm-3 col-lg-1 label-control">Company website: </label>
                     <div class="col-sm-9 col-lg-10">
-                        <input class="form-control-sm col-sm-6" type="text" value="" id="company_url" name="company_url">
+                        <input class="form-control-sm col-sm-6" type="text" value="<?php if(isset($_POST['company_url'])){ echo $_POST['company_url']; } ?>" id="company_url" name="company_url">
                         <div class="col-sm-10 nopadding">
                             <small class="help-block text-danger"><?php echo $error_url;?></small>
                         </div>
@@ -248,7 +288,7 @@ if(!isset($_SESSION['userName'])) {
                 <div class="form-group row">
                     <label for="phone" class="col-sm-3 col-lg-1 label-control">Phone: </label>
                     <div class="col-sm-9 col-lg-10">
-                        <input class="form-control-sm col-sm-6" type="text" value="" id="phone" name="phone">
+                        <input class="form-control-sm col-sm-6" type="text" value="<?php if(isset($_POST['phone'])){ echo $_POST['phone']; } ?>" id="phone" name="phone">
                         <div class="col-sm-10 nopadding">
                             <small class="help-block text-danger"><?php echo $error_phone;?></small>
                         </div>
@@ -264,15 +304,24 @@ if(!isset($_SESSION['userName'])) {
                     </div>
                 </div>
                 <div class="form-group row">
+                    <label for="portraitImg" class="col-sm-3 col-lg-1 label-control">Profile Pic: </label>
+                    <div class="col-sm-9 col-lg-10">
+                        <input class="form-control-sm col-sm-6" type="file" accept="image/*" name="portraitImg"  id="portraitImg" >
+                        <div class="col-sm-10 nopadding">
+                            <small class="help-block text-danger"><?php echo $error_portraitImg;?></small>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row">
                     <div class="col-sm-9 col-lg-9">
-                        <input class="form-control-sm col-sm-8" type="text" onfocus="geolocate()" value="" id="street_address" name="street_address" placeholder="Enter your address">
+                        <input class="form-control-sm col-sm-8" type="text" onfocus="geolocate()" value="<?php if(isset($_POST['street_address'])){ echo $_POST['street_address']; } ?>" id="street_address" name="street_address" placeholder="Enter your address">
                     </div>
                 </div>
                 <div class="form-group row">
                     <label for="street_address" class="col-sm-3 col-lg-1 label-control">Street Address: </label>
                     <div class="col-sm-9 col-lg-10">
-                        <input class="form-control-sm col-sm-1" type="text" value="" id="street_number" name="street_number" disabled>
-                        <input class="form-control-sm col-sm-5" type="text" value="" id="route" name="route" disabled>
+                        <input class="form-control-sm col-sm-1" type="text" value="<?php if(isset($_POST['street_number'])){ echo $_POST['street_number']; } ?>" id="street_number" name="street_number" disabled>
+                        <input class="form-control-sm col-sm-5" type="text" value="<?php if(isset($_POST['route'])){ echo $_POST['route']; } ?>" id="route" name="route" disabled>
                         <div class="col-sm-10 nopadding">
                             <small class="help-block text-danger"><?php echo $error_street_number;?></small>
                             <small class="help-block text-danger"><?php echo $error_route;?></small>
@@ -282,7 +331,7 @@ if(!isset($_SESSION['userName'])) {
                 <div class="form-group row">
                     <label for="locality" class="col-sm-3 col-lg-1 label-control">City</label>
                     <div class="col-sm-9 col-lg-10">
-                        <input class="form-control-sm col-sm-6" type="text" value="" id="locality" name="locality" disabled>
+                        <input class="form-control-sm col-sm-6" type="text" value="<?php if(isset($_POST['locality'])){ echo $_POST['locality']; } ?>" id="locality" name="locality" disabled>
                         <div class="col-sm-10 nopadding">
                             <small class="help-block text-danger"><?php echo $error_locality;?></small>
                         </div>
@@ -291,14 +340,14 @@ if(!isset($_SESSION['userName'])) {
                 <div class="form-group row">
                     <label for="administrative_area_level_1" class="col-sm-3 col-lg-1 label-control">State: </label>
                     <div class="col-sm-9 col-lg-2">
-                        <input class="form-control-sm col-sm-12" type="text" value="" id="administrative_area_level_1" name="administrative_area_level_1" disabled>
+                        <input class="form-control-sm col-sm-12" type="text" value="<?php if(isset($_POST['administrative_area_level_1'])){ echo $_POST['administrative_area_level_1']; } ?>" id="administrative_area_level_1" name="administrative_area_level_1" disabled>
                         <div class="col-sm-10 nopadding">
                             <small class="help-block text-danger"><?php echo $error_state;?></small>
                         </div>
                     </div>
                     <label for="postal_code" class="col-sm-3 col-lg-1 label-control">ZipCode: </label>
                     <div class="col-sm-9 col-lg-2">
-                        <input class="form-control-sm col-sm-13" type="text" value="" id="postal_code" name="postal_code" disabled>
+                        <input class="form-control-sm col-sm-13" type="text" value="<?php if(isset($_POST['postal_code'])){ echo $_POST['postal_code']; } ?>" id="postal_code" name="postal_code" disabled>
                         <div class="col-sm-10 nopadding">
                             <small class="help-block text-danger"><?php echo $error_postal_code;?></small>
                         </div>
@@ -307,7 +356,7 @@ if(!isset($_SESSION['userName'])) {
                 <div class="form-group row">
                     <label for="country" class="col-sm-3 col-lg-1 label-control">Country</label>
                     <div class="col-sm-9 col-lg-10">
-                        <input class="form-control-sm col-sm-6" type="text" value="" id="country" name="country" disabled>
+                        <input class="form-control-sm col-sm-6" type="text" value="<?php if(isset($_POST['country'])){ echo $_POST['country']; } ?>" id="country" name="country" disabled>
                         <div class="col-sm-10 nopadding">
                             <small class="help-block text-danger"><?php echo $error_country;?></small>
                         </div>

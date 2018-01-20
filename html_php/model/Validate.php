@@ -198,4 +198,13 @@ class Validate
             return "";
         }
     }
+
+    public static function validatePortraitImg($image_type){
+        if(strcmp($image_type,'image/png') == 0){
+            return "";
+        }
+        else{
+            return "only png images accepted";
+        }
+    }
 }
