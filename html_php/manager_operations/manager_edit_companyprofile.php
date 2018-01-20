@@ -4,6 +4,7 @@ include "../model/Company.php";
 include "../model/Validate.php";
 include "../model/RoleDB.php";
 require '../../app-assets/twilio-php-master/Twilio/autoload.php';
+require "../model/UserDB.php";
 use Twilio\Rest\Client;
 session_start();
 $sid = 'AC11257e267244b209cd12098edf1c148a';
@@ -62,17 +63,18 @@ if(isset($_POST['save_changes']) && $_POST['save_changes']){
             $_SESSION['password'] = $password;
             $_SESSION['phone'] = $phone;
             $image_path = getcwd().DIRECTORY_SEPARATOR.'../../assets/images/portrait_img'.DIRECTORY_SEPARATOR.$_FILES['portraitImg']['name'];
+            $image = $_FILES['portraitImg']['name'];
             move_uploaded_file($_FILES['portraitImg']['tmp_name'],$image_path);
-            $image_path_new =  getcwd().DIRECTORY_SEPARATOR.'../../assets/images/portrait_img'.
-                DIRECTORY_SEPARATOR. $_SESSION['companyId'] . '_'.$_SESSION['userName'] . '.png';
-            imageresize($image_path,$image_path_new,114,114);
+            //$image_path_new =  getcwd().DIRECTORY_SEPARATOR.'../../assets/images/portrait_img'.
+              //  DIRECTORY_SEPARATOR. $_SESSION['companyId'] . '_'.$_SESSION['userName'] . '.png';
+
            /* $client->messages->create($phone,
                     array(
                         'from' => '+12893014089',
                         'body' => "Your companyID is ".$_SESSION['companyId']
                     )
                 );*/
-            header("location:manager_companyID_verify.php");
+            header("location:manager_companyID_verify.php?image=".$image);
         }
     }
     else{
@@ -82,33 +84,6 @@ if(isset($_POST['save_changes']) && $_POST['save_changes']){
 
 if(!isset($_SESSION['userName'])) {
     header("location:../login/login.php");
-}
-?>
-<?php
-function imageresize($image_path,$image_path_new,$width,$height){
-    // Get the old image and its height and width
-    $old_image = imagecreatefrompng($image_path);
-    $old_width = imagesx($old_image);
-    $old_height = imagesy($old_image);
-
-    $new_image = imagecreatetruecolor($width, $height);
-    imagealphablending($new_image, false);
-    imagesavealpha($new_image, true);
-// Copy old image to new image - this resizes the image
-    $new_x = 0;
-    $new_y = 0;
-    $old_x = 0;
-    $old_y = 0;
-    imagecopyresampled($new_image, $old_image,
-        $new_x, $new_y, $old_x, $old_y,
-        $width, $height, $old_width, $old_height);
-
-    // Write the new image to a new file
-    imagepng($new_image, $image_path_new);
-
-    // Free any memory associated with the new image
-    imagedestroy($new_image);
-    unlink($image_path);
 }
 ?>
 <!DOCTYPE html>
@@ -218,6 +193,7 @@ function imageresize($image_path,$image_path_new,$width,$height){
                 <a href="#"><i class="icon-home3"></i>
                     <span data-i18n="nav.page_layouts.main" class="menu-title">Manager</span>
                 </a>
+                <?php if(UserDB::checkUser($_SESSION['userName'])) { ?>
                 <ul class="menu-content">
                     <li>
                         <a href="manager_assign_shift_frontend.php" data-i18n="nav.page_layouts.1_column" class="menu-item">Assign Shift</a>
@@ -241,6 +217,7 @@ function imageresize($image_path,$image_path_new,$width,$height){
                         <a href="manager_view_companyprofile.php" data-i18n="nav.page_layouts.2_columns" class="menu-item">View Company's Profile</a>
                     </li>
                 </ul>
+                <?php } ?>
             </li>
 
         </ul>

@@ -6,19 +6,51 @@ include "../model/UserDB.php";
 include "../model/Validate.php";
 session_start();
 $error="";
-
-if(isset($_POST['verify']) && $_POST['verify'] && isset($_POST['company_id'])){
-    if(strcmp($_POST['company_id'],$_SESSION['companyId']) != 0){
-        $error = "Wrong company ID. Input correct ID";
-    }
-    if($error == "") {
-        UserDB::addUser(new User($_SESSION['roleID'],$_SESSION['companyId'],$_SESSION['userName'],$_SESSION['password']));
-        header("location:manager_create_employee.php");
-    }
+if(!isset($_GET['image'])){
+    header("location:manager_assign_shift_frontend.php");
 }
-
+    if (isset($_POST['verify']) && $_POST['verify'] && isset($_POST['company_id'])) {
+        if (strcmp($_POST['company_id'], $_SESSION['companyId']) != 0) {
+            $error = "Wrong company ID. Input correct ID";
+        }
+        if ($error == "") {
+            $userId = UserDB::addUser(new User($_SESSION['roleID'], $_SESSION['companyId'], $_SESSION['userName'], $_SESSION['password']));
+            $image_path = getcwd().DIRECTORY_SEPARATOR.'../../assets/images/portrait_img'.DIRECTORY_SEPARATOR.$_POST['image'];
+            $image_path_new = getcwd().DIRECTORY_SEPARATOR.'../../assets/images/portrait_img'.
+                  DIRECTORY_SEPARATOR. $userId . '_'.$_SESSION['userName'] . '.png';
+            imageresize($image_path,$image_path_new,114,114);
+            header("location:manager_create_employee.php");
+        }
+    }
 if(!isset($_SESSION['userName'])) {
     header("location:../login/login.php");
+}
+?>
+<?php
+function imageresize($image_path,$image_path_new,$width,$height){
+    // Get the old image and its height and width
+    $old_image = imagecreatefrompng($image_path);
+    $old_width = imagesx($old_image);
+    $old_height = imagesy($old_image);
+
+    $new_image = imagecreatetruecolor($width, $height);
+    imagealphablending($new_image, false);
+    imagesavealpha($new_image, true);
+// Copy old image to new image - this resizes the image
+    $new_x = 0;
+    $new_y = 0;
+    $old_x = 0;
+    $old_y = 0;
+    imagecopyresampled($new_image, $old_image,
+        $new_x, $new_y, $old_x, $old_y,
+        $width, $height, $old_width, $old_height);
+
+    // Write the new image to a new file
+    imagepng($new_image, $image_path_new);
+
+    // Free any memory associated with the new image
+    imagedestroy($new_image);
+    unlink($image_path);
 }
 ?>
 <!DOCTYPE html>
@@ -174,6 +206,7 @@ if(!isset($_SESSION['userName'])) {
             <form class="form" id="company_signup" method="post" action="">
                 <h3>Verify Company ID that has been send via SMS to <b><?php echo $_SESSION['phone'] ?></b></h3>
                 <input type="hidden" value="<?php  echo $_SESSION['password']; ?>" name="password">
+                <input type="hidden" value="<?php  echo $_GET['image']; ?>" name="image">
                 <div class="form-group row">
                     <label for="company_name" class="col-sm-3 col-lg-1 label-control">Company ID : </label>
                     <div class="col-sm-9 col-lg-10">
