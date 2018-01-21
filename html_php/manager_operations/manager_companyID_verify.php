@@ -14,11 +14,13 @@ if(!isset($_GET['image'])){
             $error = "Wrong company ID. Input correct ID";
         }
         if ($error == "") {
-            $userId = UserDB::addUser(new User($_SESSION['roleID'], $_SESSION['companyId'], $_SESSION['userName'], $_SESSION['password']));
+            $userId = UserDB::addUser(new User($_SESSION['roleID'], $_SESSION['companyId'], $_SESSION['userName'],
+                $_SESSION['password'],'','','','','','','','',''));
             $image_path = getcwd().DIRECTORY_SEPARATOR.'../../assets/images/portrait_img'.DIRECTORY_SEPARATOR.$_POST['image'];
             $image_path_new = getcwd().DIRECTORY_SEPARATOR.'../../assets/images/portrait_img'.
                   DIRECTORY_SEPARATOR. $userId . '_'.$_SESSION['userName'] . '.png';
             imageresize($image_path,$image_path_new,114,114);
+            $_SESSION['portraintImg'] = $userId . '_'.$_SESSION['userName'] . '.png';
             header("location:manager_create_employee.php");
         }
     }

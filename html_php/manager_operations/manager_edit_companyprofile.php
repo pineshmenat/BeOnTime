@@ -24,15 +24,15 @@ $error_portraitImg="";
 $error="";
 if(isset($_POST['save_changes']) && $_POST['save_changes']){
 
-    if(isset($_POST['company_name']) && isset($_POST['email'])
-        && isset($_POST['company_url']) && isset($_POST['phone']) && isset($_POST['postal_code'])
-        && isset($_POST['country'])){
+    if(!empty($_POST['company_name']) && !empty($_POST['email'])
+        && !empty($_POST['company_url']) && !empty($_POST['phone']) && !empty($_POST['postal_code'])
+        && !empty($_POST['country'])){
         $name = $_POST['company_name'];
         $email = $_POST['email'];
         $_SESSION['userName'] = $email;
         $url = $_POST['company_url'];
         $phone = $_POST['phone'];
-        $password = $_POST['password'];
+        //$password = $_POST['password'];
         $street_number = $_POST['street_number'];
         $street_name = $_POST['route'];
         $city = $_POST['locality'];
@@ -58,9 +58,9 @@ if(isset($_POST['save_changes']) && $_POST['save_changes']){
         if($error_name == "" && $error_email == "" && $error_url == "" && $error_street_number == "" &&
             $error_route == "" && $error_locality == "" && $error_postal_code == "" && $error_country == "" && $error_phone == ""
         && $error_portraitImg == "") {
-            $_SESSION['companyId'] = CompanyDB::addCompany(new Company($name, $email, $url, $password, $street_number, $street_name, $city, $state, $postal_code, $country,$phone));
+            $_SESSION['companyId'] = CompanyDB::addCompany(new Company($name, $email, $url, $_SESSION['password'], $street_number, $street_name, $city, $state, $postal_code, $country,$phone));
             $_SESSION['roleID'] = RoleDB::getRoleID('Manager');
-            $_SESSION['password'] = $password;
+            //$_SESSION['password'] = $password;
             $_SESSION['phone'] = $phone;
             $image_path = getcwd().DIRECTORY_SEPARATOR.'../../assets/images/portrait_img'.DIRECTORY_SEPARATOR.$_FILES['portraitImg']['name'];
             $image = $_FILES['portraitImg']['name'];
@@ -162,9 +162,6 @@ if(!isset($_SESSION['userName'])) {
                         </a>
                         <div class="dropdown-menu dropdown-menu-right">
                             <a href="manager_edit_companyprofile.php" class="dropdown-item"><i class="icon-head"></i> Edit Profile</a>
-                            <a href="#" class="dropdown-item"><i class="icon-mail6"></i> My Inbox</a>
-                            <a href="#" class="dropdown-item"><i class="icon-clipboard2"></i> Task</a>
-                            <a href="#" class="dropdown-item"><i class="icon-calendar5"></i> Calender</a>
                             <div class="dropdown-divider"></div>
                             <a href="../login/logout.php" class="dropdown-item"><i class="icon-power3"></i> Logout</a>
                         </div>
@@ -240,7 +237,6 @@ if(!isset($_SESSION['userName'])) {
         <div class="content-body">
             <form class="form" id="company_signup" method="post" action="" enctype="multipart/form-data">
                 <h1>Basic Information</h1>
-                <input type="hidden" value="<?php  echo $_SESSION['password']; ?>" name="password">
                 <div class="form-group row">
                     <label for="company_name" class="col-sm-3 col-lg-1 label-control">Company Name: </label>
                     <div class="col-sm-9 col-lg-10">

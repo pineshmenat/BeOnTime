@@ -104,9 +104,6 @@ if(!isset($_SESSION['userName'])) {
                         </a>
                         <div class="dropdown-menu dropdown-menu-right">
                             <a href="manager_edit_companyprofile.php" class="dropdown-item"><i class="icon-head"></i> Edit Profile</a>
-                            <a href="#" class="dropdown-item"><i class="icon-mail6"></i> My Inbox</a>
-                            <a href="#" class="dropdown-item"><i class="icon-clipboard2"></i> Task</a>
-                            <a href="#" class="dropdown-item"><i class="icon-calendar5"></i> Calender</a>
                             <div class="dropdown-divider"></div>
                             <a href="../login/logout.php" class="dropdown-item"><i class="icon-power3"></i> Logout</a>
                         </div>
@@ -182,20 +179,20 @@ if(!isset($_SESSION['userName'])) {
                 <input type="hidden" value="<?php  echo $_SESSION['companyId']; ?>" name="company_id">
                 <div class="form-group row">
                     <label for="company_name" class="col-sm-3 col-lg-1 label-control">Company Name: </label>
-                    <?php echo $name; ?>
                     <div class="col-sm-9 col-lg-10">
+                        <?php echo $name; ?>
                     </div>
                 </div>
                 <div class="form-group row">
                     <label for="company_url" class="col-sm-3 col-lg-1 label-control">Company website: </label>
-                    <a href="<?php echo $url; ?>"  ><?php echo $url; ?></a>
                     <div class="col-sm-9 col-lg-10">
+                        <a href="<?php echo $url; ?>"  ><?php echo $url; ?></a>
                     </div>
                 </div>
                 <div class="form-group row">
                     <label for="email" class="col-sm-3 col-lg-1 label-control">Email: </label>
-                    <a href="<?php echo 'mailto:'.$email; ?>"  ><?php echo $email; ?></a>
                     <div class="col-sm-9 col-lg-10">
+                        <a href="<?php echo 'mailto:'.$email; ?>"  ><?php echo $email; ?></a>
                     </div>
                 </div>
             <div class="form-group row">

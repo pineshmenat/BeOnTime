@@ -1,84 +1,137 @@
 <?php
 require '../../app-assets/twilio-php-master/Twilio/autoload.php';
+require '../model/Validate.php';
+require '../model/UserDB.php';
+require '../model/User.php';
+require  '../model/db_config.php';
 use Twilio\Rest\Client;
 session_start();
 $sid = 'AC09f0a244b3694e049ea2b64f1c0609e1';
 $token = '3bc71a8b934b596f6468178160663943';
 $client = new Client($sid, $token);
-$error_name="";
+$error_firstname="";
+$error_lastname="";
+$error_sin="";
 $error_email="";
-$error_url="";
+$error_phone="";
+$error_username="";
+$error_password="";
 $error_street_number="";
 $error_route="";
 $error_locality="";
 $error_state="";
 $error_postal_code="";
 $error_country="";
-$error_phone="";
-$error_portraitImg="";
+$error_profilepic="";
 $error="";
-if(isset($_POST['save_changes']) && $_POST['save_changes']){
 
-    if(isset($_POST['company_name']) && isset($_POST['email'])
-        && isset($_POST['company_url']) && isset($_POST['phone']) && isset($_POST['postal_code'])
-        && isset($_POST['country'])){
-        $name = $_POST['company_name'];
-        $email = $_POST['email'];
-        $_SESSION['userName'] = $email;
-        $url = $_POST['company_url'];
-        $phone = $_POST['phone'];
-        $password = $_POST['password'];
-        $street_number = $_POST['street_number'];
-        $street_name = $_POST['route'];
-        $city = $_POST['locality'];
-        $state = $_POST['administrative_area_level_1'];
-        $postal_code = $_POST['postal_code'];
-        $country = $_POST['country'];
-        $error_name = Validate::validateCompanyName($name);
-        $error_email = Validate::validateEmail($email);
-        $error_url = Validate::validateURL($url);
-        $error_phone = Validate::validatePhoneNumber($phone);
-        $error_street_number = Validate::validateHouseNumber($street_number);
-        $error_route = Validate::validateStreet($street_name);
-        $error_locality = Validate::validateCity($city);
-        $error_state = Validate::validateProvince($state);
-        $error_postal_code = Validate::validateZipCode($postal_code);
-        $error_country = Validate::validateCountry($country);
-        if(isset($_FILES['portraitImg']) && $_FILES['portraitImg'] != null) {
-            $error_portraitImg = Validate::validatePortraitImg($_FILES['portraitImg']['type']);
-        }
-        else{
-            $error_portraitImg = "Please upload .png image";
-        }
-        if($error_name == "" && $error_email == "" && $error_url == "" && $error_street_number == "" &&
-            $error_route == "" && $error_locality == "" && $error_postal_code == "" && $error_country == "" && $error_phone == ""
-            && $error_portraitImg == "") {
-            $_SESSION['companyId'] = CompanyDB::addCompany(new Company($name, $email, $url, $password, $street_number, $street_name, $city, $state, $postal_code, $country,$phone));
-            $_SESSION['roleID'] = RoleDB::getRoleID('Manager');
-            $_SESSION['password'] = $password;
-            $_SESSION['phone'] = $phone;
-            $image_path = getcwd().DIRECTORY_SEPARATOR.'../../assets/images/portrait_img'.DIRECTORY_SEPARATOR.$_FILES['portraitImg']['name'];
-            $image = $_FILES['portraitImg']['name'];
-            move_uploaded_file($_FILES['portraitImg']['tmp_name'],$image_path);
-            //$image_path_new =  getcwd().DIRECTORY_SEPARATOR.'../../assets/images/portrait_img'.
-            //  DIRECTORY_SEPARATOR. $_SESSION['companyId'] . '_'.$_SESSION['userName'] . '.png';
-
-            $client->messages->create($phone,
-                array(
-                    'from' => '15069060245',
-                    'body' => "Your companyID is ".$_SESSION['companyId'].' -Team BeOnTime.'
-                )
-            );
-            header("location:manager_companyID_verify.php?image=".$image);
-        }
+if(isset($_POST['submit']) && $_POST['submit']){
+if(!empty($_POST['firstname']) && !empty($_POST['lastname']) && !empty($_POST['sin']) && !empty($_POST['email'])
+    && !empty($_POST['phone']) && !empty($_POST['username']) && !empty($_POST['password'])
+    && !empty($_POST['confirm_password']) && !empty($_POST['street_number']) && !empty($_POST['route'])
+    && !empty($_POST['locality']) && !empty($_POST['administrative_area_level_1']) && !empty($_POST['postal_code'])
+    && !empty($_POST['country'])){
+    $firstname = $_POST['firstname'];
+    $lastname = $_POST['lastname'];
+    $sin = $_POST['sin'];
+    $email = $_POST['email'];
+    $phone = $_POST['phone'];
+    $username = $_POST['username'];
+    $password = $_POST['password'];
+    $confirm_password = $_POST['confirm_password'];
+    $street_number = $_POST['street_number'];
+    $route = $_POST['route'];
+    $locality = $_POST['locality'];
+    $province = $_POST['administrative_area_level_1'];
+    $postal_code = $_POST['postal_code'];
+    $country = $_POST['country'];
+    $error_firstname = Validate::validateFirstName($firstname);
+    $error_lastname = Validate::validateLastName($lastname);
+    $error_sin = Validate::validateSINNumber($sin);
+    $error_email = Validate::validateEmail($email);
+    $error_phone = Validate::validatePhoneNumber($phone);
+    if(UserDB::checkUser($username)){
+        $error_username = "Username is already in use";
+    }
+    $error_password = Validate::validatePassword($password,$confirm_password);
+    $error_street_number = Validate::validateHouseNumber($street_number);
+    $error_route = Validate::validateStreet($route);
+    $error_locality = Validate::validateCity($locality);
+    $error_state = Validate::validateProvince($province);
+    $error_postal_code = Validate::validateZipCode($postal_code);
+    $error_country = Validate::validateCountry($country);
+    if(isset($_FILES['profilepic']) && $_FILES['profilepic'] != null) {
+        $error_profilepic = Validate::validatePortraitImg($_FILES['profilepic']['type']);
     }
     else{
-        $error = "Complete all the required fields";
+        $error_profilepic = "Please upload .png image";
     }
+    if($error_firstname == "" && $error_lastname == "" && $error_sin == "" && $error_email == "" && $error_phone == ""
+    && $error_username == "" && $error_password == "" && $error_street_number == "" && $error_route == "" &&
+    $error_locality == "" && $error_state == "" && $error_postal_code == "" && $error_country == "" &&
+        $error_profilepic == ""){
+        $userId = UserDB::addUser(new User('12',$_SESSION['companyId'],$username,$password,$firstname,$lastname,
+            $email,$sin,$street_number.', '.$route,$locality,$province,$postal_code,$phone));
+        $image_path = getcwd().DIRECTORY_SEPARATOR.'../../assets/images/portrait_img'.DIRECTORY_SEPARATOR.$_POST['profilepic'];
+        $image_path_new = getcwd().DIRECTORY_SEPARATOR.'../../assets/images/portrait_img'.
+            DIRECTORY_SEPARATOR. $userId . '_'.$username . '.png';
+        imageresize($image_path,$image_path_new,114,114);
+        $client->messages->create($phone,
+            array(
+                'from' => '15069060245',
+                'body' => 'Dear '.$firstname.' '.$lastname.', Your username is '.$username.' and password is '.$password.' -Team BeOnTime.'
+            )
+        );
+        $firstname = "";
+        $lastname = "";
+        $sin = "";
+        $email = "";
+        $phone = "";
+        $username = "";
+        $street_number = "";
+        $route = "";
+        $locality = "";
+        $province = "";
+        $postal_code = "";
+        $country = "";
+        $_POST = array();
+        $_FILES = array();
+    }
+}
+else{
+    $error = "Complete all the required fields";
+}
 }
 
 if (!isset($_SESSION['userName'])) {
     header("location: ../login/login.php");
+}
+?>
+<?php
+function imageresize($image_path,$image_path_new,$width,$height){
+    // Get the old image and its height and width
+    $old_image = imagecreatefrompng($image_path);
+    $old_width = imagesx($old_image);
+    $old_height = imagesy($old_image);
+
+    $new_image = imagecreatetruecolor($width, $height);
+    imagealphablending($new_image, false);
+    imagesavealpha($new_image, true);
+// Copy old image to new image - this resizes the image
+    $new_x = 0;
+    $new_y = 0;
+    $old_x = 0;
+    $old_y = 0;
+    imagecopyresampled($new_image, $old_image,
+        $new_x, $new_y, $old_x, $old_y,
+        $width, $height, $old_width, $old_height);
+
+    // Write the new image to a new file
+    imagepng($new_image, $image_path_new);
+
+    // Free any memory associated with the new image
+    imagedestroy($new_image);
+    unlink($image_path);
 }
 ?>
 <!DOCTYPE html>
@@ -232,39 +285,81 @@ if (!isset($_SESSION['userName'])) {
         </div>
         <div class="content-body">
             <h1>Employee Signup</h1>
-            <form class="form" id="company_signup" method="post" action="">
+            <div class="row mt-1 col-md-12"></div>
+            <div class="col-sm-10 nopadding">
+                <small class="help-block text-danger"><?php echo $error;?></small>
+            </div>
+            <div class="row mt-1 col-md-12"></div>
+            <form class="form" id="company_signup" method="post" action="" enctype="multipart/form-data">
                 <input type="hidden" value="<?php  echo $_SESSION['companyId']; ?>" name="company_id">
                 <div class="form-group row">
-                    <label for="company_name" class="col-sm-3 col-lg-1 label-control">Name: </label>
-                    <div class="col-sm-9 col-lg-10">
-                        <input class="form-control-sm col-sm-6" type="text" value="" id="company_name" name="company_name"><br/>
+                    <label for="firstname" class="col-sm-3 col-lg-1 label-control">Firstname: </label>
+                    <div class="col-sm-9 col-lg-2">
+                        <input class="form-control-sm col-sm-12" type="text" value="<?php if(isset($_POST['firstname'])){ echo $_POST['firstname']; } ?>" id="firstname" name="firstname">
                         <div class="col-sm-10 nopadding">
-                            <small class="help-block text-danger"></small>
+                            <small class="help-block text-danger"><?php echo $error_firstname;?></small>
+                        </div>
+                    </div>
+                    <label for="lastname" class="col-sm-3 col-lg-1 label-control">Lastname: </label>
+                    <div class="col-sm-9 col-lg-2">
+                        <input class="form-control-sm col-sm-13" type="text" value="<?php if(isset($_POST['lastname'])){ echo $_POST['lastname']; } ?>" id="lastname" name="lastname">
+                        <div class="col-sm-10 nopadding">
+                            <small class="help-block text-danger"><?php echo $error_lastname;?></small>
                         </div>
                     </div>
                 </div>
                 <div class="form-group row">
-                    <label for="company_url" class="col-sm-3 col-lg-1 label-control">SIN: </label>
+                    <label for="sin" class="col-sm-3 col-lg-1 label-control">SIN: </label>
                     <div class="col-sm-9 col-lg-10">
-                        <input class="form-control-sm col-sm-3" type="text" value="" id="company_url" name="company_url">
+                        <input class="form-control-sm col-sm-3" type="text" value="<?php if(isset($_POST['sin'])){ echo $_POST['sin']; } ?>" id="sin" name="sin">
+                        <div class="col-sm-10 nopadding">
+                            <small class="help-block text-danger"><?php echo $error_sin;?></small>
+                        </div>
                     </div>
                 </div>
                 <div class="form-group row">
                     <label for="email" class="col-sm-3 col-lg-1 label-control">Email: </label>
                     <div class="col-sm-9 col-lg-10">
-                        <input class="form-control-sm col-sm-6" type="text" value="" id="email" name="email">
+                        <input class="form-control-sm col-sm-6" type="text" value="<?php if(isset($_POST['email'])){ echo $_POST['email']; } ?>" id="email" name="email">
+                        <div class="col-sm-10 nopadding">
+                            <small class="help-block text-danger"><?php echo $error_email;?></small>
+                        </div>
                     </div>
                 </div>
                 <div class="form-group row">
                     <label for="phone" class="col-sm-3 col-lg-1 label-control">Phone: </label>
                     <div class="col-sm-9 col-lg-10">
-                        <input class="form-control-sm col-sm-3" type="text" value="" id="phone" name="phone">
+                        <input class="form-control-sm col-sm-3" type="text" value="<?php if(isset($_POST['phone'])){ echo $_POST['phone']; } ?>" id="phone" name="phone">
+                        <div class="col-sm-10 nopadding">
+                            <small class="help-block text-danger"><?php echo $error_phone;?></small>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="profilepic" class="col-sm-3 col-lg-1 label-control">Profile Pic: </label>
+                    <div class="col-sm-9 col-lg-10">
+                        <input class="form-control-sm col-sm-6" type="file" accept="image/*" name="profilepic"  id="profilepic" >
+                        <div class="col-sm-10 nopadding">
+                            <small class="help-block text-danger"><?php echo $error_profilepic;?></small>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="username" class="col-sm-3 col-lg-1 label-control">Username: </label>
+                    <div class="col-sm-9 col-lg-10">
+                        <input class="form-control-sm col-sm-3" type="text" value="<?php if(isset($_POST['username'])){ echo $_POST['username']; } ?>" id="username" name="username">
+                        <div class="col-sm-10 nopadding">
+                            <small class="help-block text-danger"><?php echo $error_username;?></small>
+                        </div>
                     </div>
                 </div>
                 <div class="form-group row">
                     <label for="password" class="col-sm-3 col-lg-1 label-control">Password: </label>
                     <div class="col-sm-9 col-lg-10">
                         <input class="form-control-sm col-sm-3" type="password" value="" id="password" name="password">
+                        <div class="col-sm-10 nopadding">
+                            <small class="help-block text-danger"><?php echo $error_password;?></small>
+                        </div>
                     </div>
                 </div>
                 <div class="form-group row">
@@ -281,30 +376,46 @@ if (!isset($_SESSION['userName'])) {
                 <div class="form-group row">
                     <label for="street_address" class="col-sm-3 col-lg-1 label-control">Street Address: </label>
                     <div class="col-sm-9 col-lg-10">
-                        <input class="form-control-sm col-sm-1" type="text" value="" id="street_number" name="street_number" disabled>
-                        <input class="form-control-sm col-sm-5" type="text" value="" id="route" name="route" disabled>
+                        <input class="form-control-sm col-sm-1" type="text" value="<?php if(isset($_POST['street_number'])){ echo $_POST['street_number']; } ?>" id="street_number" name="street_number" disabled>
+                        <input class="form-control-sm col-sm-5" type="text" value="<?php if(isset($_POST['route'])){ echo $_POST['route']; } ?>" id="route" name="route" disabled>
+                    </div>
+                    <div class="col-sm-10 nopadding">
+                        <small class="help-block text-danger"><?php echo $error_street_number;?></small>
+                        <small class="help-block text-danger"><?php echo $error_route;?></small>
                     </div>
                 </div>
                 <div class="form-group row">
                     <label for="locality" class="col-sm-3 col-lg-1 label-control">City</label>
                     <div class="col-sm-9 col-lg-10">
-                        <input class="form-control-sm col-sm-6" type="text" value="" id="locality" name="locality" disabled>
+                        <input class="form-control-sm col-sm-6" type="text" value="<?php if(isset($_POST['locality'])){ echo $_POST['locality']; } ?>" id="locality" name="locality" disabled>
+                        <div class="col-sm-10 nopadding">
+                            <small class="help-block text-danger"><?php echo $error_locality;?></small>
+                        </div>
                     </div>
                 </div>
                 <div class="form-group row">
                     <label for="administrative_area_level_1" class="col-sm-3 col-lg-1 label-control">State: </label>
                     <div class="col-sm-9 col-lg-2">
-                        <input class="form-control-sm col-sm-12" type="text" value="" id="administrative_area_level_1" name="administrative_area_level_1" disabled>
+                        <input class="form-control-sm col-sm-12" type="text" value="<?php if(isset($_POST['administrative_area_level_1'])){ echo $_POST['administrative_area_level_1']; } ?>" id="administrative_area_level_1" name="administrative_area_level_1" disabled>
+                        <div class="col-sm-10 nopadding">
+                            <small class="help-block text-danger"><?php echo $error_state;?></small>
+                        </div>
                     </div>
                     <label for="postal_code" class="col-sm-3 col-lg-1 label-control">ZipCode: </label>
                     <div class="col-sm-9 col-lg-2">
-                        <input class="form-control-sm col-sm-13" type="text" value="" id="postal_code" name="postal_code" disabled>
+                        <input class="form-control-sm col-sm-13" type="text" value="<?php if(isset($_POST['postal_code'])){ echo $_POST['postal_code']; } ?>" id="postal_code" name="postal_code" disabled>
+                        <div class="col-sm-10 nopadding">
+                            <small class="help-block text-danger"><?php echo $error_postal_code;?></small>
+                        </div>
                     </div>
                 </div>
                 <div class="form-group row">
                     <label for="country" class="col-sm-3 col-lg-1 label-control">Country</label>
                     <div class="col-sm-9 col-lg-10">
-                        <input class="form-control-sm col-sm-6" type="text" value="" id="country" name="country" disabled>
+                        <input class="form-control-sm col-sm-6" type="text" value="<?php if(isset($_POST['country'])){ echo $_POST['country']; } ?>" id="country" name="country" disabled>
+                        <div class="col-sm-10 nopadding">
+                            <small class="help-block text-danger"><?php echo $error_country;?></small>
+                        </div>
                     </div>
                 </div>
                 <div class="form-group row">
