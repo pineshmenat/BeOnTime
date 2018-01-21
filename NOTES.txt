@@ -34,9 +34,10 @@ Task distribution:
 (1) Clients create shift
 (2) Clients view shfit
 (3) Project integration
-(4) Extracting data from database for client create shift UI, dynamic jQuery slider creation for shift days (In Phase 2)
-(5) And new shift creation into Db from Client page. (In Phase 2)
-(6) Project integration (In Phase 2)
+(4) Extracting data from database for client create shift UI
+(5) Dynamic jQuery slider creation for shift days (In Phase 2)
+(6) And new shift creation into Db from Client page. (In Phase 2)
+(7) Project integration (In Phase 2)
 ** See below notes (Details of improvements) for Vaishnavi's Phase 3 report
 
 4. Anubhav
