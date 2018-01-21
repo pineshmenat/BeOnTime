@@ -1,4 +1,7 @@
 <?php
+//
+// By Zhongjie
+//
 session_start();
 
 if (!isset($_SESSION['userId'])) {
@@ -138,9 +141,6 @@ if (!isset($_SESSION['userId'])) {
                     </li>
                     <li>
                         <a href="manager_manage_employee.php" data-i18n="nav.page_layouts.1_column" class="menu-item">Manage Employee</a>
-                    </li>
-                    <li>
-                        <a href="manager_edit_companyprofile.php" data-i18n="nav.page_layouts.1_column" class="menu-item">Edit Company's Profile</a>
                     </li>
                     <li>
                         <a href="manager_view_companyprofile.php" data-i18n="nav.page_layouts.1_column" class="menu-item">View Company's Profile</a>
@@ -356,3 +356,8 @@ if (!isset($_SESSION['userId'])) {
 <!--/Zhongjie JS-->
 </body>
 </html>
+<?php
+//
+// By Zhongjie
+//
+?>

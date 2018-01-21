@@ -279,11 +279,12 @@ $designations = ClientSideDB::getEmployeeDesignations();
             $ed = date('Y-m-d', strtotime($_POST['selectedEndDate']));
             $startDate = new DateTime($sd);
             $endDate = new DateTime($ed);
-            $difference = $startDate->diff($endDate);
-            //echo $difference->format('%d days');
-
+//            $difference = $startDate->diff($endDate);
+//            echo 'DIFFERENCE :: '.$difference->format('%d days');echo '<br/>';
+            $endDate = $endDate->modify('+1 day'); //to include End Date also
             $period = new DatePeriod($startDate, new DateInterval('P1D'), $endDate);
-            /*foreach($period as $p){
+/*            echo '<br/>';
+            foreach($period as $p){
                 echo $p->format("M d, Y") . "<br>";
             }*/
 
@@ -311,8 +312,6 @@ $designations = ClientSideDB::getEmployeeDesignations();
                             <div id="show-time-range-selected<?=$p->format("MdY") ?>" class="col-xl-2 col-lg-1"
                                  style=""></div>
                         </div>
-<!--<input type="hidden" name="shiftsStartArray" id="shiftsStartArray" value="fds"/>-->
-<!--<input type="hidden" name="shiftsEndArray" id="shiftsEndArray" value="dfs"/>-->
                         <?php
                     }
                     ?>
@@ -324,8 +323,6 @@ $designations = ClientSideDB::getEmployeeDesignations();
                                     <div class="col-xl-2 col-lg-6 col-xs-12"></div>
                                     <div class="col-xl-8 col-lg-6 col-xs-12"
                                          class="p-2 text-xs-center bg-accent-2 media-left media-middle">
-                                        <!--<input style='border-radius: 0 !important;'
-                                               type="submit" class="btn btn-success btn-lg btn-block" value="Submit">-->
                                         <input style='border-radius: 0 !important;'
                                                id="btnSubmit" name="btnSubmit"
                                                type="button" class="btn btn-success btn-lg btn-block" value="Submit">
@@ -405,11 +402,6 @@ $designations = ClientSideDB::getEmployeeDesignations();
             $('#datetimepicker6').data("DateTimePicker").maxDate(e.date);
         });
     });
-    /*$("#formDisplayCalendar").submit(function( event ) {
-     var selectedStartDate = $("#selectedStartDate").val();
-     var selectedEndDate = $("#selectedEndDate").val();
-     alert(selectedStartDate +" "+ selectedEndDate);
-     });*/
 
     $("#btnSubmit").on('click',function()
     {
@@ -429,22 +421,6 @@ $designations = ClientSideDB::getEmployeeDesignations();
         var companyLocationId = $('#sel1').val();
         var employeeDesignationId = $('#sel2').val();
 
-//        alert(employeeDesignationId);
-//        var dataString = 'startArr='+startArr+'&endArr='+endArr+'&x=132';
-//        var dataString = 'x=132';
-        /*$.ajax({
-            type : "POST",
-            url : "process-shifts.php",
-            data : {'x':'121'},
-            success : function () {
-                alert("success");
-                window.location = 'process-shifts.php';
-            },
-            error : function () {
-                alert("err");
-            }
-        });*/
-
         $.post("process-shifts.php", //Required URL of the page on server
             {   // Data Sending With Request To Server
                 'shiftsDateArray':shiftsDateArray,
@@ -460,10 +436,6 @@ $designations = ClientSideDB::getEmployeeDesignations();
                 window.location = 'client-create-shift.php';
             }
         );
-
-//        $('#shiftsStartArray').val(JSON.stringify(startArr));
-//        $('#shiftsEndArray').attr("value","QQQ");
-//        $('#formCreateShifts').submit();
     });
 
 </script>

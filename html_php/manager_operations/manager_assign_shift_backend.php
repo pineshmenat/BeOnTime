@@ -335,7 +335,7 @@ function assignEmployeeToShift($dbConnection, $selectedShiftId, $selectedEmploye
 
                 // Specify email subject and body
                 $eMailSubject = '[BeOnTime][Employee] New Shift Notification';
-                $eMailBody = "<html>"
+                $eMailBody = "<html><body>"
                     . "Dear " . ucwords($firstName) . ' ' . ucwords($lastName) . ",<br/><br/>"
                     . "You have a new shift. <br/><br/>"
                     . "Shift Id: <b>" . $shiftId . "</b><br/>"
@@ -343,8 +343,9 @@ function assignEmployeeToShift($dbConnection, $selectedShiftId, $selectedEmploye
                     . "Address: <b>" . $address . "</b><br/>"
                     . "Shift Start Time: <b>" . $startTime . "</b><br/>"
                     . "Shift End Time: <b>" . $endTime . "</b><br/><br/>"
-                    . "Regards,<br/>BeOnTime project group"
-                    . "</html>";
+                    . "Regards,<br/>BeOnTime project group<br/>"
+                    . "<img src=\"https://lh3.googleusercontent.com/txsj9j8T7lrry_VAxqamtdSLjTI09WqB_2wToAF9RL_IDcPGi4oin4hrB_UBGRcdSqCbeNl8PBj9LsumgTe6IGgSXztdb-GLKC-TlOfarAXTr8zAEciMExpUS3syFCqvqxYKAMTe=w194-h50-no\" alt=\"BeOnTime logo 50\" width=\"194\" height=\"50\">"
+                    . "</body></html>";
 
                 // If email is not null and valid, send notification email
                 if (isset($eMail) && filter_var($eMail, FILTER_VALIDATE_EMAIL)) {
@@ -397,7 +398,7 @@ function undoAssignEmployee($dbConnection, $selectedShiftId) {
 
                 // Specify email subject and body
                 $eMailSubject = '[BeOnTime][Employee] Cancel Shift Notification';
-                $eMailBody = "<html>"
+                $eMailBody = "<html><body>"
                     . "Dear " . ucwords($firstName) . ' ' . ucwords($lastName) . ",<br/><br/>"
                     . "Below shift is cancelled. <br/><br/>"
                     . "Shift Id: <b>" . $shiftId . "</b><br/>"
@@ -405,8 +406,9 @@ function undoAssignEmployee($dbConnection, $selectedShiftId) {
                     . "Address: <b>" . $address . "</b><br/>"
                     . "Shift Start Time: <b>" . $startTime . "</b><br/>"
                     . "Shift End Time: <b>" . $endTime . "</b><br/><br/>"
-                    . "Regards,<br/>BeOnTime project group"
-                    . "</html>";
+                    . "Regards,<br/>BeOnTime project group<br/>"
+                    . "<img src=\"https://lh3.googleusercontent.com/txsj9j8T7lrry_VAxqamtdSLjTI09WqB_2wToAF9RL_IDcPGi4oin4hrB_UBGRcdSqCbeNl8PBj9LsumgTe6IGgSXztdb-GLKC-TlOfarAXTr8zAEciMExpUS3syFCqvqxYKAMTe=w194-h50-no\" alt=\"BeOnTime logo 50\" width=\"194\" height=\"50\">"
+                    . "</body></html>";
 
                 // If email is not null and valid, send notification email
                 if (isset($eMail) && filter_var($eMail, FILTER_VALIDATE_EMAIL)) {
@@ -501,7 +503,7 @@ function getShiftAndEmployeeInfo($dbConnection, $selectedShiftId) {
 
 function sendNotificationEmail($eMailSubject, $eMailBody, $firstName, $lastName, $eMail) {
 
-    error_log("firstName: " . $firstName . " lastName: " . $lastName . "eMail" . $eMail);
+//    error_log("firstName: " . $firstName . " lastName: " . $lastName . "eMail" . $eMail);
     // By using Google OAuth 2.0
     $mail = new PHPMailer;
     $mail->isSMTP();
@@ -541,5 +543,7 @@ function sendNotificationEmail($eMailSubject, $eMailBody, $firstName, $lastName,
     }
 }
 
-
+//
+// By Zhongjie
+//
 ?>

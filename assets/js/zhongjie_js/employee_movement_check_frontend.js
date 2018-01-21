@@ -2,7 +2,7 @@ const backendURL = "./employee_movement_check_backend.php";
 const CANADA_CENTER_LAT = 59.0985492, CANADA_CENTER_LNG = -104.4796261, ZOOM = 16;
 const MOVEMENT_RADIUS = 180;
 const INFOWINDOW_DELAY = 1800;
-const EMPLOYEE_LOCATION_REFRESH_INTERVAL = 8000;
+const EMPLOYEE_LOCATION_REFRESH_INTERVAL = 12000;
 
 var map;
 var userId;
@@ -14,10 +14,10 @@ var hasActiveShift = false;
 $(document).ready(function () {
 
     userId = $('#sessionUserId').data('value');
-    // console.log("userId: " + userId);
+    console.log("userId: " + userId);
 
     if (userId != null) {
-        getShiftInNext30Minutes();
+        getCurrentShift();
     }
 });
 
@@ -68,7 +68,7 @@ function initMap() {
     });
 }
 
-function getShiftInNext30Minutes() {
+function getCurrentShift() {
 
     // Get current date and time
     var dt = new Date($.now());
@@ -92,9 +92,9 @@ function getShiftInNext30Minutes() {
         if (this.readyState == 4 && this.status == 200) {
             // $("#companyLocationSelection").html(this.responseText);
             // console.log(this.responseText);
-            var shiftInNext30Minutes = JSON.parse(this.responseText);
+            var currentShift = JSON.parse(this.responseText);
 
-            displayShift(shiftInNext30Minutes);
+            displayShift(currentShift);
 
             if(hasActiveShift) {
                 // Go to work place
@@ -117,16 +117,16 @@ function getShiftInNext30Minutes() {
     }
 }
 
-function displayShift(shiftInNext30Minutes) {
+function displayShift(currentShift) {
 
     $("#errorDisplayInBasePage").empty();
     $("#shiftDisplay").empty();
 
-    if (shiftInNext30Minutes.shift.length == 0) {
+    if (currentShift.shift.length == 0) {
 
         $("#errorDisplayInBasePage").html("<p class='text-danger font-weight-bold'>You do not have any shift now.</p>");
 
-    } else if (shiftInNext30Minutes.shift.length == 1) {
+    } else if (currentShift.shift.length == 1) {
 
 
         var shiftsTable = "<table class=\"table table-condensed\">";
@@ -139,7 +139,7 @@ function displayShift(shiftInNext30Minutes) {
         shiftsTable += "</tr></thead>";
         shiftsTable += "<tbody>";
 
-        $.each(shiftInNext30Minutes.shift, function (key, value) {
+        $.each(currentShift.shift, function (key, value) {
             // console.log(key + " " + value.ShiftId);
             shiftsTable += "<tr value=" + value.ShiftId + ">";
             shiftsTable += "<td>" + value.ShiftId + "</td>";

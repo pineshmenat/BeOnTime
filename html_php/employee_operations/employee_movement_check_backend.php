@@ -1,10 +1,7 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Zhongjie FAN
- * Date: 2018-01-03
- * Time: 18:58
- */
+//
+// By Zhongjie
+//
 
 include "../model/db_config.php";
 
@@ -38,7 +35,7 @@ switch ($operation) {
 
         if (isset($userId) && isset($currentTime)) {
 
-            $ajaxCallReturn = getShiftInNext30Minutes($dbConnection, $userId, $currentTime);
+            $ajaxCallReturn = getCurrentShift($dbConnection, $userId, $currentTime);
 
         } else {
             $ajaxCallReturn = "<p>userId is not set, or currentTime is not set.</p>";
@@ -100,7 +97,9 @@ echo $ajaxCallReturn;
 //
 // Functions
 //
-function getShiftInNext30Minutes($dbConnection, $userId, $currentTime) {
+function getCurrentShift($dbConnection, $userId, $currentTime) {
+
+//    error_log("userId: " . $userId + " currentTime: " . $currentTime);
 
     $sql = "select ShiftId, CompanyName, companylocationmaster.Address WorkingPlace, StartTime, EndTime, Latitude, Longitude 
             from shiftmaster 
@@ -173,4 +172,8 @@ function saveCurrentEmployeePosition($dbConnection, $shiftId, $employeeCurrentLa
     }
     return json_encode($response);
 }
+
+//
+// By Zhongjie
+//
 ?>

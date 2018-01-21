@@ -307,8 +307,12 @@ $shiftstatus = array('N'=>'New Shift','A'=>'Accepted','R'=>'Rejected','D'=>'Done
             <!--Form 2 View Shift Details Table-->
             <form id="formShiftsEdit" method="post" action="">
             <?php
-            if(isset($_POST['btnSubmit'])) {
+            if(isset($_POST['btnSubmit']))
                 $shifts = ClientSideDB::getAllShifts($_SESSION['companyId'], $_POST['companyLocation'], $_POST['jobDesignation'], $_POST['selectedStartDate'], $_POST['selectedEndDate']);
+            else
+                $shifts = ClientSideDB::getAllShifts($_SESSION['companyId'], null, null, null, null);
+
+            if(!empty($shifts)){
                 ?>
                 <div class="row mt-2 col-md-12">
                     <div class="col-xl-12 col-lg-12 col-xs-12">
@@ -332,7 +336,7 @@ $shiftstatus = array('N'=>'New Shift','A'=>'Accepted','R'=>'Rejected','D'=>'Done
                                     <td><?=$shift->getShiftAddress().', '.$shift->getShiftCity().', '.$shift->getShiftPostalCode() ?></td>
                                     <td><?=$shiftstatus[$shift->getShiftStatus()] ?></td>
                                     <td>
-                                        <button type="button" class="btn btn-sm" data-toggle="modal" title="Edit Shift"
+                                        <button type="button" class="btn btn-sm" data-toggle="modal" title="Provide rating and comments for Shift"
                                                 shift-id="<?=$shift->getShiftId() ?>"
                                                 designation="<?=$shift->getEmpDesignationName() ?>"
                                                 pay-per-hour="<?=$shift->getPayPerhour() ?>"
@@ -434,6 +438,15 @@ $shiftstatus = array('N'=>'New Shift','A'=>'Accepted','R'=>'Rejected','D'=>'Done
                             ?>
                             </tbody>
                         </table>
+                    </div>
+                </div>
+                <?php
+            }
+            else{
+                ?>
+                <div class="row mt-2 col-md-12">
+                    <div class="col-xl-12 col-lg-12 col-xs-12">
+                <h2>No Data.</h2>
                     </div>
                 </div>
                 <?php
@@ -567,20 +580,20 @@ $shiftstatus = array('N'=>'New Shift','A'=>'Accepted','R'=>'Rejected','D'=>'Done
     });
     $("#btnYesDelete").on('click',function(){
         $('#formShiftsEdit').append('<input type="hidden" name="shiftId" value='+shiftId+' />');
-
+        alert('Shift deleted!');
     });
 </script>
 <!--/START & END CALENDAR JS-->
 <!--Star Rating JS-->
 <script src="../../assets/js/starrating/star-rating.js" type="text/javascript"></script>
 <!--/Star Rating JS-->
-<!--Vaishnavi END-->
 <!--CKEditor JS-->
 <script src="../../assets/ckeditor/ckeditor.js" type="text/javascript"></script>
 <script>
     CKEDITOR.replace('row1_editor',{height:150});
 </script>
 <!--/CKEditor JS-->
+<!--Vaishnavi END-->
 </body>
 
 </html>

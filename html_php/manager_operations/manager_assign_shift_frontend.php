@@ -1,4 +1,7 @@
 <?php
+//
+// By Zhongjie
+//
 session_start();
 
 if (!isset($_SESSION['userId'])) {
@@ -452,3 +455,8 @@ if (!isset($_SESSION['userId'])) {
 
 </body>
 </html>
+<?php
+//
+// By Zhongjie
+//
+?>
