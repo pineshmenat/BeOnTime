@@ -72,7 +72,10 @@ if(!empty($_POST['firstname']) && !empty($_POST['lastname']) && !empty($_POST['s
         $error_profilepic == ""){
         $userId = UserDB::addUser(new User('12',$_SESSION['companyId'],$username,$password,$firstname,$lastname,
             $email,$sin,$street_number.', '.$route,$locality,$province,$postal_code,$phone));
-        $image_path = getcwd().DIRECTORY_SEPARATOR.'../../assets/images/portrait_img'.DIRECTORY_SEPARATOR.$_POST['profilepic'];
+        $image_path = getcwd().DIRECTORY_SEPARATOR.'../../assets/images/portrait_img'.DIRECTORY_SEPARATOR.$_FILES['profilepic']['name'];
+        $image = $_FILES['profilepic']['name'];
+        move_uploaded_file($_FILES['profilepic']['tmp_name'],$image_path);
+        $image_path = getcwd().DIRECTORY_SEPARATOR.'../../assets/images/portrait_img'.DIRECTORY_SEPARATOR.$_FILES['profilepic']['name'];
         $image_path_new = getcwd().DIRECTORY_SEPARATOR.'../../assets/images/portrait_img'.
             DIRECTORY_SEPARATOR. $userId . '_'.$username . '.png';
         imageresize($image_path,$image_path_new,114,114);
