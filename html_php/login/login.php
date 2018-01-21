@@ -104,6 +104,7 @@ function redirectPage($roleId) {
     }
 }
 
+
 function setRememberMe($userName) {
 
     setcookie('userName', $userName, time() + 86400, '/');
@@ -117,6 +118,16 @@ function unsetRememberMe($userName) {
     setcookie('rememberMe', 'FALSE', time() - 86400, '/');
 
 }
+
+
+// START - For facebook account login. (by Anubhav)
+require_once "./config.php";
+
+$redirectURL = "http://beontime.byethost16.com/beontime/html_php/login/fb-callback.php";
+$permissions = ['email'];
+$loginURL = $helper->getLoginUrl($redirectURL, $permissions);
+
+// END - For facebook account login. (by Anubhav)
 
 ?>
 
@@ -241,9 +252,9 @@ function unsetRememberMe($userName) {
                                 <h6 class="card-subtitle line-on-side text-muted text-xs-center font-small-3 pt-2">
                                     <span>Login BeOnTime With Social Media Account</span></h6>
                                 <a href="#"><img src="../../app-assets/images/icons/facebook-logo.jpg" alt="Facebook icon" width="48"
-                                                 height="48"></a>
-                                <a href="#"><img src="../../app-assets/images/icons/twitter-logo.jpg" alt="Facebook icon" width="48"
-                                                 height="48"></a>
+                                                 height="48" onclick="window.location = '<?php echo $loginURL ?>';"></a>
+<!--                                <a href="#"><img src="../../app-assets/images/icons/twitter-logo.jpg" alt="Facebook icon" width="48"-->
+<!--                                                 height="48"></a>-->
                             </div>
                         </div>
 
