@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 21, 2018 at 10:19 AM
+-- Generation Time: Jan 21, 2018 at 10:42 PM
 -- Server version: 10.1.24-MariaDB
 -- PHP Version: 7.1.6
 
@@ -76,7 +76,7 @@ CREATE TABLE `companymaster` (
 --
 
 INSERT INTO `companymaster` (`CompanyId`, `CompanyName`, `CompanyEmail`, `CompanyURL`, `CompanyPassword`, `CompanyPhone`, `CompanyStreetNumber`, `CompanyStreetName`, `CompanyCity`, `CompanyState`, `CompanyPostal`, `CompanyCountry`) VALUES
-(1001, 'Bell', 'bell@beontime.com', 'www.bell.ca', '123', '', 1, 'Weston Road', 'Toronto', 'Ontario', 'Q1Q 2W2', 'Canada'),
+(1001, 'Bell', 'dhruvin.mind.freak@gmail.com', 'http://www.bell.ca', '123', '6475710747', 209, 'Humber College Boulevard', 'Toronto', 'ON', 'M8Z3A5', 'Canada'),
 (1002, 'Walmart', 'walmart@beontime.com', 'www.walmart.ca', '123', '', 2, 'Islington Ave', 'Toronto', 'Ontario', 'Q1Q 2W2', 'Canada'),
 (1003, 'Sunny Foodmart', 'sunny@beontime.com', 'www.sunnyfoodmart.ca', '123', '', 4, 'Albion Rd', 'Toronto', 'Ontario', 'Q1Q 2W2', 'Canada'),
 (1004, 'Humber College', 'inqury@humber.com', 'www.humber.ca', '123', '', 205, 'Humber Blvd', 'Toronto', 'Ontario', 'M9W5L7', 'Canada');
@@ -116,7 +116,7 @@ CREATE TABLE `employeedesignationmaster` (
   `EntryDateTime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `ModDateTime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `ModifiedBy` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `employeedesignationmaster`
@@ -187,13 +187,12 @@ CREATE TABLE `shiftmaster` (
 --
 
 INSERT INTO `shiftmaster` (`ShiftId`, `empDesignationId`, `AssignedBy`, `AssignedTo`, `CompanyId`, `CompanyLocationId`, `StartTime`, `EndTime`, `ActualWorkingStartTime`, `ActualWorkingEndTime`, `EntryDateTime`, `ModDateTime`, `ShiftStatus`, `SpecialNote`, `CurrentLat`, `CurrentLong`, `LogInLat`, `LogInLong`, `LogOutLat`, `LogOutLong`, `City`, `StarRating`, `ClientReview`) VALUES
-(500001, 1, 10001, 10002, 1004, 10005, '2018-01-06 20:30:00', '2018-01-06 23:50:00', '2018-01-06 16:48:21', '2018-01-06 23:48:21', '2017-11-20 09:00:00', '2017-11-20 09:00:00', 'A', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(500003, 1, 10001, 10005, 1001, 10001, '2018-01-01 09:00:00', '2018-01-01 14:00:00', '2018-01-01 09:00:00', '2018-01-01 14:00:00', '2017-12-06 00:16:51', '2017-12-06 00:16:51', 'N', NULL, '43.65389990', '-79.38113870', NULL, NULL, NULL, NULL, 'Toronto', NULL, NULL),
-(500004, 2, 10001, 10006, 1002, 10003, '2018-01-02 09:00:00', '2018-01-02 14:00:00', '2018-01-02 09:00:00', '2018-01-02 14:00:00', '2017-12-06 00:16:51', '2017-12-06 00:16:51', 'A', NULL, '43.64662060', '-79.38857800', NULL, NULL, NULL, NULL, 'Toronto', NULL, NULL),
-(500005, 3, 10001, 10006, 1001, 10002, '2018-01-03 07:00:00', '2018-01-03 12:00:00', '2018-01-03 07:00:00', '2018-01-03 12:00:00', '2017-12-06 00:16:51', '2017-12-06 00:16:51', 'R', NULL, '43.63562720', '-79.41721870', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(500006, 1, 10001, 10006, 1001, 10001, '2017-12-16 17:03:00', '2017-12-16 22:00:00', '2018-01-02 17:03:00', '2018-01-02 22:00:00', '2017-11-20 09:00:00', '2017-11-20 09:00:00', 'A', NULL, '43.64097800', '-79.35685930', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(500007, 1, 10001, 10006, 1001, 10001, '2018-01-01 09:40:00', '2018-01-01 12:50:00', '2018-01-01 09:01:44', '2018-01-01 12:50:00', '2017-11-20 09:00:00', '2017-11-20 09:00:00', 'R', NULL, '43.63039040', '-79.65433450', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(500002, 1, 10001, 10002, 1001, 10001, '2018-01-04 09:00:00', '2018-01-04 17:00:00', NULL, NULL, '2018-01-06 22:00:45', '2018-01-06 22:00:45', 'N', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 3, 'my review');
+(500001, 1, NULL, NULL, 1001, 10001, '2018-01-23 13:30:00', '2018-01-23 22:30:00', NULL, NULL, '2017-11-20 09:00:00', '2017-11-20 09:00:00', 'N', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(500002, 1, 10001, 10008, 1004, 10005, '2018-01-23 12:00:00', '2018-01-23 20:00:00', NULL, NULL, '2017-12-06 00:16:51', '2017-12-06 00:16:51', 'C', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Toronto', NULL, NULL),
+(500003, 1, 10001, 10008, 1004, 10005, '2018-01-20 12:00:00', '2018-01-20 20:00:00', NULL, NULL, '2017-12-06 00:16:51', '2017-12-06 00:16:51', 'A', NULL, '43.72895100', '-79.60660090', NULL, NULL, NULL, NULL, 'Toronto', NULL, NULL),
+(500004, 1, 10001, 10002, 1001, 10001, '2018-01-23 07:00:00', '2018-01-23 16:00:00', NULL, NULL, '2017-12-06 00:16:51', '2017-12-06 00:16:51', 'N', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Toronto', NULL, NULL),
+(500005, 1, NULL, NULL, 1002, 10003, '2018-01-23 07:00:00', '2018-01-23 16:00:00', NULL, NULL, '2017-12-06 00:16:51', '2017-12-06 00:16:51', 'N', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Toronto', NULL, NULL),
+(500006, 1, NULL, NULL, 1003, 10004, '2018-01-23 05:00:00', '2018-01-23 12:00:00', NULL, NULL, '2017-12-06 00:16:51', '2017-12-06 00:16:51', 'N', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Toronto', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -233,11 +232,13 @@ CREATE TABLE `usermaster` (
 
 INSERT INTO `usermaster` (`UserId`, `RoleId`, `CompanyId`, `empDesignationId`, `UserName`, `Password`, `PasswordExpiry`, `PasswordCounter`, `FirstName`, `LastName`, `FirstLogin`, `UserStatus`, `EMail`, `SIN`, `Address`, `City`, `Province`, `PostalCode`, `DesiredDay`, `RegistrationDate`, `EntryDateTime`, `ModDateTime`, `Phone`) VALUES
 (10001, 10, 1001, 1, 'zhongjie', 0x313233, '2018-01-01 00:00:00', 0, 'Zhongjie', 'Fan', b'1111111111111111111111111111111', 0, 'fzhongjie@msn.com', 123456789, '205 Humber College Blvd', 'Toronto', 'Ontario', 'M9W5L7', '1100011', '2017-12-06 18:59:32', '2017-12-06 18:59:32', 'CURRENT_TIMESTAMP', ''),
-(10002, 12, 1001, 1, 'pinesh', 0x313233, '2018-01-01 00:00:00', 0, 'Pinesh', 'Menat', b'1111111111111111111111111111111', 0, 'pineshmenat93@gmail.com', 123456789, '205 Humber College Blvd', 'Toronto', 'Ontario', 'M9W5L7', '1100011', '2017-12-06 18:59:32', '2017-12-06 18:59:32', 'CURRENT_TIMESTAMP', ''),
-(10004, 11, 1001, 1, 'vaishnavi', 0x313233, '2018-01-01 00:00:00', 0, 'f2', 'l2', b'1111111111111111111111111111111', 0, 'vaishnavi.panchalk@gmail.com', 123456789, '205 Humber College Blvd', 'Toronto', 'Ontario', 'M9W5L7', '1100011', '2017-12-07 21:54:14', '2017-12-07 21:54:14', 'CURRENT_TIMESTAMP', ''),
-(10006, 12, 1001, 1, 'employee1', 0x313233, '2018-03-01 00:00:00', 0, 'Zhongjiee', 'Fane', b'1111111111111111111111111111111', 0, 'fzhongjie@msn.com', 123456789, '205 Humber College Blvd', 'Toronto', 'Ontario', 'M9W5L8', NULL, '2018-01-08 17:25:26', '2018-01-08 17:25:26', 'CURRENT_TIMESTAMP', ''),
+(10002, 12, 1001, 1, 'pinesh', 0x313233, '2018-01-01 00:00:00', 0, 'Pinesh', 'Menat', b'1111111111111111111111111111111', 0, 'pineshmenat@gmail.com', 123456789, '1889 Kipling Ave', 'Toronto', 'Ontario', 'M9W5L7', '0000111', '2017-12-06 18:59:32', '2017-12-06 18:59:32', 'CURRENT_TIMESTAMP', ''),
+(10004, 11, 1001, 1, 'vaishnavi', 0x313233, '2018-01-01 00:00:00', 0, 'Vaishnavi', 'Panchal', b'1111111111111111111111111111111', 0, 'vaishnavi.panchalk@gmail.com', 123456789, '205 Humber College Blvd', 'Toronto', 'Ontario', 'M9W5L7', '1100011', '2017-12-07 21:54:14', '2017-12-07 21:54:14', 'CURRENT_TIMESTAMP', ''),
 (10005, 10, 1001, 1, 'anubhav', 0x313233, '2018-03-01 00:00:00', 0, 'Anubhav', 'Narasimhan', b'1111111111111111111111111111111', 0, 'anbhav93@gmail.com', 123456789, '205 Humber College Blvd', 'Toronto', 'Ontario', 'M9W5L7', '1100011', '2018-01-06 16:59:54', '2018-01-06 16:59:54', 'CURRENT_TIMESTAMP', ''),
-(10049, 12, 1001, 0, 'DSP.Dhruvin', 0x313233, '0000-00-00 00:00:00', 0, 'Dhruvin', 'Parikh', b'1111111111111111111111111111111', 0, 'imsilent93@gmail.com', 478596325, '32, Vespahills Crescent', 'Brampton', 'ON', 'L6P 2V', NULL, '0000-00-00 00:00:00', '2018-01-21 04:15:56', 'CURRENT_TIMESTAMP', '6475710747');
+(10003, 10, 1001, 1, 'dhruvin.mind.freak@gmail.com', 0x313233, '2018-03-01 00:00:00', 0, 'Dhruvin', 'Parikh', b'1111111111111111111111111111111', 0, 'dhruvin.mind.freak@gmail.com', 123456789, '209 Humber College Boulevard', 'Toronto', 'ON', 'M8Z3A5', '1100011', '2018-01-06 16:56:24', '2018-01-06 16:56:24', 'CURRENT_TIMESTAMP', '6475710747'),
+(10006, 12, 1001, 1, 'jsmith', 0x313233, '2018-03-01 00:00:00', 0, 'Jason', 'Smith', b'1111111111111111111111111111111', 0, 'jsmith@gmail.com', 123456700, '1309 Carling Ave Unit 27', 'Ottawa', 'Ontario', 'K1Z7L3', '0100011', '2018-01-08 18:58:23', '2018-01-08 18:58:23', 'CURRENT_TIMESTAMP', ''),
+(10008, 12, 1001, 1, 'mbell', 0x313233, '2018-01-01 00:00:00', 0, 'Michael', 'Bell', b'1111111111111111111111111111111', 0, 'mbell@gmail.com', 123456789, '262 Finch Blvd', 'Toronto', 'Ontario', 'M9W5L7', '1100001', '2017-12-06 18:59:32', '2017-12-06 18:59:32', 'CURRENT_TIMESTAMP', ''),
+(10007, 12, 1001, 1, 'mkim', 0x313233, '2018-03-01 00:00:00', 0, 'Mary', 'Kim', b'1111111111111111111111111111111', 0, 'mkim@gmail.com', 123456700, '3120 Dixie Rd', 'Mississauga', 'Ontario', 'L4Y2A6', '1100001', '2018-01-08 18:58:23', '2018-01-08 18:58:23', 'CURRENT_TIMESTAMP', '');
 
 --
 -- Indexes for dumped tables
@@ -301,7 +302,7 @@ ALTER TABLE `companylocationmaster`
 -- AUTO_INCREMENT for table `companymaster`
 --
 ALTER TABLE `companymaster`
-  MODIFY `CompanyId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1055;
+  MODIFY `CompanyId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1005;
 --
 -- AUTO_INCREMENT for table `employeedesignationmaster`
 --
@@ -316,12 +317,12 @@ ALTER TABLE `rolemaster`
 -- AUTO_INCREMENT for table `shiftmaster`
 --
 ALTER TABLE `shiftmaster`
-  MODIFY `ShiftId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=500008;
+  MODIFY `ShiftId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=500013;
 --
 -- AUTO_INCREMENT for table `usermaster`
 --
 ALTER TABLE `usermaster`
-  MODIFY `UserId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10050;COMMIT;
+  MODIFY `UserId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10014;COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
