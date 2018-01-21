@@ -59,7 +59,7 @@ class Validate
         if(empty($name)){
             return "company name cannot be empty";
         }
-        else if(ctype_alpha($name)){
+        else if(!ctype_alpha($name)){
             return "no characters except alphanumeric allowed";
         }
         else{

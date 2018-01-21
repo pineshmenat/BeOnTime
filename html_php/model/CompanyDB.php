@@ -271,5 +271,38 @@ return $row;
          $row['CompanyPostal'],$row['CompanyCountry'],$row['CompanyPhone']);
 
     }
+
+    public static function updateCompanyDetails($company){
+     $db = DB::getDBConnection();
+     $id = $company->getId();
+     $name = $company->getName();
+     $email = $company->getEmail();
+     $url = $company->getURL();
+     $phone = $company->getPhone();
+     $street_number = $company->getStreetNumber();
+     $street_name = $company->getStreetName();
+     $city = $company->getCity();
+     $province = $company->getProvince();
+     $postal_code = $company->getPostalCode();
+     $country = $company->getCountry();
+     $query = 'UPDATE companymaster SET CompanyName=:name,CompanyEmail=:email,CompanyURL=:url,CompanyPhone=:phone,
+                CompanyStreetNumber=:street_number,CompanyStreetName=:street_name,CompanyCity=:city,
+                CompanyState=:province,CompanyPostal=:postal_code,CompanyCountry=:country where CompanyId=:id';
+     $statement = $db->prepare($query);
+     $statement->bindValue(':name',$name);
+     $statement->bindValue(':email',$email);
+     $statement->bindValue(':url',$url);
+     $statement->bindValue(':phone',$phone);
+     $statement->bindValue(':street_number',$street_number);
+     $statement->bindValue(':street_name',$street_name);
+     $statement->bindValue(':city',$city);
+     $statement->bindValue(':province',$province);
+     $statement->bindValue(':postal_code',$postal_code);
+     $statement->bindValue(':country',$country);
+     $statement->bindValue(':id',$id);
+
+     $statement->execute();
+     $statement->closeCursor();
+    }
 }
 ?>

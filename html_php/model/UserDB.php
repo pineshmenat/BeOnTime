@@ -68,4 +68,31 @@ Province, PostalCode,phone)
         }
         return false;
     }
+
+    public static function updateUser($user){
+        $db = DB::getDBConnection();
+
+        $id = $user->getUserId();
+        $email = $user->getUserName();
+        $address = $user->getAddress();
+        $city = $user->getCity();
+        $province = $user->getProvince();
+        $postal_code = $user->getPostalCode();
+        $phone = $user->getPhone();
+
+        $query = 'UPDATE usermaster SET UserName=:email,EMail=:email,Address=:address,City=:city,Province=:province,
+                  PostalCode=:postal_code,Phone=:phone where UserId=:id';
+
+        $statement = $db->prepare($query);
+        $statement->bindValue(':email',$email);
+        $statement->bindValue(':address',$address);
+        $statement->bindValue(':city',$city);
+        $statement->bindValue(':province',$province);
+        $statement->bindValue(':postal_code',$postal_code);
+        $statement->bindValue(':phone',$phone);
+        $statement->bindValue(':id',$id);
+
+        $statement->execute();
+        $statement->closeCursor();
+    }
 }

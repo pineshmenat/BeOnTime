@@ -8,6 +8,7 @@
 
 class User
 {
+    private $userId;
     private $roleID;
     private $companyID;
     private $userName;
@@ -38,6 +39,22 @@ $province,$postalCode,$phone)
         $this->setProvince($province);
         $this->setPostalCode($postalCode);
         $this->setPhone($phone);
+    }
+
+    /**
+     * @param mixed $userId
+     */
+    public function setUserId($userId)
+    {
+        $this->userId = $userId;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getUserId()
+    {
+        return $this->userId;
     }
 
     public function setRoleID($roleID){

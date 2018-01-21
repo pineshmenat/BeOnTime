@@ -21,7 +21,8 @@ if(!isset($_GET['image'])){
                   DIRECTORY_SEPARATOR. $userId . '_'.$_SESSION['userName'] . '.png';
             imageresize($image_path,$image_path_new,114,114);
             $_SESSION['portraintImg'] = $userId . '_'.$_SESSION['userName'] . '.png';
-            header("location:manager_create_employee.php");
+            $_SESSION['userId'] = $userId;
+            header("location:manager_assign_shift_frontend.php");
         }
     }
 if(!isset($_SESSION['userName'])) {

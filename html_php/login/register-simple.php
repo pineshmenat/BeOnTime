@@ -37,7 +37,7 @@ if(isset($_POST['register']) && $_POST['register']){
                 $_SESSION['userName'] = $email;
                 $_SESSION['password'] = $password;
 
-                header("location:../manager_operations/manager_edit_companyprofile.php");
+                header("location:../manager_operations/manager_create_companyprofile.php");
             }
         }
     }

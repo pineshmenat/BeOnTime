@@ -1,18 +1,15 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: imsil
- * Date: 21/1/18
- * Time: 14:34
- */
-
 include "../model/CompanyDB.php";
 include "../model/Company.php";
 include "../model/Validate.php";
 include "../model/RoleDB.php";
+require '../../app-assets/twilio-php-master/Twilio/autoload.php';
 require "../model/UserDB.php";
-require '../model/User.php';
+use Twilio\Rest\Client;
 session_start();
+$sid = 'AC09f0a244b3694e049ea2b64f1c0609e1';
+$token = '3bc71a8b934b596f6468178160663943';
+$client = new Client($sid, $token);
 $error_name="";
 $error_email="";
 $error_url="";
@@ -32,8 +29,10 @@ if(isset($_POST['save_changes']) && $_POST['save_changes']){
         && !empty($_POST['country'])){
         $name = $_POST['company_name'];
         $email = $_POST['email'];
+        $_SESSION['userName'] = $email;
         $url = $_POST['company_url'];
         $phone = $_POST['phone'];
+        //$password = $_POST['password'];
         $street_number = $_POST['street_number'];
         $street_name = $_POST['route'];
         $city = $_POST['locality'];
@@ -50,36 +49,37 @@ if(isset($_POST['save_changes']) && $_POST['save_changes']){
         $error_state = Validate::validateProvince($state);
         $error_postal_code = Validate::validateZipCode($postal_code);
         $error_country = Validate::validateCountry($country);
+        if(isset($_FILES['portraitImg']) && $_FILES['portraitImg'] != null) {
+            $error_portraitImg = Validate::validatePortraitImg($_FILES['portraitImg']['type']);
+        }
+        else{
+            $error_portraitImg = "Please upload .png image";
+        }
         if($error_name == "" && $error_email == "" && $error_url == "" && $error_street_number == "" &&
-            $error_route == "" && $error_locality == "" && $error_postal_code == "" && $error_country == "" && $error_phone == "") {
-            $company = new Company($name,$email,$url,'',$street_number,
-                $street_name,$city,$state,$postal_code,$country,$phone);
-            $company->setId($_SESSION['companyId']);
-            CompanyDB::updateCompanyDetails($company);
-            $user = new User('','',$email,'','','','','',
-                $street_number.' '.$street_name,$city,$state,$postal_code,$phone);
-            $user->setUserId($_SESSION['userId']);
-            UserDB::updateUser($user);
-            $_SESSION['userName'] = $email;
-            header("location:manager_assign_shift_frontend.php");
+            $error_route == "" && $error_locality == "" && $error_postal_code == "" && $error_country == "" && $error_phone == ""
+        && $error_portraitImg == "") {
+            $_SESSION['companyId'] = CompanyDB::addCompany(new Company($name, $email, $url, $_SESSION['password'], $street_number, $street_name, $city, $state, $postal_code, $country,$phone));
+            $_SESSION['roleID'] = RoleDB::getRoleID('Manager');
+            //$_SESSION['password'] = $password;
+            $_SESSION['phone'] = $phone;
+            $image_path = getcwd().DIRECTORY_SEPARATOR.'../../assets/images/portrait_img'.DIRECTORY_SEPARATOR.$_FILES['portraitImg']['name'];
+            $image = $_FILES['portraitImg']['name'];
+            move_uploaded_file($_FILES['portraitImg']['tmp_name'],$image_path);
+            //$image_path_new =  getcwd().DIRECTORY_SEPARATOR.'../../assets/images/portrait_img'.
+              //  DIRECTORY_SEPARATOR. $_SESSION['companyId'] . '_'.$_SESSION['userName'] . '.png';
+
+            $client->messages->create($phone,
+                    array(
+                        'from' => '15069060245',
+                        'body' => "Your companyID is ".$_SESSION['companyId'].' -Team BeOnTime.'
+                    )
+                );
+            header("location:manager_companyID_verify.php?image=".$image);
         }
     }
     else{
         $error = "Complete all the required fields";
     }
-}
-else{
-    $company = CompanyDB::getCompanyDetails($_SESSION['companyId']);
-    $name = $company->getName();
-    $email = $company->getEmail();
-    $url = $company->getURL();
-    $phone = $company->getPhone();
-    $street_number = $company->getStreetNumber();
-    $street_name = $company->getStreetName();
-    $city = $company->getCity();
-    $state = $company->getProvince();
-    $postal_code = $company->getPostalCode();
-    $country = $company->getCountry();
 }
 
 if(!isset($_SESSION['userName'])) {
@@ -135,7 +135,7 @@ if(!isset($_SESSION['userName'])) {
         <div class="navbar-header">
             <ul class="nav navbar-nav">
                 <li class="nav-item mobile-menu hidden-md-up float-xs-left"><a class="nav-link nav-menu-main menu-toggle hidden-xs"><i
-                            class="icon-menu5 font-large-1"></i></a></li>
+                                class="icon-menu5 font-large-1"></i></a></li>
                 <li class="nav-item"><a href="#" class="navbar-brand nav-link"><img alt="branding logo"
                                                                                     src="../../assets/images/logo_50.png"
                                                                                     data-expand="../../assets/images/logo_50.png"
@@ -143,14 +143,14 @@ if(!isset($_SESSION['userName'])) {
                                                                                     class="brand-logo"></a></li>
                 <li class="nav-item hidden-md-up float-xs-right"><a data-toggle="collapse" data-target="#navbar-mobile"
                                                                     class="nav-link open-navbar-container"><i
-                            class="icon-ellipsis pe-2x icon-icon-rotate-right-right"></i></a></li>
+                                class="icon-ellipsis pe-2x icon-icon-rotate-right-right"></i></a></li>
             </ul>
         </div>
         <div class="navbar-container content container-fluid">
             <div id="navbar-mobile" class="collapse navbar-toggleable-sm">
                 <ul class="nav navbar-nav">
                     <li class="nav-item hidden-sm-down"><a class="nav-link nav-menu-main menu-toggle hidden-xs"><i
-                                class="icon-menu5"> </i></a></li>
+                                    class="icon-menu5"> </i></a></li>
                     <li class="nav-item hidden-sm-down"><a href="#" class="nav-link nav-link-expand"><i class="ficon icon-expand2"></i></a>
                     </li>
                 </ul>
@@ -158,9 +158,6 @@ if(!isset($_SESSION['userName'])) {
 
                     <li class="dropdown dropdown-user nav-item">
                         <a href="#" data-toggle="dropdown" class="dropdown-toggle nav-link dropdown-user-link">
-                            <span class="avatar avatar-online">
-                                <img src="../../assets/images/portrait_img/<?= $_SESSION['portraintImg']; ?>" alt="portraitImg"><i></i>
-                            </span>
                             <span class="user-name"><?= $_SESSION['userName']; ?></span>
                         </a>
                         <div class="dropdown-menu dropdown-menu-right">
@@ -194,29 +191,29 @@ if(!isset($_SESSION['userName'])) {
                     <span data-i18n="nav.page_layouts.main" class="menu-title">Manager</span>
                 </a>
                 <?php if(UserDB::checkUser($_SESSION['userName'])) { ?>
-                    <ul class="menu-content">
-                        <li>
-                            <a href="manager_assign_shift_frontend.php" data-i18n="nav.page_layouts.1_column" class="menu-item">Assign Shift</a>
-                        </li>
-                        <li>
-                            <a href="manager_view_shift_frontend.php" data-i18n="nav.page_layouts.2_columns" class="menu-item">View Shift</a>
-                        </li>
-                        <li>
-                            <a href="manager_track_emphours.php" data-i18n="nav.page_layouts.2_columns" class="menu-item">Track Emp's Workhour</a>
-                        </li>
-                        <li>
-                            <a href="manager_track_employee.php" data-i18n="nav.page_layouts.2_columns" class="menu-item">Track Emp's Position</a>
-                        </li>
-                        <li>
-                            <a href="manager_create_employee.php" data-i18n="nav.page_layouts.2_columns" class="menu-item">Create Employee</a>
-                        </li>
-                        <li>
-                            <a href="manager_manage_employee.php" data-i18n="nav.page_layouts.2_columns" class="menu-item">Manage Employee</a>
-                        </li>
-                        <li>
-                            <a href="manager_view_companyprofile.php" data-i18n="nav.page_layouts.2_columns" class="menu-item">View Company's Profile</a>
-                        </li>
-                    </ul>
+                <ul class="menu-content">
+                    <li>
+                        <a href="manager_assign_shift_frontend.php" data-i18n="nav.page_layouts.1_column" class="menu-item">Assign Shift</a>
+                    </li>
+                    <li>
+                        <a href="manager_view_shift_frontend.php" data-i18n="nav.page_layouts.2_columns" class="menu-item">View Shift</a>
+                    </li>
+                    <li>
+                        <a href="manager_track_emphours.php" data-i18n="nav.page_layouts.2_columns" class="menu-item">Track Emp's Workhour</a>
+                    </li>
+                    <li>
+                        <a href="manager_track_employee.php" data-i18n="nav.page_layouts.2_columns" class="menu-item">Track Emp's Position</a>
+                    </li>
+                    <li>
+                        <a href="manager_create_employee.php" data-i18n="nav.page_layouts.2_columns" class="menu-item">Create Employee</a>
+                    </li>
+                    <li>
+                        <a href="manager_manage_employee.php" data-i18n="nav.page_layouts.2_columns" class="menu-item">Manage Employee</a>
+                    </li>
+                    <li>
+                        <a href="manager_view_companyprofile.php" data-i18n="nav.page_layouts.2_columns" class="menu-item">View Company's Profile</a>
+                    </li>
+                </ul>
                 <?php } ?>
             </li>
 
@@ -246,7 +243,7 @@ if(!isset($_SESSION['userName'])) {
                         <div class="col-sm-10 nopadding">
                             <small class="help-block text-danger"><?php echo $error;?></small>
                         </div>
-                        <input class="form-control-sm col-sm-6" type="text" value="<?php if(isset($_POST['company_name'])){ echo $_POST['company_name']; } else{ echo $name; } ?>" id="company_name" name="company_name"><br/>
+                        <input class="form-control-sm col-sm-6" type="text" value="<?php if(isset($_POST['company_name'])){ echo $_POST['company_name']; } ?>" id="company_name" name="company_name"><br/>
                         <div class="col-sm-10 nopadding">
                             <small class="help-block text-danger"><?php echo $error_name;?></small>
                         </div>
@@ -255,7 +252,7 @@ if(!isset($_SESSION['userName'])) {
                 <div class="form-group row">
                     <label for="company_url" class="col-sm-3 col-lg-1 label-control">Company website: </label>
                     <div class="col-sm-9 col-lg-10">
-                        <input class="form-control-sm col-sm-6" type="text" value="<?php if(isset($_POST['company_url'])){ echo $_POST['company_url']; }else{ echo $url; } ?>" id="company_url" name="company_url">
+                        <input class="form-control-sm col-sm-6" type="text" value="<?php if(isset($_POST['company_url'])){ echo $_POST['company_url']; } ?>" id="company_url" name="company_url">
                         <div class="col-sm-10 nopadding">
                             <small class="help-block text-danger"><?php echo $error_url;?></small>
                         </div>
@@ -264,7 +261,7 @@ if(!isset($_SESSION['userName'])) {
                 <div class="form-group row">
                     <label for="phone" class="col-sm-3 col-lg-1 label-control">Phone: </label>
                     <div class="col-sm-9 col-lg-10">
-                        <input class="form-control-sm col-sm-6" type="text" value="<?php if(isset($_POST['phone'])){ echo $_POST['phone']; }else{ echo $phone; } ?>" id="phone" name="phone">
+                        <input class="form-control-sm col-sm-6" type="text" value="<?php if(isset($_POST['phone'])){ echo $_POST['phone']; } ?>" id="phone" name="phone">
                         <div class="col-sm-10 nopadding">
                             <small class="help-block text-danger"><?php echo $error_phone;?></small>
                         </div>
@@ -280,6 +277,15 @@ if(!isset($_SESSION['userName'])) {
                     </div>
                 </div>
                 <div class="form-group row">
+                    <label for="portraitImg" class="col-sm-3 col-lg-1 label-control">Profile Pic: </label>
+                    <div class="col-sm-9 col-lg-10">
+                        <input class="form-control-sm col-sm-6" type="file" accept="image/*" name="portraitImg"  id="portraitImg" >
+                        <div class="col-sm-10 nopadding">
+                            <small class="help-block text-danger"><?php echo $error_portraitImg;?></small>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row">
                     <div class="col-sm-9 col-lg-9">
                         <input class="form-control-sm col-sm-8" type="text" onfocus="geolocate()" value="<?php if(isset($_POST['street_address'])){ echo $_POST['street_address']; } ?>" id="street_address" name="street_address" placeholder="Enter your address">
                     </div>
@@ -287,8 +293,8 @@ if(!isset($_SESSION['userName'])) {
                 <div class="form-group row">
                     <label for="street_address" class="col-sm-3 col-lg-1 label-control">Street Address: </label>
                     <div class="col-sm-9 col-lg-10">
-                        <input class="form-control-sm col-sm-1" type="text" value="<?php if(isset($_POST['street_number'])){ echo $_POST['street_number']; }else{ echo $street_number; } ?>" id="street_number" name="street_number" disabled>
-                        <input class="form-control-sm col-sm-5" type="text" value="<?php if(isset($_POST['route'])){ echo $_POST['route']; }else{ echo $street_name; } ?>" id="route" name="route" disabled>
+                        <input class="form-control-sm col-sm-1" type="text" value="<?php if(isset($_POST['street_number'])){ echo $_POST['street_number']; } ?>" id="street_number" name="street_number" disabled>
+                        <input class="form-control-sm col-sm-5" type="text" value="<?php if(isset($_POST['route'])){ echo $_POST['route']; } ?>" id="route" name="route" disabled>
                         <div class="col-sm-10 nopadding">
                             <small class="help-block text-danger"><?php echo $error_street_number;?></small>
                             <small class="help-block text-danger"><?php echo $error_route;?></small>
@@ -298,7 +304,7 @@ if(!isset($_SESSION['userName'])) {
                 <div class="form-group row">
                     <label for="locality" class="col-sm-3 col-lg-1 label-control">City</label>
                     <div class="col-sm-9 col-lg-10">
-                        <input class="form-control-sm col-sm-6" type="text" value="<?php if(isset($_POST['locality'])){ echo $_POST['locality']; }else{ echo $city; } ?>" id="locality" name="locality" disabled>
+                        <input class="form-control-sm col-sm-6" type="text" value="<?php if(isset($_POST['locality'])){ echo $_POST['locality']; } ?>" id="locality" name="locality" disabled>
                         <div class="col-sm-10 nopadding">
                             <small class="help-block text-danger"><?php echo $error_locality;?></small>
                         </div>
@@ -307,14 +313,14 @@ if(!isset($_SESSION['userName'])) {
                 <div class="form-group row">
                     <label for="administrative_area_level_1" class="col-sm-3 col-lg-1 label-control">State: </label>
                     <div class="col-sm-9 col-lg-2">
-                        <input class="form-control-sm col-sm-12" type="text" value="<?php if(isset($_POST['administrative_area_level_1'])){ echo $_POST['administrative_area_level_1']; }else{ echo $state; } ?>" id="administrative_area_level_1" name="administrative_area_level_1" disabled>
+                        <input class="form-control-sm col-sm-12" type="text" value="<?php if(isset($_POST['administrative_area_level_1'])){ echo $_POST['administrative_area_level_1']; } ?>" id="administrative_area_level_1" name="administrative_area_level_1" disabled>
                         <div class="col-sm-10 nopadding">
                             <small class="help-block text-danger"><?php echo $error_state;?></small>
                         </div>
                     </div>
                     <label for="postal_code" class="col-sm-3 col-lg-1 label-control">ZipCode: </label>
                     <div class="col-sm-9 col-lg-2">
-                        <input class="form-control-sm col-sm-13" type="text" value="<?php if(isset($_POST['postal_code'])){ echo $_POST['postal_code']; }else{ echo $postal_code; } ?>" id="postal_code" name="postal_code" disabled>
+                        <input class="form-control-sm col-sm-13" type="text" value="<?php if(isset($_POST['postal_code'])){ echo $_POST['postal_code']; } ?>" id="postal_code" name="postal_code" disabled>
                         <div class="col-sm-10 nopadding">
                             <small class="help-block text-danger"><?php echo $error_postal_code;?></small>
                         </div>
@@ -323,7 +329,7 @@ if(!isset($_SESSION['userName'])) {
                 <div class="form-group row">
                     <label for="country" class="col-sm-3 col-lg-1 label-control">Country</label>
                     <div class="col-sm-9 col-lg-10">
-                        <input class="form-control-sm col-sm-6" type="text" value="<?php if(isset($_POST['country'])){ echo $_POST['country']; }else{ echo $country; } ?>" id="country" name="country" disabled>
+                        <input class="form-control-sm col-sm-6" type="text" value="<?php if(isset($_POST['country'])){ echo $_POST['country']; } ?>" id="country" name="country" disabled>
                         <div class="col-sm-10 nopadding">
                             <small class="help-block text-danger"><?php echo $error_country;?></small>
                         </div>
@@ -341,8 +347,8 @@ if(!isset($_SESSION['userName'])) {
 
 <footer class="footer footer-static footer-light navbar-border">
     <p class="clearfix text-muted text-sm-center mb-0 px-2"><span class="float-md-left d-xs-block d-md-inline-block">Copyright  &copy; 2017 <a
-                href="#" target="_blank" class="text-bold-800 grey darken-2">BeOnTime Project Group </a>, All rights reserved. </span><span
-            class="float-md-right d-xs-block d-md-inline-block">We made with <i class="icon-heart5 pink"></i></span></p>
+                    href="#" target="_blank" class="text-bold-800 grey darken-2">BeOnTime Project Group </a>, All rights reserved. </span><span
+                class="float-md-right d-xs-block d-md-inline-block">We made with <i class="icon-heart5 pink"></i></span></p>
 </footer>
 
 <!-- BEGIN VENDOR JS-->
