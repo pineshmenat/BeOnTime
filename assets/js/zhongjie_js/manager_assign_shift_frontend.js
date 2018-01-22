@@ -578,7 +578,8 @@ function displayEmployees(employees, firstName, lastName) {
     EmployeesTable += "<th class='col-sm-1'>ID</th>";
     EmployeesTable += "<th class='col-sm-2'>Fristname</th>";
     EmployeesTable += "<th class='col-sm-2'>Lastname</th>";
-    EmployeesTable += "<th class='col-sm-4'>Home Address</th>";
+    EmployeesTable += "<th class='col-sm-3'>Home Address</th>";
+    EmployeesTable += "<th class='col-sm-1'>Phone</th>";
     EmployeesTable += "<th class='col-sm-3'>Desired Day</th>";
     EmployeesTable += "</tr></thead>";
     EmployeesTable += "<tbody>";
@@ -589,7 +590,8 @@ function displayEmployees(employees, firstName, lastName) {
         EmployeesTable += "<td class='col-sm-1'>" + value.UserId + "</td>";
         EmployeesTable += "<td class='col-sm-2'>" + value.FirstName + "</td>";
         EmployeesTable += "<td class='col-sm-2'>" + value.LastName + "</td>";
-        EmployeesTable += "<td class='col-sm-4'>" + value.Address + "</td>";
+        EmployeesTable += "<td class='col-sm-3'>" + value.Address + "</td>";
+        EmployeesTable += "<td class='col-sm-1'>" + value.Phone + "</td>";
         EmployeesTable += "<td class='col-sm-3'>" + convertDesiredDayFromBitToString(value.DesiredDay) + "</td>";
         EmployeesTable += "<tr>";
     });

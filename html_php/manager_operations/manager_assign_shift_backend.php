@@ -259,7 +259,7 @@ function searchEmployees($dbConnection, $cityName, $employeeId, $firstName, $las
         // NOTE: RoleId=12 indicates Employee role.
         // NOTE: starttime minus 1 hour and endtime add 1 hour. This is to give time for employee to travel to next work place.
         $selectEmployeesSQL =
-            "SELECT u.UserId, u.FirstName, u.LastName, u.Address, u.DesiredDay 
+            "SELECT u.UserId, u.FirstName, u.LastName, u.Address, u.DesiredDay, u.Phone 
                 FROM usermaster u 
               WHERE u.RoleId = 12 
                 AND u.City = :cityName 
