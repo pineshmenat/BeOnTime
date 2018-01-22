@@ -5,43 +5,21 @@ include_once 'ShiftOperations.php';
 ?>
 
 
+
+<html lang="en" data-textdirection="ltr" class="loading">
+<title>Pay Details</title>
+<link rel="stylesheet" type="text/css" href="../../assets/css/datetimepicker/bootstrap-datetimepicker.css">
+<?php include("emp_header.php"); ?>
+
+
+<!-- main menu-->
+
 <script
         src="https://code.jquery.com/jquery-3.2.1.min.js"
         integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
         crossorigin="anonymous">
 </script>
 
-<script>
-    var shiftPayDetails;
-    var settings = {
-        "async": true,
-        "crossDomain": true,
-        "url": "http://beontime.byethost16.com/beontime/html_php/employee_operations/ShiftOperations.php",
-        "method": "POST",
-        "headers": {
-            "content-type": "application/x-www-form-urlencoded",
-            "cache-control": "no-cache",
-            "postman-token": "3f0afa24-0ff4-63fc-ed48-7bb348022540"
-        },
-        "data": {
-            "operation": "getTodaysPayDetails",
-            "userId": "<?php echo $_SESSION['userId'];?>"
-        }
-    }
-
-    $.ajax(settings).done(function (response) {
-        //console.log(response);
-        shiftPayDetails= JSON.parse(response);
-    });
-
-</script>
-
-<html lang="en" data-textdirection="ltr" class="loading">
-<title>Pay Details</title>
-
-<?php include("emp_header.php"); ?>
-
-<!-- main menu-->
 <div data-scroll-to-active="true" class="main-menu menu-fixed menu-dark menu-accordion menu-shadow">
     <!-- main menu header-->
     <div class="main-menu-header">
@@ -75,7 +53,9 @@ include_once 'ShiftOperations.php';
 
 <div class="app-content content container-fluid">
     <div class="content-wrapper">
-        <div class="content-header row"></div>
+        <div class="content-header row">
+
+        </div>
         <div class="content-body">
             <!--/ project charts -->
             <!--Company Name Row-->
@@ -94,50 +74,139 @@ include_once 'ShiftOperations.php';
                 </div>
             </div>
             <!--/Company Name Row-->
-            </br>
-
-            <form method="post" action="">
-                <div class="row mt-2 col-md-12">
-                    <div class="col-xl-12 col-lg-12 col-xs-12">
-                        <script>
-                            var shifts_table = "<table class='table table-striped table-hover table-responsive'>" +
-                                "<thead class='thead-inverse'>" +
-                                "<tr>" +
-                                "<th>ShiftId</th>" +
-                                "<th>Company</th>" +
-                                "<th>StartTime</th>" +
-                                "<th>EndTime</th>" +
-                                "<th>ActualWorkingStartTime</th>" +
-                                "<th>ActualWorkingEndTime</th>" +
-                                "<th>SpecialNote</th>" +
-                                "<th>ShiftPay</th>" +
-                                "</tr>" +
-                                "</thead>" +
-                                "<tbody>";
-                            if(shiftPayDetails != null){
-                                for(var i=0; i<shiftPayDetails.length; i++){
-
-                                    shifts_table += "<tr>" +
-                                        "<td>" + shiftPayDetails[i].ShiftId + "</td>" +
-                                        "<td>" + shiftPayDetails[i].CompanyName + "</td>" +
-                                        "<td>" + shiftPayDetails[i].StartTime + "</td>" +
-                                        "<td>" + shiftPayDetails[i].EndTime + "</td>" +
-                                        "<td>" + shiftPayDetails[i].ActualWorkingStartTime+ "</td>" +
-                                        "<td>" + shiftPayDetails[i].ActualWorkingEndTime + "</td>" +
-                                        "<td style='word-wrap: break-word;min-width: 160px;max-width: 160px;'>" + shiftPayDetails[i].SpecialNote + "</td>" +
-                                        "<td>" + shiftPayDetails[i].shiftPay + "</td>" +
-                                        "</tr>";
-                                }
-                            }
-
-                            shifts_table += "</tbody></table>";
-
-                            document.write(shifts_table);
-
-                        </script>
+            <div class="row mt-2 col-md-12">
+                <div class="col-xl-6 col-lg-6 col-xs-12">
+                    <div class="card-body">
+                        <div style="overflow: visible" class="media">
+                            <div class="p-2 text-xs-center bg-grey bg-darken-2 media-left media-middle">
+                                <i class="icon-android-calendar font-large-2 white"></i>
+                            </div>
+                            <div style="overflow: visible" class="p-2 bg-grey white media-body">
+                                <div class="form-group">
+                                    <div class='input-group date' id='datetimepicker6'>
+                                        <input type='text' id="selectedStartDate" name="selectedStartDate"
+                                               value="<?php if(isset($_POST['selectedStartDate'])){echo $_POST['selectedStartDate'];}?>"
+                                               class="form-control"/>
+                                        <span class="input-group-addon">
+                                                <i class="icon-android-calendar font-size-large black"></i>
+                                            </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </form>
+                <div class="col-xl-6 col-lg-6 col-xs-12">
+                    <div class="card-body">
+                        <div style="overflow: visible" class="media">
+                            <div class="p-2 text-xs-center bg-grey bg-darken-2 media-left media-middle">
+                                <i class="icon-android-calendar font-large-2 white"></i>
+                            </div>
+                            <div style="overflow: visible" class="p-2 bg-grey white media-body">
+                                <div class="form-group">
+                                    <div class='input-group date' id='datetimepicker7'>
+                                        <input type='text' id="selectedEndDate" name="selectedEndDate"
+                                               value="<?php if(isset($_POST['selectedEndDate'])){echo $_POST['selectedEndDate'];}?>"
+                                               class="form-control"/>
+                                        <span class="input-group-addon">
+                                                <i class="icon-android-calendar font-size-large black"></i>
+                                            </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+                <div class="row mt-2 col-md-12">
+                    <div class="row">
+                        <div class="col-xl-12 col-lg-6 col-xs-12">
+                            <div class="card-body">
+                                <div class="media">
+                                    <div class="col-xl-12 col-lg-6 col-xs-12"
+                                         class="p-2 text-xs-center bg-accent-2 media-left media-middle">
+
+                                        <input style='border-radius: 0 !important;' id="btnSubmit" type="submit" class="btn btn-info btn-lg btn-block" value="Display Paydetails"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </br>
+
+                <div class="row mt-2 col-md-12">
+                    <div class="col-xl-12 col-lg-12 col-xs-12">
+                        <table id="table" class='table table-striped table-hover table-responsive'>
+                            <thead class='thead-inverse'>
+                            <tr>
+                                <th>Shift Id</th>
+                                <th>Company</th>
+                                <th>StartTime</th>
+                                <th>EndTime</th>
+                                <th>Actual Working StartTime</th>
+                                <th>Actual Working EndTime</th>
+                                <th>Client Review</th>
+                                <th>Special Note</th>
+                                <th>Shift Pay</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                        <script>
+                            var shiftPayDetails = null;
+                            $('#btnSubmit').on('click', function(event) {
+                                event.preventDefault(); // To prevent following the link (optional)
+                                console.log(document.getElementById("selectedStartDate").value);
+                                var settings = {
+                                    "async": true,
+                                    "crossDomain": true,
+				    "url": "http://beontime.byethost16.com/beontime/html_php/employee_operations/ShiftOperations.php",
+                                    "method": "POST",
+                                    "headers": {
+                                        "content-type": "application/x-www-form-urlencoded",
+                                        "cache-control": "no-cache",
+                                        "postman-token": "3f0afa24-0ff4-63fc-ed48-7bb348022540"
+                                    },
+                                    "data": {
+                                        "operation": "getTodaysPayDetails",
+                                        "userId": "<?php echo $_SESSION['userId'];?>",
+                                        "startDate":document.getElementById("selectedStartDate").value,
+                                        "endDate":document.getElementById("selectedEndDate").value
+                                    }
+                                }
+
+                                $.ajax(settings).done(function (response) {
+                                    console.log(response);
+                                    shiftPayDetails= JSON.parse(response);
+                                    var shifts_table = "";
+                                    if(shiftPayDetails != null){
+                                        for(var i=0; i<shiftPayDetails.length; i++){
+
+                                            shifts_table += "<tr>" +
+                                                "<td>" + shiftPayDetails[i].ShiftId + "</td>" +
+                                                "<td>" + shiftPayDetails[i].CompanyName + "</td>" +
+                                                "<td>" + shiftPayDetails[i].StartTime + "</td>" +
+                                                "<td>" + shiftPayDetails[i].EndTime + "</td>" +
+                                                "<td>" + shiftPayDetails[i].ActualWorkingStartTime+ "</td>" +
+                                                "<td>" + shiftPayDetails[i].ActualWorkingEndTime + "</td>" +
+                                                "<td style='word-wrap: break-word;min-width: 160px;max-width: 160px;'>" + shiftPayDetails[i].ClientReview + "</td>" +
+                                                "<td style='word-wrap: break-word;min-width: 160px;max-width: 160px;'>" + shiftPayDetails[i].SpecialNote+ "</td>" +
+                                                "<td>" + shiftPayDetails[i].shiftPay + "</td>" +
+                                                "</tr>";
+                                        }
+                                    }
+                                    shifts_table += "</tbody>";
+                                    $('#table').append(shifts_table);
+
+                                });
+                            });
+                        </script>
         </div>
     </div>
 </div>
@@ -176,5 +245,28 @@ include_once 'ShiftOperations.php';
 <script src="../../assets/js/datetimepicker/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
 <script src="../../assets/js/datetimepicker/transition.js" type="text/javascript"></script>
 <script src="../../assets/js/datetimepicker/collapse.js" type="text/javascript"></script>
+<script type="text/javascript">
+    $(function () {
+        $('#datetimepicker6').datetimepicker({
+            // display date only, no time. remove below line will show time picker
+            format: 'MMM DD, YYYY'
+        });
+        $('#datetimepicker7').datetimepicker({
+            // display date only, no time. remove below line will show time picker
+            format: 'MMM DD, YYYY',
+            useCurrent: false //Important! See issue #1075
+        });
+        $("#datetimepicker6").on("dp.change", function (e) {
+            $('#datetimepicker7').data("DateTimePicker").minDate(e.date);
+        });
+        $("#datetimepicker7").on("dp.change", function (e) {
+            $('#datetimepicker6').data("DateTimePicker").maxDate(e.date);
+        });
+    });
+</script>
+
+<script type="text/javascript">
+
+</script>
 <!--/START & END CALENDAR JS-->
 </html>

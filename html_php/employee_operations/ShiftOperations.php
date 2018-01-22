@@ -181,7 +181,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             break;
         }
         case "getTodaysPayDetails": {
-            $responseToClientRequest = getTodaysPayDetails($dbConnection,$userId );
+            $responseToClientRequest = getTodaysPayDetails($dbConnection,$userId,$startDate, $endDate);
             break;
         }
 
@@ -621,19 +621,22 @@ function getTodayShiftDetailsPhp($dbConnection,$user_id) {
     return json_encode($shiftDetails);
 }
 
-function getTodaysPayDetails($dbConnection,$user_id) {
+function getTodaysPayDetails($dbConnection,$user_id,$startDate, $endDate) {
 
-    $shiftsPayOfTodaySQL = "select ShiftId,StartTime,EndTime, shiftmaster.empDesignationId,hour(ActualWorkingEndTime-ActualWorkingStartTime)*payPerHour as 'shiftPay',CompanyName,ActualWorkingStartTime,ActualWorkingEndTime,SpecialNote 
+    $shiftsPayOfTodaySQL = "select ShiftId,StartTime,EndTime, shiftmaster.empDesignationId,hour(ActualWorkingEndTime-ActualWorkingStartTime)*payPerHour as 'shiftPay',CompanyName,ActualWorkingStartTime,ActualWorkingEndTime,ClientReview,SpecialNote 
             from shiftmaster join companymaster on (shiftmaster.CompanyId = companymaster.CompanyId) 
             join companylocationmaster on (shiftmaster.CompanyLocationId = companylocationmaster.CompanyLocationId) 
-            join employeedesignationmaster on (employeedesignationmaster.empDesignationId = shiftmaster.empDesignationId) where 
-            date(StartTime) = current_date()
-            AND AssignedTo = :AssignedTo
+            join employeedesignationmaster on (employeedesignationmaster.empDesignationId = shiftmaster.empDesignationId)
+            WHERE AssignedTo = :AssignedTo
             AND ShiftStatus = 'D'
+            AND date(StartTime) >= STR_TO_DATE(:startDate,'%M %d,%Y')
+            AND date(EndTime) <= STR_TO_DATE(:endDate,'%M %d,%Y')
             ORDER BY StartTime;";
 
     $pdpstm = $dbConnection->prepare($shiftsPayOfTodaySQL);
     $pdpstm->bindValue(':AssignedTo', $user_id, PDO::PARAM_INT);
+    $pdpstm->bindValue(':startDate', $startDate);
+    $pdpstm->bindValue(':endDate', $endDate);
     $pdpstm->execute();
     $pdpstm->setFetchMode(PDO::FETCH_ASSOC);
     $shiftPayDetails = $pdpstm->fetchAll();

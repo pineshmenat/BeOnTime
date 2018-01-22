@@ -188,6 +188,7 @@ var shiftDetails;
                                 $.ajax(settings).done(function (response) {
                                     alert("Shift Started!!");
                                     document.getElementById(shiftDetails[rowId].ShiftId).disabled = true;
+                                    window.location.reload();
                                 });
                             } else {
                                 alert("Shift is already started!!");
@@ -225,6 +226,7 @@ var shiftDetails;
                                 $.ajax(settings).done(function (response) {
                                     alert("Shift Ended!!");
                                     document.getElementById(shiftDetails[rowId].ShiftId + 'l').disabled = true;
+                                    window.location.reload();
                                 });
                             } else {
                                 alert("Shift is already Ended!!");
