@@ -86,7 +86,7 @@
 <!--                            <a href="#" class="dropdown-item"><i class="icon-mail6"></i> My Inbox</a>-->
 <!--                            <a href="#" class="dropdown-item"><i class="icon-clipboard2"></i> Task</a>-->
 <!--                            <a href="#" class="dropdown-item"><i class="icon-calendar5"></i> Calender</a>-->
-                            <div class="dropdown-divider"></div>
+<!--                            <div class="dropdown-divider"></div>-->
                             <a href="../login/logout.php" class="dropdown-item"><i class="icon-power3"></i> Logout</a>
                         </div>
                     </li>
