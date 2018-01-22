@@ -87,10 +87,10 @@ $designations = ClientSideDB::getEmployeeDesignations();
                             <span class="user-name"><?= $_SESSION['userName']; ?></span>
                         </a>
                         <div class="dropdown-menu dropdown-menu-right">
-                            <a href="#" class="dropdown-item"><i class="icon-head"></i> Edit Profile</a>
-                            <a href="#" class="dropdown-item"><i class="icon-mail6"></i> My Inbox</a>
-                            <a href="#" class="dropdown-item"><i class="icon-clipboard2"></i> Task</a>
-                            <a href="#" class="dropdown-item"><i class="icon-calendar5"></i> Calender</a>
+<!--                            <a href="#" class="dropdown-item"><i class="icon-head"></i> Edit Profile</a>-->
+<!--                            <a href="#" class="dropdown-item"><i class="icon-mail6"></i> My Inbox</a>-->
+<!--                            <a href="#" class="dropdown-item"><i class="icon-clipboard2"></i> Task</a>-->
+<!--                            <a href="#" class="dropdown-item"><i class="icon-calendar5"></i> Calender</a>-->
                             <div class="dropdown-divider"></div>
                             <a href="../login/logout.php" class="dropdown-item"><i class="icon-power3"></i> Logout</a>
                         </div>

@@ -148,10 +148,10 @@ if(isset($_POST['send']))
                             <span class="user-name"><?= $_SESSION['userName']; ?></span>
                         </a>
                         <div class="dropdown-menu dropdown-menu-right">
-                            <a href="#" class="dropdown-item"><i class="icon-head"></i> Edit Profile</a>
-                            <a href="#" class="dropdown-item"><i class="icon-mail6"></i> My Inbox</a>
-                            <a href="#" class="dropdown-item"><i class="icon-clipboard2"></i> Task</a>
-                            <a href="#" class="dropdown-item"><i class="icon-calendar5"></i> Calender</a>
+<!--                            <a href="#" class="dropdown-item"><i class="icon-head"></i> Edit Profile</a>-->
+<!--                            <a href="#" class="dropdown-item"><i class="icon-mail6"></i> My Inbox</a>-->
+<!--                            <a href="#" class="dropdown-item"><i class="icon-clipboard2"></i> Task</a>-->
+<!--                            <a href="#" class="dropdown-item"><i class="icon-calendar5"></i> Calender</a>-->
                             <div class="dropdown-divider"></div>
                             <a href="../login/logout.php" class="dropdown-item"><i class="icon-power3"></i> Logout</a>
                         </div>
@@ -187,10 +187,10 @@ if(isset($_POST['send']))
                     <li>
                         <a href="manager_view_shift_frontend.php" data-i18n="nav.page_layouts.2_columns" class="menu-item">View Shift</a>
                     </li>
-                    <li>
+                    <li class="active">
                         <a href="manager_track_emphours.php" data-i18n="nav.page_layouts.2_columns" class="menu-item">Track Emp's Workhour</a>
                     </li>
-                    <li class="active">
+                    <li>
                         <a href="manager_track_employee.php" data-i18n="nav.page_layouts.2_columns" class="menu-item">Track Emp's Position</a>
                     </li>
                     <li>
