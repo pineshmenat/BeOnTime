@@ -186,6 +186,19 @@ include_once 'ShiftOperations.php';
                                     shiftPayDetails= JSON.parse(response);
                                     var shifts_table = "";
                                     if(shiftPayDetails != null){
+                                        shifts_table += "<thead class='thead-inverse'>\n" +
+                                            "                            <tr>\n" +
+                                            "                                <th>Shift Id</th>\n" +
+                                            "                                <th>Company</th>\n" +
+                                            "                                <th>StartTime</th>\n" +
+                                            "                                <th>EndTime</th>\n" +
+                                            "                                <th>Actual Working StartTime</th>\n" +
+                                            "                                <th>Actual Working EndTime</th>\n" +
+                                            "                                <th>Client Review</th>\n" +
+                                            "                                <th>Special Note</th>\n" +
+                                            "                                <th>Shift Pay</th>\n" +
+                                            "                            </tr>\n" +
+                                            "                            </thead>";
                                         for(var i=0; i<shiftPayDetails.length; i++){
 
                                             shifts_table += "<tr>" +
@@ -202,7 +215,7 @@ include_once 'ShiftOperations.php';
                                         }
                                     }
                                     shifts_table += "</tbody>";
-                                    $('#table').append(shifts_table);
+                                    $('#table').empty().append(shifts_table);
 
                                 });
                             });
