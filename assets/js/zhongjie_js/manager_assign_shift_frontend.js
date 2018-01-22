@@ -470,7 +470,7 @@ function loadEmployees(cityName, employeeId, firstName, lastName, desiredDaySele
 
             var employees = JSON.parse(this.responseText);
 
-            displayEmployees(employees, firstName, lastName);
+            displayEmployees(employees);
 
             // Always reset disabled status of btnAssignEmployee
             $("#btnAssignEmployee").attr("disabled", false);
@@ -571,7 +571,7 @@ function displayAllCities(allCities) {
     $("#citySelection").html(citiesOption);
 }
 
-function displayEmployees(employees, firstName, lastName) {
+function displayEmployees(employees) {
 
     var EmployeesTable = "<table class=\"table table-condensed\">";
     EmployeesTable += "<thead><tr>";
