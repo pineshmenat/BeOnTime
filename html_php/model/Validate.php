@@ -56,14 +56,29 @@ class Validate
     }
 
     public static function validateCompanyName($name){
+        $valid = true;
         if(empty($name)){
             return "company name cannot be empty";
         }
-        else if(!ctype_alpha($name)){
+        /*else if(!ctype_alpha($name)){
             return "no characters except alphanumeric allowed";
         }
         else{
             return "";
+        }*/
+        else{
+            foreach ($name as $chars) {
+                if (!(ctype_alpha($chars) || $chars == " " || $chars == "-" || $chars == ".")) {
+                    $valid = false;
+                    break;
+                }
+            }
+            if($valid){
+                return "";
+            }
+            else{
+                return "no characters except alphanumeric allowed";
+            }
         }
     }
 
